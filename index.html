@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexo Style Landing Page</title>
+  <title>BitNest - Wise Investment</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * {
       box-sizing: border-box;
@@ -15,16 +17,67 @@
       height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: white;
+      scroll-behavior: smooth;
     }
 
     .background {
-      background-image: url('bg.png'); /* Placeholder image */
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=2232&auto=format&fit=crop');
       background-size: cover;
       background-position: center;
+      background-attachment: fixed;
       height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated floating crypto elements */
+    .crypto-floaters {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .floater {
+      position: absolute;
+      opacity: 0.6;
+      animation: float 15s infinite linear;
+    }
+
+    .floater:nth-child(1) {
+      top: 10%;
+      left: 5%;
+      width: 40px;
+      animation-delay: 0s;
+      animation-duration: 18s;
+    }
+
+    .floater:nth-child(2) {
+      top: 70%;
+      left: 15%;
+      width: 30px;
+      animation-delay: 2s;
+      animation-duration: 20s;
+    }
+
+    .floater:nth-child(3) {
+      top: 30%;
+      left: 80%;
+      width: 50px;
+      animation-delay: 4s;
+      animation-duration: 15s;
+    }
+
+    .floater:nth-child(4) {
+      top: 80%;
+      left: 70%;
+      width: 35px;
+      animation-delay: 1s;
+      animation-duration: 22s;
     }
 
     header {
@@ -33,37 +86,95 @@
       align-items: center;
       padding: 20px 5%;
       background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    header.scrolled {
+      padding: 15px 5%;
+      background: rgba(0, 0, 0, 0.8);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     }
 
     .logo {
       font-weight: bold;
-      font-size: 1.5em;
+      font-size: 1.8em;
+      transition: transform 0.3s ease;
+      background: linear-gradient(to right, #1ed3c6, #4ecca3);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .logo-icon {
+      font-size: 1.2em;
     }
 
     nav {
       display: flex;
-      gap: 20px;
+      gap: 25px;
     }
 
     nav a {
       color: white;
       text-decoration: none;
       font-weight: 500;
+      position: relative;
+      padding: 5px 0;
+      transition: all 0.3s ease;
+      font-size: 1.05em;
+    }
+
+    nav a:hover {
+      color: #1ed3c6;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: #1ed3c6;
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
     }
 
     .auth-buttons {
       display: flex;
-      gap: 10px;
+      gap: 15px;
     }
 
     .auth-buttons button {
       background: #1ed3c6;
       color: black;
       border: none;
-      padding: 10px 16px;
+      padding: 10px 20px;
       border-radius: 5px;
       font-weight: bold;
       cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.95em;
+    }
+
+    .auth-buttons button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
+      background: #17b3a8;
     }
 
     .auth-buttons button.login {
@@ -72,39 +183,81 @@
       border: 1px solid white;
     }
 
+    .auth-buttons button.login:hover {
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+    }
+
     .main-content {
       padding: 40px 5%;
       max-width: 600px;
+      position: relative;
+      z-index: 2;
     }
 
     .main-content h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
+      font-size: 3em;
+      margin-bottom: 15px;
+      line-height: 1.2;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      background: linear-gradient(to right, #ffffff, #d1f7f3);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: fadeInUp 1s ease-out;
     }
 
     .main-content p {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
       font-size: 1.2em;
-      line-height: 1.5;
+      line-height: 1.6;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      animation: fadeInUp 1s ease-out 0.2s;
+      animation-fill-mode: both;
     }
 
     .cta {
       background-color: #1ed3c6;
       color: black;
       border: none;
-      padding: 14px 20px;
+      padding: 16px 30px;
       font-weight: bold;
-      font-size: 1em;
+      font-size: 1.1em;
       border-radius: 6px;
       cursor: pointer;
+      transition: all 0.3s ease;
+      animation: fadeInUp 1s ease-out 0.4s;
+      animation-fill-mode: both;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(30, 211, 198, 0.6);
+      background-color: #17b3a8;
+    }
+
+    .cta i {
+      transition: transform 0.3s ease;
+    }
+
+    .cta:hover i {
+      transform: translateX(5px);
     }
 
     .note {
-      margin-top: 10px;
+      margin-top: 15px;
       font-size: 0.9em;
       background: rgba(0,0,0,0.4);
-      padding: 10px;
+      padding: 12px;
       border-radius: 5px;
+      backdrop-filter: blur(5px);
+      animation: fadeIn 1.5s ease-out 0.6s;
+      animation-fill-mode: both;
+      max-width: 400px;
+      border-left: 3px solid #1ed3c6;
     }
 
     footer {
@@ -113,12 +266,97 @@
       display: flex;
       flex-direction: column;
       font-size: 0.9em;
+      backdrop-filter: blur(5px);
+      position: relative;
+      z-index: 2;
     }
 
     .footer-info {
       display: flex;
       flex-wrap: wrap;
       gap: 15px;
+      justify-content: center;
+    }
+
+    .footer-info div {
+      padding: 8px 15px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .footer-info div:hover {
+      background: rgba(30, 211, 198, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Stats animation */
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 40px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      margin: 10px;
+      min-width: 140px;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .stat-item.animated {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stat-number {
+      font-size: 2.2em;
+      font-weight: bold;
+      color: #1ed3c6;
+      margin-bottom: 5px;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .stat-label {
+      font-size: 0.85em;
+      opacity: 0.8;
+    }
+
+    /* Scrolling animation for features */
+    .scrolling-features {
+      position: absolute;
+      bottom: 100px;
+      left: 0;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      background: rgba(30, 211, 198, 0.1);
+      padding: 15px 0;
+      backdrop-filter: blur(5px);
+    }
+
+    .scrolling-features-content {
+      display: inline-block;
+      animation: scroll 30s linear infinite;
+    }
+
+    .feature-item {
+      display: inline-block;
+      margin: 0 40px;
+      font-size: 1.1em;
+      color: #1ed3c6;
+    }
+
+    .feature-item i {
+      margin-right: 10px;
     }
 
     @media (max-width: 768px) {
@@ -128,28 +366,77 @@
       }
 
       nav, .auth-buttons {
-        margin-top: 10px;
+        margin-top: 15px;
         flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
       }
 
       .main-content h1 {
-        font-size: 2em;
+        font-size: 2.2em;
       }
 
       .main-content p {
         font-size: 1em;
       }
 
-      footer {
+      .stats {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .stat-item {
+        width: 80%;
+      }
+
+      .scrolling-features {
+        display: none;
+      }
+
+      .footer-info div {
+        padding: 6px 12px;
         font-size: 0.8em;
       }
+    }
+
+    /* Animations */
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
     }
   </style>
 </head>
 <body>
   <div class="background">
-    <header>
-      <div class="logo">NEXO</div>
+    <!-- Animated floating crypto elements -->
+    <div class="crypto-floaters">
+      <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="floater" alt="Bitcoin">
+      <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="floater" alt="Ethereum">
+      <img src="https://cryptologos.cc/logos/cardano-ada-logo.png" class="floater" alt="Cardano">
+      <img src="https://cryptologos.cc/logos/solana-sol-logo.png" class="floater" alt="Solana">
+    </div>
+
+    <header id="mainHeader">
+      <div class="logo">
+        <i class="fas fa-coins logo-icon"></i>
+        <span>BitNest</span>
+      </div>
       <nav>
         <a href="#">Personal</a>
         <a href="#">Business</a>
@@ -157,25 +444,131 @@
         <a href="#">Company</a>
       </nav>
       <div class="auth-buttons">
-        <button class="login">Log in</button>
-        <button>Sign up</button>
+        <a href="login.html"><button class="login">Log in</button></a>
+        <a href="register.html"><button>Sign up</button></a>
       </div>
     </header>
 
     <div class="main-content">
-      <h1>Driving the next<br>generation of wealth.</h1>
-      <p>Stay on top of your goals with digital assets.</p>
-      <button class="cta">Sign up & get 1% in BTC</button>
-      <div class="note">Unlock white-glove wealth solutions when you add $100,000 or more.</div>
+      <h1 class="animate__animated animate__fadeInUp">Driving the next<br>generation of wealth.</h1>
+      <p class="animate__animated animate__fadeInUp animate__delay-1s">Stay on top of your goals with digital assets. Invest, trade, and grow your crypto portfolio with our expert tools.</p>
+      <a href="register.html"><button class="cta animate__animated animate__fadeInUp animate__delay-2s">
+        Sign up & get 1% in BTC
+        <i class="fas fa-arrow-right"></i>
+      </button></a>
+      <div class="note animate__animated animate__fadeIn animate__delay-3s">
+        Unlock white-glove wealth solutions when you add $1,000 or more.
+      </div>
+      
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-number">750M+</div>
+          <div class="stat-label">Assets managed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Client support</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">1M+</div>
+          <div class="stat-label">Happy clients</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrolling features ticker -->
+    <div class="scrolling-features">
+      <div class="scrolling-features-content">
+        <span class="feature-item"><i class="fas fa-shield-alt"></i> Secure Transactions</span>
+        <span class="feature-item"><i class="fas fa-chart-line"></i> Real-time Analytics</span>
+        <span class="feature-item"><i class="fas fa-percentage"></i> Low Fees</span>
+        <span class="feature-item"><i class="fas fa-globe"></i> Global Access</span>
+        <span class="feature-item"><i class="fas fa-wallet"></i> Multi-Currency Wallet</span>
+        <span class="feature-item"><i class="fas fa-shield-alt"></i> Secure Transactions</span>
+        <span class="feature-item"><i class="fas fa-chart-line"></i> Real-time Analytics</span>
+        <span class="feature-item"><i class="fas fa-percentage"></i> Low Fees</span>
+        <span class="feature-item"><i class="fas fa-globe"></i> Global Access</span>
+        <span class="feature-item"><i class="fas fa-wallet"></i> Multi-Currency Wallet</span>
+      </div>
     </div>
 
     <footer>
       <div class="footer-info">
-        <div>Operating since 2018</div>
-        <div>Personalized client care 24/7</div>
-        <div>Assets under management $11+ billion</div>
+        <div class="pulse"><i class="fas fa-calendar-alt"></i> Operating since 2019</div>
+        <div><i class="fas fa-headset"></i> Personalized client care 24/7</div>
+        <div><i class="fas fa-chart-pie"></i> Assets under management $750+ million</div>
       </div>
     </footer>
   </div>
+
+  <script>
+    // Header scroll effect
+    window.addEventListener('scroll', function() {
+      const header = document.getElementById('mainHeader');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Animate stats on scroll into view
+    const statsSection = document.querySelector('.stats');
+    const statItems = document.querySelectorAll('.stat-item');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          statItems.forEach((item, index) => {
+            setTimeout(() => {
+              item.classList.add('animated');
+            }, index * 200);
+          });
+        }
+      });
+    }, { threshold: 0.5 });
+
+    observer.observe(statsSection);
+
+    // Floating crypto elements animation
+    const floaters = document.querySelectorAll('.floater');
+    floaters.forEach((floater, index) => {
+      floater.style.animationDelay = `${index * 3}s`;
+    });
+
+    // Add hover effect to logo
+    const logo = document.querySelector('.logo');
+    logo.addEventListener('mouseenter', () => {
+      logo.style.animation = 'pulse 1s';
+    });
+    logo.addEventListener('animationend', () => {
+      logo.style.animation = '';
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Auto-typing effect for a more dynamic feel
+    const heroText = document.querySelector('.main-content h1');
+    const originalText = heroText.textContent;
+    heroText.textContent = '';
+    
+    let i = 0;
+    const typingEffect = setInterval(() => {
+      if (i < originalText.length) {
+        heroText.textContent += originalText.charAt(i);
+        i++;
+      } else {
+        clearInterval(typingEffect);
+      }
+    }, 50);
+  </script>
 </body>
 </html>
