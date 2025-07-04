@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexo Style Landing Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+    }
+
+    .background {
+      background-image: url('bg.png'); /* Placeholder image */
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 5%;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .auth-buttons button {
+      background: #1ed3c6;
+      color: black;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .auth-buttons button.login {
+      background: transparent;
+      color: white;
+      border: 1px solid white;
+    }
+
+    .main-content {
+      padding: 40px 5%;
+      max-width: 600px;
+    }
+
+    .main-content h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .main-content p {
+      margin-bottom: 20px;
+      font-size: 1.2em;
+      line-height: 1.5;
+    }
+
+    .cta {
+      background-color: #1ed3c6;
+      color: black;
+      border: none;
+      padding: 14px 20px;
+      font-weight: bold;
+      font-size: 1em;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .note {
+      margin-top: 10px;
+      font-size: 0.9em;
+      background: rgba(0,0,0,0.4);
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    footer {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 20px 5%;
+      display: flex;
+      flex-direction: column;
+      font-size: 0.9em;
+    }
+
+    .footer-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav, .auth-buttons {
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+
+      .main-content h1 {
+        font-size: 2em;
+      }
+
+      .main-content p {
+        font-size: 1em;
+      }
+
+      footer {
+        font-size: 0.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <header>
+      <div class="logo">NEXO</div>
+      <nav>
+        <a href="#">Personal</a>
+        <a href="#">Business</a>
+        <a href="#">Markets</a>
+        <a href="#">Company</a>
+      </nav>
+      <div class="auth-buttons">
+        <button class="login">Log in</button>
+        <button>Sign up</button>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <h1>Driving the next<br>generation of wealth.</h1>
+      <p>Stay on top of your goals with digital assets.</p>
+      <button class="cta">Sign up & get 1% in BTC</button>
+      <div class="note">Unlock white-glove wealth solutions when you add $100,000 or more.</div>
+    </div>
+
+    <footer>
+      <div class="footer-info">
+        <div>Operating since 2018</div>
+        <div>Personalized client care 24/7</div>
+        <div>Assets under management $11+ billion</div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

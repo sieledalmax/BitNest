@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nexo | Crypto Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00d4ff;
+      --primary-dark: #00b8e0;
+      --dark-bg: #0e0f13;
+      --card-bg: #1b1e24;
+      --card-hover: #23262d;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b3b8;
+      --accent-blue: #3a86ff;
+      --accent-green: #4cc9f0;
+      --accent-purple: #8338ec;
+      --border-radius: 12px;
+      --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .navbar {
+      background-color: var(--card-bg);
+      padding: 1rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar .left {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .navbar .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .navbar a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .navbar a:hover {
+      color: var(--text-primary);
+    }
+
+    .navbar a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .navbar .right button {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.65rem 1.5rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+    }
+
+    .navbar .right button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 212, 255, 0.3);
+    }
+
+    .container {
+      padding: 2rem 3rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .setup-box {
+      background: linear-gradient(135deg, #1b1e24, #22252c);
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .setup-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(58, 134, 255, 0.05));
+      clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+      z-index: 0;
+    }
+
+    .setup-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .setup-box h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      width: fit-content;
+    }
+
+    .setup-box p {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      max-width: 70%;
+      line-height: 1.6;
+    }
+
+    .progress-tracker {
+      display: flex;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .progress-tracker::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 1;
+    }
+
+    .progress-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      background: var(--card-bg);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      font-weight: 600;
+    }
+
+    .step-icon.completed {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+    }
+
+    .step-icon.current {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.2);
+      color: var(--primary);
+      background: rgba(0, 212, 255, 0.1);
+    }
+
+    .step-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 100px;
+      line-height: 1.4;
+    }
+
+    .step-label.completed {
+      color: var(--text-primary);
+    }
+
+    .step-label.current {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .progress-connector {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      z-index: 2;
+      transition: width 0.5s ease;
+    }
+
+    .setup-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 212, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      backdrop-filter: blur(5px);
+    }
+
+    .cta-text h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .cta-text p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 0;
+      max-width: 100%;
+      line-height: 1.5;
+    }
+
+    .cta-text strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .cta-button {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 2rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+    }
+
+    .cta-button span {
+      transition: transform 0.3s ease;
+    }
+
+    .cta-button:hover span {
+      transform: translateX(3px);
+    }
+
+    .reward-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: var(--accent-purple);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(131, 56, 236, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .section-title::before {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 20px;
+      background: linear-gradient(var(--primary), var(--accent-blue));
+      border-radius: 3px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 1.75rem;
+      border-radius: var(--border-radius);
+      text-align: left;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background-color: var(--card-hover);
+      box-shadow: var(--box-shadow);
+    }
+
+    .card h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .promo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .promo-card {
+      background: linear-gradient(135deg, #2b2e34, #33363d);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .promo-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--box-shadow);
+    }
+
+    .promo-card img {
+      height: 80px;
+      width: 80px;
+      border-radius: var(--border-radius);
+      object-fit: cover;
+    }
+
+    .promo-content {
+      flex: 1;
+    }
+
+    .promo-card h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .promo-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .button {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.65rem 1.5rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 212, 255, 0.3);
+    }
+
+    .button span {
+      transition: transform 0.3s ease;
+    }
+
+    .button:hover span {
+      transform: translateX(3px);
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .navbar .left {
+        width: 100%;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      
+      .container {
+        padding: 1.5rem;
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+      }
+      
+      .setup-box p {
+        max-width: 100%;
+      }
+      
+      .setup-cta {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+      }
+      
+      .promo {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="left">
+      <div class="logo">NEXO</div>
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Futures</a>
+      <a href="#">Exchange</a>
+      <a href="#">Markets</a>
+      <a href="#">Transactions</a>
+    </div>
+    <div class="right">
+      <button>Buy Crypto</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="setup-box">
+      <div class="setup-content">
+        <h3>Unlock Your Full Account Potential</h3>
+        <p>Complete these quick steps to access higher limits, better rates, and exclusive features designed to maximize your crypto experience.</p>
+        
+        <div class="progress-tracker">
+          <div class="progress-connector"></div>
+          
+          <div class="progress-step">
+            <div class="step-icon completed">✔</div>
+            <div class="step-label completed">Account Created</div>
+          </div>
+          
+          <div class="progress-step">
+            <div class="step-icon current">2</div>
+            <div class="step-label current">Personal Info</div>
+          </div>
+          
+          <div class="progress-step">
+            <div class="step-icon">3</div>
+            <div class="step-label">First Deposit</div>
+          </div>
+        </div>
+        
+        <div class="setup-cta">
+          <div class="cta-text">
+            <h4>Make your first deposit now!</h4>
+            <p>Deposit today and get a <strong>+$10 bonus</strong> on your first transaction over $100.</p>
+          </div>
+          <button class="cta-button">
+            Deposit Funds <span>→</span>
+            <div class="reward-badge">Limited Time</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Features</h2>
+    
+    <div class="features">
+      <div class="card">
+        <h4>📈 Grow your crypto savings</h4>
+        <p>Earn up to 15% annual interest based on your Loyalty Tier with our industry-leading rates.</p>
+      </div>
+      <div class="card">
+        <h4>💳 Unlock liquidity</h4>
+        <p>Instant Credit Line starting from 2.9% interest annually. Borrow without selling your assets.</p>
+      </div>
+      <div class="card">
+        <h4>🌍 Spend anywhere</h4>
+        <p>Use your assets with the Nexo Card and earn interest while spending at 0% APR.</p>
+      </div>
+      <div class="card">
+        <h4>🔁 Trade the crypto markets</h4>
+        <p>Exchange over 100+ digital assets with a few clicks and competitive exchange rates.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Promotions</h2>
+    
+    <div class="promo">
+      <div class="promo-card">
+        <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="woman with cryptocurrency"/>
+        <div class="promo-content">
+          <h4>Grow your savings</h4>
+          <p>Get daily compound interest on your assets with flexible terms and instant withdrawals.</p>
+          <button class="button">Earn interest <span>→</span></button>
+        </div>
+      </div>
+      <div class="promo-card">
+        <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="hourglass with coins"/>
+        <div class="promo-content">
+          <h4>Set up Recurring Buys</h4>
+          <p>Automate your crypto purchases with dollar-cost averaging using your available balances.</p>
+          <button class="button">Buy crypto <span>→</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
