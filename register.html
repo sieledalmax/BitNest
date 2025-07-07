@@ -4,10 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign Up | BitNest</title>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * {
@@ -41,7 +37,6 @@
       overflow: hidden;
     }
 
-    /* Floating crypto elements */
     .crypto-floaters {
       position: absolute;
       width: 100%;
@@ -230,6 +225,20 @@
       display: none;
     }
 
+    .password-strength {
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+
+    .strength-bar {
+      height: 100%;
+      width: 0;
+      transition: width 0.3s, background 0.3s;
+    }
+
     .form-box button.primary {
       width: 100%;
       padding: 14px;
@@ -335,7 +344,6 @@
       color: #666;
     }
 
-    /* Loading spinner */
     .spinner {
       display: none;
       width: 20px;
@@ -367,21 +375,6 @@
       }
     }
 
-    /* Password strength indicator */
-    .password-strength {
-      height: 4px;
-      background: #333;
-      border-radius: 2px;
-      margin-top: 5px;
-      overflow: hidden;
-    }
-
-    .strength-bar {
-      height: 100%;
-      width: 0;
-      transition: width 0.3s, background 0.3s;
-    }
-
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -406,13 +399,11 @@
 <body>
   <div class="container">
     <div class="left">
-      <!-- Floating crypto elements -->
       <div class="crypto-floaters">
         <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="floater" alt="Bitcoin">
         <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="floater" alt="Ethereum">
         <img src="https://cryptologos.cc/logos/cardano-ada-logo.png" class="floater" alt="Cardano">
       </div>
-      
       <div class="logo">
         <i class="fas fa-coins"></i>
         <span>BitNest</span>
@@ -423,35 +414,36 @@
         <div><i class="fas fa-chart-pie"></i> $750M+ assets</div>
       </div>
     </div>
+
     <div class="right">
       <div class="form-box">
         <h2>Create your account</h2>
-        
+
         <div class="account-switch personal-active" id="accountSwitch">
           <button class="active" data-type="personal">Personal account</button>
           <button data-type="business">Business account</button>
         </div>
-        
+
         <form id="registerForm">
           <div class="form-group">
             <label for="name">Full name</label>
             <input type="text" id="name" placeholder="Enter your full name" required>
           </div>
-          
+
           <div class="form-group">
             <label for="email">Email</label>
             <input type="email" id="email" placeholder="Enter your email" required>
           </div>
-          
+
           <div class="form-group">
             <label for="password">Password</label>
             <input type="password" id="password" placeholder="Create a password" required minlength="6">
             <div class="password-strength">
               <div class="strength-bar" id="strengthBar"></div>
             </div>
-            <div class="error-message" id="passwordError"></div>
+            <div class="error-message" id="error-message"></div>
           </div>
-          
+
           <button type="submit" class="primary" id="registerBtn">
             <span id="registerText">Create account</span>
             <div class="spinner" id="registerSpinner"></div>
@@ -479,182 +471,151 @@
     </div>
   </div>
 
-  <script>
-    // Firebase configuration - replace with your actual config
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      updateProfile,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
       projectId: "bitnest-c7452",
       storageBucket: "bitnest-c7452.firebasestorage.app",
       messagingSenderId: "583165336540",
-      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
+      measurementId: "G-PGJNHTL03J"
     };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
     // DOM elements
     const registerForm = document.getElementById('registerForm');
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
-    const passwordError = document.getElementById('passwordError');
     const strengthBar = document.getElementById('strengthBar');
     const registerBtn = document.getElementById('registerBtn');
     const registerText = document.getElementById('registerText');
     const registerSpinner = document.getElementById('registerSpinner');
+    const errorMessage = document.getElementById('error-message');
     const googleSignupBtn = document.getElementById('googleSignup');
     const appleSignupBtn = document.getElementById('appleSignup');
-    const accountSwitch = document.getElementById('accountSwitch');
     const accountTypeButtons = document.querySelectorAll('.account-switch button');
+    const accountSwitch = document.getElementById('accountSwitch');
 
-    // Account type switcher
+    // Account switcher
     accountTypeButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
+      button.addEventListener('click', e => {
         e.preventDefault();
         accountTypeButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
-        
-        if (button.dataset.type === 'personal') {
-          accountSwitch.classList.remove('business-active');
-          accountSwitch.classList.add('personal-active');
-        } else {
-          accountSwitch.classList.remove('personal-active');
-          accountSwitch.classList.add('business-active');
-        }
+
+        accountSwitch.classList.toggle('business-active', button.dataset.type === 'business');
+        accountSwitch.classList.toggle('personal-active', button.dataset.type === 'personal');
       });
     });
 
     // Password strength indicator
     passwordInput.addEventListener('input', () => {
-      const password = passwordInput.value;
-      let strength = 0;
-      
-      // Length check
-      if (password.length > 5) strength += 20;
-      if (password.length > 8) strength += 20;
-      
-      // Character type checks
-      if (/[A-Z]/.test(password)) strength += 20;
-      if (/[0-9]/.test(password)) strength += 20;
-      if (/[^A-Za-z0-9]/.test(password)) strength += 20;
-      
-      // Update strength bar
-      strengthBar.style.width = `${strength}%`;
-      
-      // Color coding
-      if (strength < 40) {
-        strengthBar.style.background = '#ff6b6b'; // Weak
-      } else if (strength < 80) {
-        strengthBar.style.background = '#feca57'; // Medium
-      } else {
-        strengthBar.style.background = '#1dd1a1'; // Strong
-      }
+      const val = passwordInput.value;
+      let score = 0;
+      if (val.length > 5) score += 20;
+      if (val.length > 8) score += 20;
+      if (/[A-Z]/.test(val)) score += 20;
+      if (/[0-9]/.test(val)) score += 20;
+      if (/[^A-Za-z0-9]/.test(val)) score += 20;
+
+      strengthBar.style.width = `${score}%`;
+      strengthBar.style.background = score < 40 ? '#ff6b6b' : score < 80 ? '#feca57' : '#1dd1a1';
     });
 
-    // Email/password registration
-    registerForm.addEventListener('submit', (e) => {
+    // Main registration
+    registerForm.addEventListener('submit', async e => {
       e.preventDefault();
-      const name = nameInput.value;
-      const email = emailInput.value;
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
       const password = passwordInput.value;
       const accountType = document.querySelector('.account-switch button.active').dataset.type;
-      
-      // Show loading state
+
       registerText.style.display = 'none';
       registerSpinner.style.display = 'block';
       registerBtn.disabled = true;
-      
-      auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          
-          // Update user profile with display name
-          return user.updateProfile({
-            displayName: name
-          }).then(() => {
-            console.log('User registered:', user);
-            
-            // You might want to store additional user data in Firestore here
-            // For example: account type, registration date, etc.
-            
-            // Redirect to dashboard or verification page
-            window.location.href = 'dashboard.html';
-          });
-        })
-        .catch((error) => {
-          // Handle errors
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error('Registration error:', errorCode, errorMessage);
-          
-          // Show error message
-          passwordError.textContent = getFriendlyErrorMessage(errorCode);
-          passwordError.style.display = 'block';
-          
-          // Reset button state
-          registerText.style.display = 'block';
-          registerSpinner.style.display = 'none';
-          registerBtn.disabled = false;
+      errorMessage.style.display = 'none';
+
+      try {
+        console.log("🟡 Creating user:", { email, password });
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        console.log("✅ Auth success", user);
+
+        await updateProfile(user, { displayName: name });
+
+        await setDoc(doc(db, "users", user.uid), {
+          name,
+          email,
+          accountType,
+          createdAt: serverTimestamp(),
+          balance: 0,
+          lastLogin: null,
+          verified: false
         });
-    });
 
-    // Google registration
-    googleSignupBtn.addEventListener('click', () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then((result) => {
-          // This gives you a Google Access Token
-          const credential = result.credential;
-          const token = credential.accessToken;
-          const user = result.user;
-          console.log('Google signup success:', user);
-          window.location.href = 'dashboard.html';
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error('Google signup error:', errorCode, errorMessage);
-          passwordError.textContent = getFriendlyErrorMessage(errorCode);
-          passwordError.style.display = 'block';
-        });
-    });
-
-    // Apple registration placeholder
-    appleSignupBtn.addEventListener('click', () => {
-      alert('Apple signup coming soon!');
-    });
-
-    // Helper function to convert Firebase error codes to friendly messages
-    function getFriendlyErrorMessage(errorCode) {
-      switch(errorCode) {
-        case 'auth/invalid-email':
-          return 'Please enter a valid email address';
-        case 'auth/email-already-in-use':
-          return 'This email is already registered';
-        case 'auth/weak-password':
-          return 'Password should be at least 6 characters';
-        case 'auth/operation-not-allowed':
-          return 'Email/password accounts are not enabled';
-        case 'auth/popup-closed-by-user':
-          return 'Signup popup was closed';
-        default:
-          return 'Registration failed. Please try again';
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        console.error("🔥 Registration error:", error);
+        errorMessage.textContent = error.message;
+        errorMessage.style.display = 'block';
+        registerText.style.display = 'block';
+        registerSpinner.style.display = 'none';
+        registerBtn.disabled = false;
       }
-    }
+    });
 
-    // Check auth state (if user is already logged in)
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in
-        console.log('User already logged in:', user);
+    // Google signup
+    googleSignupBtn.addEventListener('click', async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          name: user.displayName,
+          email: user.email,
+          accountType: 'personal',
+          createdAt: serverTimestamp(),
+          balance: 0,
+          lastLogin: serverTimestamp(),
+          verified: true,
+          photoURL: user.photoURL || null
+        });
+
         window.location.href = 'dashboard.html';
+      } catch (error) {
+        console.error('Google signup error:', error);
+        errorMessage.textContent = error.message;
+        errorMessage.style.display = 'block';
       }
     });
 
-    // Animation for form inputs on focus
+    appleSignupBtn.addEventListener('click', () => {
+      alert("Apple signup coming soon!");
+    });
+
+    // Input focus effect
     document.querySelectorAll('input').forEach(input => {
       input.addEventListener('focus', () => {
         input.parentElement.querySelector('label').style.color = '#1ed3c6';

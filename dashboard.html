@@ -927,9 +927,9 @@
         <i class="fas fa-bell"></i>
         <div class="notification-badge">3</div>
       </div>
-      <div class="user-profile">
-        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic">
-        <span>John D.</span>
+      <div class="user-profile" id="userProfile">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
+        <span id="userName">Loading...</span>
       </div>
     </div>
   </div>
@@ -940,19 +940,19 @@
       <!-- Welcome Banner -->
       <div class="welcome-banner">
         <div class="welcome-content">
-          <h1>Welcome back, John!</h1>
+          <h1 id="welcomeTitle">Welcome back!</h1>
           <p>Your crypto portfolio is growing strong. Deposit now to unlock higher yields and exclusive benefits.</p>
           <div class="welcome-stats">
             <div class="stat-item">
-              <div class="stat-value">$24,589</div>
+              <div class="stat-value" id="portfolioValue">$0.00</div>
               <div class="stat-label">Portfolio Value</div>
             </div>
             <div class="stat-item">
-              <div class="stat-value positive">+12.4%</div>
+              <div class="stat-value positive" id="portfolioChange">+0.0%</div>
               <div class="stat-label">30d Change</div>
             </div>
             <div class="stat-item">
-              <div class="stat-value">$1,248</div>
+              <div class="stat-value" id="earnedThisMonth">$0.00</div>
               <div class="stat-label">Earned This Month</div>
             </div>
           </div>
@@ -978,20 +978,20 @@
             <button class="btn-secondary">ALL</button>
           </div>
         </div>
-        <div class="portfolio-value">$24,589.42</div>
+        <div class="portfolio-value" id="mainPortfolioValue">$0.00</div>
         <div class="portfolio-change">
-          <span class="positive">+12.4%</span>
+          <span class="positive" id="mainPortfolioChange">+0.0%</span>
           <span>vs last month</span>
         </div>
         <div class="portfolio-chart">
           <div class="chart-container">
-            <div class="chart-bar" style="height: 30%;" data-value="$22.4K"></div>
-            <div class="chart-bar" style="height: 45%;" data-value="$23.1K"></div>
-            <div class="chart-bar" style="height: 60%;" data-value="$23.8K"></div>
-            <div class="chart-bar" style="height: 75%;" data-value="$24.2K"></div>
-            <div class="chart-bar" style="height: 90%;" data-value="$24.5K"></div>
-            <div class="chart-bar" style="height: 85%;" data-value="$24.3K"></div>
-            <div class="chart-bar" style="height: 100%;" data-value="$24.6K"></div>
+            <div class="chart-bar" style="height: 30%;" data-value="$0.00"></div>
+            <div class="chart-bar" style="height: 45%;" data-value="$0.00"></div>
+            <div class="chart-bar" style="height: 60%;" data-value="$0.00"></div>
+            <div class="chart-bar" style="height: 75%;" data-value="$0.00"></div>
+            <div class="chart-bar" style="height: 90%;" data-value="$0.00"></div>
+            <div class="chart-bar" style="height: 85%;" data-value="$0.00"></div>
+            <div class="chart-bar" style="height: 100%;" data-value="$0.00"></div>
           </div>
         </div>
       </div>
@@ -1215,8 +1215,129 @@
     </div>
   </div>
 
-  <script>
+  <!-- Firebase and App Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged,
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.firebasestorage.app",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
+      measurementId: "G-PGJNHTL03J"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
     // DOM Elements
+    const userNameElement = document.getElementById('userName');
+    const userProfilePicElement = document.getElementById('userProfilePic');
+    const welcomeTitleElement = document.getElementById('welcomeTitle');
+    const portfolioValueElement = document.getElementById('portfolioValue');
+    const portfolioChangeElement = document.getElementById('portfolioChange');
+    const earnedThisMonthElement = document.getElementById('earnedThisMonth');
+    const mainPortfolioValueElement = document.getElementById('mainPortfolioValue');
+    const mainPortfolioChangeElement = document.getElementById('mainPortfolioChange');
+    const userProfileElement = document.getElementById('userProfile');
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is signed in:", user);
+        
+        // Get user data from Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          console.log("User data:", userData);
+          
+          // Update UI with user data
+          const displayName = userData.name || user.displayName || "User";
+          userNameElement.textContent = displayName;
+          welcomeTitleElement.textContent = `Welcome back, ${displayName}!`;
+          
+          // Format balance with 2 decimal places
+          const userBalance = userData.balance || 0;
+          const formattedBalance = userBalance.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
+          
+          // Update portfolio values
+          portfolioValueElement.textContent = `$${formattedBalance}`;
+          mainPortfolioValueElement.textContent = `$${formattedBalance}`;
+          
+          // Calculate random growth for demo purposes
+          const growthPercent = (Math.random() * 15).toFixed(1);
+          portfolioChangeElement.textContent = `+${growthPercent}%`;
+          mainPortfolioChangeElement.textContent = `+${growthPercent}%`;
+          
+          // Calculate random earnings for demo purposes
+          const earnings = (Math.random() * 1500).toFixed(2);
+          earnedThisMonthElement.textContent = `$${earnings}`;
+          
+          // Update profile picture if available
+          if (user.photoURL) {
+            userProfilePicElement.src = user.photoURL;
+          }
+
+          // Update chart data values based on balance
+          const chartBars = document.querySelectorAll('.chart-bar');
+          const baseValue = userBalance * 0.9; // Start at 90% of current balance
+          const increment = userBalance * 0.02; // 2% increments
+          
+          chartBars.forEach((bar, index) => {
+            const value = baseValue + (increment * index);
+            bar.setAttribute('data-value', `$${value.toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })}`);
+          });
+        } else {
+          console.log("No user data found in Firestore");
+          // Set default values if no user data
+          portfolioValueElement.textContent = '$0.00';
+          mainPortfolioValueElement.textContent = '$0.00';
+        }
+        
+        // Add logout functionality
+        userProfileElement.addEventListener('click', () => {
+          if (confirm('Are you sure you want to sign out?')) {
+            signOut(auth).then(() => {
+              window.location.href = 'login.html';
+            }).catch((error) => {
+              console.error('Sign out error:', error);
+            });
+          }
+        });
+        
+      } else {
+        // User is signed out
+        console.log("User is signed out");
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Modal and UI Interactions
     const depositBtn = document.getElementById('depositBtn');
     const quickDepositBtn = document.getElementById('quickDepositBtn');
     const depositModal = document.getElementById('depositModal');
@@ -1263,14 +1384,19 @@
         timeFilters.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
-        // Here you would typically update the chart data
-        // For demo purposes, we'll just animate the chart bars
+        // Update chart bars with random data for demo
         const chartBars = document.querySelectorAll('.chart-bar');
         chartBars.forEach((bar, index) => {
-          // Random heights for demo
           const randomHeight = Math.floor(Math.random() * 60) + 30;
           bar.style.height = `${randomHeight}%`;
-          bar.setAttribute('data-value', `$${Math.floor(Math.random() * 2000) + 22000}`);
+          
+          // Get current portfolio value
+          const currentValue = parseFloat(mainPortfolioValueElement.textContent.replace(/[^0-9.]/g, '')) || 0;
+          const value = currentValue * (0.8 + (Math.random() * 0.4)); // Random value between 80-120% of current
+          bar.setAttribute('data-value', `$${value.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })}`);
         });
       });
     });
@@ -1296,20 +1422,19 @@
       setTimeout(() => {
         notificationBell.style.animation = '';
       }, 500);
-      
-      // Here you would typically show notifications
       alert("You have 3 new notifications!");
     });
     
     // Simulate portfolio growth animation
     setTimeout(() => {
       const portfolioValue = document.querySelector('.portfolio-value');
-      const originalValue = 24589.42;
+      const originalValue = parseFloat(portfolioValue.textContent.replace(/[^0-9.]/g, '')) || 0;
       let currentValue = originalValue;
       
       const interval = setInterval(() => {
         currentValue += 123.45;
         portfolioValue.textContent = `$${currentValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        mainPortfolioValueElement.textContent = `$${currentValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         
         if (currentValue >= originalValue + 1000) {
           clearInterval(interval);
