@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BitNest | Earn Crypto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1ed3c6;
+      --primary-dark: #17b3a8;
+      --dark-bg: #0a0b0e;
+      --card-bg: #16181d;
+      --card-hover: #1e2128;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b3b8;
+      --accent-blue: #3a86ff;
+      --accent-green: #4cc9f0;
+      --accent-purple: #8338ec;
+      --accent-orange: #ff7b25;
+      --border-radius: 16px;
+      --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --glass-effect: rgba(16, 18, 22, 0.7);
+      --success: #00e676;
+      --warning: #ffab00;
+      --danger: #ff5252;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--card-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    /* Floating Animations */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Notification Bell Animation */
+    @keyframes bellRing {
+      0% { transform: rotate(0deg); }
+      10% { transform: rotate(15deg); }
+      20% { transform: rotate(-15deg); }
+      30% { transform: rotate(10deg); }
+      40% { transform: rotate(-10deg); }
+      50% { transform: rotate(5deg); }
+      60% { transform: rotate(-5deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      background-color: var(--glass-effect);
+      padding: 1rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .navbar .left {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .navbar .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .navbar a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+      padding: 0.5rem 0;
+    }
+
+    .navbar a:hover {
+      color: var(--text-primary);
+    }
+
+    .navbar a.active {
+      color: var(--primary);
+    }
+
+    .navbar a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .navbar .right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .notification-bell:hover {
+      animation: bellRing 0.5s ease;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--danger);
+      color: white;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .profile-pic {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.75rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(30, 211, 198, 0.4);
+    }
+
+    .btn span {
+      transition: transform 0.3s ease;
+    }
+
+    .btn:hover span {
+      transform: translateX(3px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: none;
+    }
+
+    /* Main Container */
+    .container {
+      padding: 2rem 3rem;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* Welcome Banner */
+    .welcome-banner {
+      grid-column: span 12;
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(30, 211, 198, 0.08), rgba(58, 134, 255, 0.05));
+      clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+      z-index: 0;
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 1;
+      max-width: 60%;
+    }
+
+    .welcome-content h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      width: fit-content;
+    }
+
+    .welcome-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .welcome-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .welcome-image {
+      position: relative;
+      z-index: 1;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .welcome-image img {
+      width: 300px;
+      height: auto;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .section-title::before {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 20px;
+      background: linear-gradient(var(--primary), var(--accent-blue));
+      border-radius: 3px;
+    }
+
+    /* Earn Grid */
+    .earn-grid {
+      grid-column: span 12;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Lock Period Cards */
+    .lock-period-card {
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lock-period-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .lock-period-card.featured {
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 0 4px rgba(30, 211, 198, 0.2);
+    }
+
+    .lock-period-card.featured::after {
+      content: 'Most Popular';
+      position: absolute;
+      top: 15px;
+      right: -30px;
+      background: var(--primary);
+      color: #000;
+      padding: 0.25rem 2rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transform: rotate(45deg);
+    }
+
+    .lock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .lock-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .lock-duration {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .lock-rate {
+      font-size: 3rem;
+      font-weight: 700;
+      margin: 1.5rem 0;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lock-rate span {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+
+    .lock-features {
+      margin: 1.5rem 0;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .feature-item i {
+      color: var(--primary);
+    }
+
+    .lock-form {
+      margin-top: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
+    }
+
+    .currency-select {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .currency-option {
+      flex: 1;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .currency-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .currency-option.active {
+      background: rgba(30, 211, 198, 0.1);
+      border-color: var(--primary);
+    }
+
+    .currency-option img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Calculator Section */
+    .calculator-section {
+      grid-column: span 12;
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      margin-top: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .calculator-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .calculator-result {
+      background: rgba(30, 211, 198, 0.05);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      border: 1px solid var(--primary);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .result-label {
+      color: var(--text-secondary);
+    }
+
+    .result-value {
+      font-weight: 600;
+    }
+
+    .total-earnings {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 1rem;
+      color: var(--primary);
+    }
+
+    /* Active Locks Section */
+    .active-locks {
+      grid-column: span 12;
+      margin-top: 1.5rem;
+    }
+
+    .locks-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .locks-table th {
+      text-align: left;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .locks-table td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .locks-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .lock-status {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-active {
+      background: rgba(0, 230, 118, 0.1);
+      color: var(--success);
+    }
+
+    .status-pending {
+      background: rgba(255, 171, 0, 0.1);
+      color: var(--warning);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1200px) {
+      .earn-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+    }
+
+    @media (max-width: 992px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      .welcome-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .welcome-content {
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+      }
+      
+      .welcome-stats {
+        justify-content: center;
+      }
+      
+      .welcome-image img {
+        width: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .nav-links {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .locks-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .welcome-banner {
+        padding: 1.5rem;
+      }
+      
+      .welcome-content h1 {
+        font-size: 1.8rem;
+      }
+      
+      .welcome-stats {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .lock-period-card.featured::after {
+        top: 10px;
+        right: -35px;
+        font-size: 0.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="left">
+      <div class="logo">
+        <i class="fas fa-coins logo-icon"></i>
+        <span>BitNest</span>
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="#">Assets</a>
+        <a href="#" class="active">Earn</a>
+        <a href="trading_view.html">Trade</a>
+        <a href="deposit.html">Deposit</a>
+        <a href="cards.html">Cards</a>
+      </div>
+    </div>
+    <div class="right">
+      <div class="notification-bell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-badge">3</div>
+      </div>
+      <div class="user-profile" id="userProfile">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
+        <span id="userName">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="dashboard-grid">
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-content">
+          <h1 id="welcomeTitle">Earn Crypto Rewards</h1>
+          <p>Lock your assets to earn competitive interest rates. The longer you lock, the higher your rewards.</p>
+          <div class="welcome-stats">
+            <div class="stat-item">
+              <div class="stat-value" id="totalEarnings">$0.00</div>
+              <div class="stat-label">Total Earnings</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="activeLocks">0</div>
+              <div class="stat-label">Active Locks</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="availableBalance">$0.00</div>
+              <div class="stat-label">Available Balance</div>
+            </div>
+          </div>
+        </div>
+        <div class="welcome-image">
+          <img src="https://cryptologos.cc/logos/versions/bitcoin-btc-logo.svg" alt="Crypto">
+        </div>
+      </div>
+
+      <!-- Lock Period Options -->
+      <div class="section-header">
+        <h2 class="section-title">Choose Lock Period</h2>
+        <div class="time-filters">
+          <button class="btn-secondary">Crypto</button>
+          <button class="btn-secondary">Stablecoins</button>
+          <button class="btn-secondary active">All Assets</button>
+        </div>
+      </div>
+      <div class="earn-grid">
+        <!-- 2 Weeks -->
+        <div class="lock-period-card">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Short Term</div>
+              <div class="lock-duration">14 days lock</div>
+            </div>
+            <i class="fas fa-clock" style="font-size: 1.5rem; color: var(--accent-blue);"></i>
+          </div>
+          <div class="lock-rate">5.2% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Flexible withdrawal after period ends</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>No penalty for early unlock</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <input type="text" class="form-control" placeholder="0.00">
+            </div>
+            <button class="btn" style="width: 100%;">
+              <i class="fas fa-lock"></i> Lock for 14 Days
+            </button>
+          </div>
+        </div>
+
+        <!-- 1 Month (Featured) -->
+        <div class="lock-period-card featured">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Starter</div>
+              <div class="lock-duration">1 month lock</div>
+            </div>
+            <i class="fas fa-star" style="font-size: 1.5rem; color: var(--primary);"></i>
+          </div>
+          <div class="lock-rate">7.5% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Best for beginners</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>10% penalty for early unlock</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <input type="text" class="form-control" placeholder="0.00">
+            </div>
+            <button class="btn" style="width: 100%;">
+              <i class="fas fa-lock"></i> Lock for 1 Month
+            </button>
+          </div>
+        </div>
+
+        <!-- 3 Months -->
+        <div class="lock-period-card">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Medium Term</div>
+              <div class="lock-duration">3 months lock</div>
+            </div>
+            <i class="fas fa-calendar-alt" style="font-size: 1.5rem; color: var(--accent-purple);"></i>
+          </div>
+          <div class="lock-rate">9.8% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Higher yields</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>15% penalty for early unlock</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <input type="text" class="form-control" placeholder="0.00">
+            </div>
+            <button class="btn" style="width: 100%;">
+              <i class="fas fa-lock"></i> Lock for 3 Months
+            </button>
+          </div>
+        </div>
+
+        <!-- 6 Months -->
+        <div class="lock-period-card">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Long Term</div>
+              <div class="lock-duration">6 months lock</div>
+            </div>
+            <i class="fas fa-calendar-check" style="font-size: 1.5rem; color: var(--success);"></i>
+          </div>
+          <div class="lock-rate">12.5% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Premium yields</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>20% penalty for early unlock</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <input type="text" class="form-control" placeholder="0.00">
+            </div>
+            <button class="btn" style="width: 100%;">
+              <i class="fas fa-lock"></i> Lock for 6 Months
+            </button>
+          </div>
+        </div>
+
+        <!-- 12 Months -->
+        <div class="lock-period-card">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Max Yield</div>
+              <div class="lock-duration">12 months lock</div>
+            </div>
+            <i class="fas fa-gem" style="font-size: 1.5rem; color: var(--accent-orange);"></i>
+          </div>
+          <div class="lock-rate">15.0% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Maximum yields</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>30% penalty for early unlock</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <input type="text" class="form-control" placeholder="0.00">
+            </div>
+            <button class="btn" style="width: 100%;">
+              <i class="fas fa-lock"></i> Lock for 12 Months
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Period -->
+        <div class="lock-period-card">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Custom Term</div>
+              <div class="lock-duration">Choose your duration</div>
+            </div>
+            <i class="fas fa-sliders-h" style="font-size: 1.5rem; color: var(--text-secondary);"></i>
+          </div>
+          <div class="lock-rate">Up to 15.0% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Flexible duration from 1-24 months</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Penalty based on duration</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="form-group">
+              <label>Lock Duration</label>
+              <select class="form-control">
+                <option>2 weeks (5.2% APR)</option>
+                <option>1 month (7.5% APR)</option>
+                <option>3 months (9.8% APR)</option>
+                <option>6 months (12.5% APR)</option>
+                <option>12 months (15.0% APR)</option>
+                <option>24 months (15.0% APR)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <input type="text" class="form-control" placeholder="0.00">
+            </div>
+            <button class="btn" style="width: 100%;">
+              <i class="fas fa-lock"></i> Lock Custom Amount
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calculator Section -->
+      <div class="calculator-section">
+        <h2 class="section-title">Earnings Calculator</h2>
+        <div class="calculator-grid">
+          <div class="calculator-form">
+            <div class="form-group">
+              <label>Select Asset</label>
+              <select class="form-control">
+                <option>Bitcoin (BTC)</option>
+                <option>Ethereum (ETH)</option>
+                <option>USDC</option>
+                <option>USDT</option>
+                <option>BNB</option>
+                <option>Solana (SOL)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Lock Duration</label>
+              <select class="form-control">
+                <option>2 weeks (5.2% APR)</option>
+                <option selected>1 month (7.5% APR)</option>
+                <option>3 months (9.8% APR)</option>
+                <option>6 months (12.5% APR)</option>
+                <option>12 months (15.0% APR)</option>
+                <option>24 months (15.0% APR)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <input type="text" class="form-control" placeholder="1000.00" value="1000.00">
+            </div>
+          </div>
+          <div class="calculator-result">
+            <div class="result-item">
+              <span class="result-label">Duration</span>
+              <span class="result-value">1 month</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Interest Rate</span>
+              <span class="result-value">7.5% APR</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Daily Earnings</span>
+              <span class="result-value">$0.21</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Monthly Earnings</span>
+              <span class="result-value">$6.25</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Yearly Earnings</span>
+              <span class="result-value">$75.00</span>
+            </div>
+            <div class="total-earnings">Total After 1 Month: $1,006.25</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Locks Section -->
+      <div class="active-locks">
+        <div class="section-header">
+          <h2 class="section-title">Your Active Locks</h2>
+          <button class="btn-secondary">
+            <i class="fas fa-history"></i> View History
+          </button>
+        </div>
+        <table class="locks-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Amount</th>
+              <th>Duration</th>
+              <th>APR</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Earned</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC" style="width: 24px; height: 24px;">
+                  <span>USDC</span>
+                </div>
+              </td>
+              <td>$1,500.00</td>
+              <td>1 month</td>
+              <td>7.5%</td>
+              <td>Jun 15, 2023</td>
+              <td>Jul 15, 2023</td>
+              <td>$9.38</td>
+              <td><span class="lock-status status-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" style="width: 24px; height: 24px;">
+                  <span>ETH</span>
+                </div>
+              </td>
+              <td>2.5 ETH</td>
+              <td>3 months</td>
+              <td>9.8%</td>
+              <td>May 20, 2023</td>
+              <td>Aug 20, 2023</td>
+              <td>0.061 ETH</td>
+              <td><span class="lock-status status-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC" style="width: 24px; height: 24px;">
+                  <span>BTC</span>
+                </div>
+              </td>
+              <td>0.25 BTC</td>
+              <td>6 months</td>
+              <td>12.5%</td>
+              <td>Apr 10, 2023</td>
+              <td>Oct 10, 2023</td>
+              <td>0.0156 BTC</td>
+              <td><span class="lock-status status-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" alt="BNB" style="width: 24px; height: 24px;">
+                  <span>BNB</span>
+                </div>
+              </td>
+              <td>10 BNB</td>
+              <td>12 months</td>
+              <td>15.0%</td>
+              <td>Jan 5, 2023</td>
+              <td>Jan 5, 2024</td>
+              <td>1.25 BNB</td>
+              <td><span class="lock-status status-active">Active</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase and App Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged,
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.firebasestorage.app",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
+      measurementId: "G-PGJNHTL03J"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // DOM Elements
+    const userNameElement = document.getElementById('userName');
+    const userProfilePicElement = document.getElementById('userProfilePic');
+    const welcomeTitleElement = document.getElementById('welcomeTitle');
+    const totalEarningsElement = document.getElementById('totalEarnings');
+    const activeLocksElement = document.getElementById('activeLocks');
+    const availableBalanceElement = document.getElementById('availableBalance');
+    const userProfileElement = document.getElementById('userProfile');
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is signed in:", user);
+        
+        // Get user data from Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          console.log("User data:", userData);
+          
+          // Update UI with user data
+          const displayName = userData.name || user.displayName || "User";
+          userNameElement.textContent = displayName;
+          
+          // Format balance with 2 decimal places
+          const userBalance = userData.balance || 0;
+          const formattedBalance = userBalance.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
+          
+          // Update earnings values
+          availableBalanceElement.textContent = `$${formattedBalance}`;
+          
+          // Calculate random earnings for demo purposes
+          const totalEarnings = (Math.random() * 2500).toFixed(2);
+          totalEarningsElement.textContent = `$${totalEarnings}`;
+          
+          // Random active locks count (1-5)
+          const activeLocksCount = Math.floor(Math.random() * 5) + 1;
+          activeLocksElement.textContent = activeLocksCount;
+          
+          // Update profile picture if available
+          if (user.photoURL) {
+            userProfilePicElement.src = user.photoURL;
+          }
+        } else {
+          console.log("No user data found in Firestore");
+          // Set default values if no user data
+          availableBalanceElement.textContent = '$0.00';
+          totalEarningsElement.textContent = '$0.00';
+          activeLocksElement.textContent = '0';
+        }
+        
+        // Add logout functionality
+        userProfileElement.addEventListener('click', () => {
+          if (confirm('Are you sure you want to sign out?')) {
+            signOut(auth).then(() => {
+              window.location.href = 'login.html';
+            }).catch((error) => {
+              console.error('Sign out error:', error);
+            });
+          }
+        });
+        
+      } else {
+        // User is signed out
+        console.log("User is signed out");
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Calculator functionality
+    const calculatorForm = document.querySelector('.calculator-form');
+    const calculatorResult = document.querySelector('.calculator-result');
+    
+    if (calculatorForm) {
+      calculatorForm.addEventListener('input', updateCalculatorResults);
+    }
+    
+    function updateCalculatorResults() {
+      const amountInput = calculatorForm.querySelector('input[type="text"]');
+      const durationSelect = calculatorForm.querySelector('select');
+      
+      const amount = parseFloat(amountInput.value) || 0;
+      const durationText = durationSelect.options[durationSelect.selectedIndex].text;
+      
+      // Extract APR from the option text
+      const aprMatch = durationText.match(/\((\d+\.?\d*)% APR\)/);
+      const apr = aprMatch ? parseFloat(aprMatch[1]) : 7.5; // Default to 7.5% if not found
+      
+      // Calculate earnings
+      const dailyEarnings = (amount * (apr / 100)) / 365;
+      const monthlyEarnings = (amount * (apr / 100)) / 12;
+      const yearlyEarnings = amount * (apr / 100);
+      
+      // Update results
+      const resultItems = calculatorResult.querySelectorAll('.result-item');
+      resultItems[0].querySelector('.result-value').textContent = durationText.split(' (')[0];
+      resultItems[1].querySelector('.result-value').textContent = `${apr}% APR`;
+      resultItems[2].querySelector('.result-value').textContent = `$${dailyEarnings.toFixed(2)}`;
+      resultItems[3].querySelector('.result-value').textContent = `$${monthlyEarnings.toFixed(2)}`;
+      resultItems[4].querySelector('.result-value').textContent = `$${yearlyEarnings.toFixed(2)}`;
+      
+      // Update total
+      let totalAmount = amount;
+      if (durationText.includes('month')) {
+        totalAmount += monthlyEarnings;
+      } else if (durationText.includes('year') || durationText.includes('24 months')) {
+        totalAmount += yearlyEarnings;
+      } else {
+        // For weeks, calculate proportion
+        const weeks = parseInt(durationText) || 2;
+        totalAmount += (yearlyEarnings * weeks) / 52;
+      }
+      
+      calculatorResult.querySelector('.total-earnings').textContent = 
+        `Total After ${durationText.split(' (')[0]}: $${totalAmount.toFixed(2)}`;
+    }
+    
+    // Initialize calculator
+    if (calculatorForm) {
+      updateCalculatorResults();
+    }
+    
+    // Notification bell animation
+    const notificationBell = document.querySelector('.notification-bell');
+    if (notificationBell) {
+      notificationBell.addEventListener('click', () => {
+        notificationBell.style.animation = 'bellRing 0.5s ease';
+        setTimeout(() => {
+          notificationBell.style.animation = '';
+        }, 500);
+        alert("You have 3 new notifications!");
+      });
+    }
+    
+    // Lock period card hover effects
+    const lockCards = document.querySelectorAll('.lock-period-card');
+    lockCards.forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-5px)';
+        card.style.boxShadow = '0 16px 40px rgba(0, 0, 0, 0.4)';
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
+        card.style.boxShadow = 'var(--box-shadow)';
+      });
+    });
+  </script>
+</body>
+</html>

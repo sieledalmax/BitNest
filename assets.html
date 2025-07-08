@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BitNest | Crypto Dashboard</title>
+  <title>BitNest | My Assets</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -814,6 +814,157 @@
       margin-top: 2rem;
     }
 
+    /* Assets Page Specific Styles */
+    .assets-header {
+      grid-column: span 12;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .total-value-card {
+      grid-column: span 12;
+      background-color: var(--card-bg);
+      padding: 1.75rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 1.5rem;
+    }
+    
+    .total-value-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .total-value-text h2 {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .total-value-amount {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .asset-details {
+      grid-column: span 12;
+      background-color: var(--card-bg);
+      padding: 1.75rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 1.5rem;
+    }
+    
+    .asset-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .asset-table thead th {
+      text-align: left;
+      padding: 1rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .asset-table tbody tr {
+      transition: var(--transition);
+    }
+    
+    .asset-table tbody tr:hover {
+      background-color: var(--card-hover);
+    }
+    
+    .asset-table td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .asset-table .asset-cell {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .asset-table .asset-icon {
+      width: 36px;
+      height: 36px;
+    }
+    
+    .asset-table .asset-name {
+      font-weight: 600;
+    }
+    
+    .asset-table .asset-symbol {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    .asset-table .price-change {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .asset-table .price-change i {
+      font-size: 0.8rem;
+    }
+    
+    .asset-actions-table {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .asset-btn-table {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .asset-btn-table:hover {
+      transform: translateY(-2px);
+    }
+    
+    .buy-btn-table {
+      background: var(--success);
+      color: #000;
+    }
+    
+    .sell-btn-table {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .asset-chart {
+      grid-column: span 12;
+      background-color: var(--card-bg);
+      padding: 1.75rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 1.5rem;
+    }
+    
+    .chart-placeholder {
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      color: var(--text-secondary);
+    }
+    
     /* Responsive Styles */
     @media (max-width: 1200px) {
       .portfolio-summary {
@@ -877,6 +1028,42 @@
       .portfolio-value {
         font-size: 2rem;
       }
+      
+      .asset-table thead {
+        display: none;
+      }
+      
+      .asset-table tr {
+        display: block;
+        margin-bottom: 1rem;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+      }
+      
+      .asset-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-bottom: none;
+      }
+      
+      .asset-table td::before {
+        content: attr(data-label);
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-right: 1rem;
+      }
+      
+      .asset-table .asset-cell {
+        justify-content: space-between;
+        width: 100%;
+      }
+      
+      .asset-actions-table {
+        justify-content: flex-end;
+        width: 100%;
+      }
     }
 
     @media (max-width: 576px) {
@@ -901,6 +1088,12 @@
       .promo-icon {
         margin-bottom: 1rem;
       }
+      
+      .total-value-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
     }
   </style>
 </head>
@@ -914,8 +1107,8 @@
         <span>BitNest</span>
       </div>
       <div class="nav-links">
-        <a href="#" class="active">Dashboard</a>
-        <a href="#">Assets</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="#" class="active">Assets</a>
         <a href="earn.html">Earn</a>
         <a href="trading_view.html">Trade</a>
         <a href="deposit.html">Deposit</a>
@@ -937,226 +1130,220 @@
   <!-- Main Content -->
   <div class="container">
     <div class="dashboard-grid">
-      <!-- Welcome Banner -->
-      <div class="welcome-banner">
-        <div class="welcome-content">
-          <h1 id="welcomeTitle">Welcome back!</h1>
-          <p>Your crypto portfolio is growing strong. Deposit now to unlock higher yields and exclusive benefits.</p>
-          <div class="welcome-stats">
-            <div class="stat-item">
-              <div class="stat-value" id="portfolioValue">$0.00</div>
-              <div class="stat-label">Portfolio Value</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-value positive" id="portfolioChange">+0.0%</div>
-              <div class="stat-label">30d Change</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-value" id="earnedThisMonth">$0.00</div>
-              <div class="stat-label">Earned This Month</div>
-            </div>
-          </div>
+      <!-- Assets Header -->
+      <div class="assets-header">
+        <h2 class="section-title">My Assets</h2>
+        <div class="asset-filters">
+          <button class="btn-secondary">
+            <i class="fas fa-eye"></i> Hide Small Balances
+          </button>
           <button class="btn" id="depositBtn">
-            <i class="fas fa-plus-circle"></i> Deposit Now
-            <div class="reward-badge">+$10 Bonus</div>
+            <i class="fas fa-plus-circle"></i> Deposit
           </button>
         </div>
-        <div class="welcome-image">
-          <img src="https://cryptologos.cc/logos/versions/bitcoin-btc-logo.svg" alt="Crypto">
-        </div>
       </div>
-
-      <!-- Portfolio Summary -->
-      <div class="portfolio-summary">
-        <div class="section-header">
-          <h2 class="section-title">Portfolio Overview</h2>
-          <div class="time-filters">
-            <button class="btn-secondary">1D</button>
-            <button class="btn-secondary">1W</button>
-            <button class="btn-secondary active">1M</button>
-            <button class="btn-secondary">1Y</button>
-            <button class="btn-secondary">ALL</button>
+      
+      <!-- Total Value Card -->
+      <div class="total-value-card">
+        <div class="total-value-content">
+          <div class="total-value-text">
+            <h2>Total Portfolio Value</h2>
+            <div class="total-value-amount" id="totalPortfolioValue">$0.00</div>
           </div>
-        </div>
-        <div class="portfolio-value" id="mainPortfolioValue">$0.00</div>
-        <div class="portfolio-change">
-          <span class="positive" id="mainPortfolioChange">+0.0%</span>
-          <span>vs last month</span>
-        </div>
-        <div class="portfolio-chart">
-          <div class="chart-container">
-            <div class="chart-bar" style="height: 30%;" data-value="$0.00"></div>
-            <div class="chart-bar" style="height: 45%;" data-value="$0.00"></div>
-            <div class="chart-bar" style="height: 60%;" data-value="$0.00"></div>
-            <div class="chart-bar" style="height: 75%;" data-value="$0.00"></div>
-            <div class="chart-bar" style="height: 90%;" data-value="$0.00"></div>
-            <div class="chart-bar" style="height: 85%;" data-value="$0.00"></div>
-            <div class="chart-bar" style="height: 100%;" data-value="$0.00"></div>
+          <div class="portfolio-change">
+            <span class="positive" id="portfolioChange24h">+0.0%</span>
+            <span>24h change</span>
           </div>
         </div>
       </div>
-
+      
+      <!-- Asset Details Table -->
+      <div class="asset-details">
+        <table class="asset-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Price</th>
+              <th>24h Change</th>
+              <th>Balance</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Asset">
+                <div class="asset-cell">
+                  <div class="asset-icon">
+                    <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Bitcoin">
+                  </div>
+                  <div>
+                    <div class="asset-name">Bitcoin</div>
+                    <div class="asset-symbol">BTC</div>
+                  </div>
+                </div>
+              </td>
+              <td data-label="Price" class="asset-price">$42,156.78</td>
+              <td data-label="24h Change">
+                <div class="price-change positive">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>+5.2%</span>
+                </div>
+              </td>
+              <td data-label="Balance">0.5832 BTC</td>
+              <td data-label="Value">$24,597.83</td>
+              <td data-label="Actions">
+                <div class="asset-actions-table">
+                  <button class="asset-btn-table buy-btn-table">Buy</button>
+                  <button class="asset-btn-table sell-btn-table">Sell</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-label="Asset">
+                <div class="asset-cell">
+                  <div class="asset-icon">
+                    <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="Ethereum">
+                  </div>
+                  <div>
+                    <div class="asset-name">Ethereum</div>
+                    <div class="asset-symbol">ETH</div>
+                  </div>
+                </div>
+              </td>
+              <td data-label="Price" class="asset-price">$2,345.67</td>
+              <td data-label="24h Change">
+                <div class="price-change positive">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>+8.7%</span>
+                </div>
+              </td>
+              <td data-label="Balance">4.2315 ETH</td>
+              <td data-label="Value">$9,925.41</td>
+              <td data-label="Actions">
+                <div class="asset-actions-table">
+                  <button class="asset-btn-table buy-btn-table">Buy</button>
+                  <button class="asset-btn-table sell-btn-table">Sell</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-label="Asset">
+                <div class="asset-cell">
+                  <div class="asset-icon">
+                    <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" alt="BNB">
+                  </div>
+                  <div>
+                    <div class="asset-name">BNB</div>
+                    <div class="asset-symbol">BNB</div>
+                  </div>
+                </div>
+              </td>
+              <td data-label="Price" class="asset-price">$305.89</td>
+              <td data-label="24h Change">
+                <div class="price-change negative">
+                  <i class="fas fa-arrow-down"></i>
+                  <span>-2.1%</span>
+                </div>
+              </td>
+              <td data-label="Balance">12.4567 BNB</td>
+              <td data-label="Value">$3,809.89</td>
+              <td data-label="Actions">
+                <div class="asset-actions-table">
+                  <button class="asset-btn-table buy-btn-table">Buy</button>
+                  <button class="asset-btn-table sell-btn-table">Sell</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-label="Asset">
+                <div class="asset-cell">
+                  <div class="asset-icon">
+                    <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="Solana">
+                  </div>
+                  <div>
+                    <div class="asset-name">Solana</div>
+                    <div class="asset-symbol">SOL</div>
+                  </div>
+                </div>
+              </td>
+              <td data-label="Price" class="asset-price">$98.76</td>
+              <td data-label="24h Change">
+                <div class="price-change positive">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>+15.3%</span>
+                </div>
+              </td>
+              <td data-label="Balance">45.6789 SOL</td>
+              <td data-label="Value">$4,511.25</td>
+              <td data-label="Actions">
+                <div class="asset-actions-table">
+                  <button class="asset-btn-table buy-btn-table">Buy</button>
+                  <button class="asset-btn-table sell-btn-table">Sell</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-label="Asset">
+                <div class="asset-cell">
+                  <div class="asset-icon">
+                    <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC">
+                  </div>
+                  <div>
+                    <div class="asset-name">USD Coin</div>
+                    <div class="asset-symbol">USDC</div>
+                  </div>
+                </div>
+              </td>
+              <td data-label="Price" class="asset-price">$1.00</td>
+              <td data-label="24h Change">
+                <div class="price-change">
+                  <span>0.0%</span>
+                </div>
+              </td>
+              <td data-label="Balance">5,000.00 USDC</td>
+              <td data-label="Value">$5,000.00</td>
+              <td data-label="Actions">
+                <div class="asset-actions-table">
+                  <button class="asset-btn-table buy-btn-table">Buy</button>
+                  <button class="asset-btn-table sell-btn-table">Sell</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Asset Chart -->
+      <div class="asset-chart">
+        <h3 class="section-title">Portfolio Allocation</h3>
+        <div class="chart-placeholder">
+          <p>Portfolio allocation chart will be displayed here</p>
+        </div>
+      </div>
+      
       <!-- Quick Actions -->
       <div class="quick-actions">
         <div class="action-card">
-          <h3><i class="fas fa-wallet"></i> Instant Deposit</h3>
-          <p>Add funds to your account instantly using your bank card or bank transfer.</p>
-          <button class="btn btn-secondary" id="quickDepositBtn">
-            <i class="fas fa-arrow-down"></i> Deposit
+          <h3><i class="fas fa-exchange-alt"></i> Quick Swap</h3>
+          <p>Instantly exchange one cryptocurrency for another with low fees.</p>
+          <button class="btn btn-secondary">
+            <i class="fas fa-sync-alt"></i> Swap Now
           </button>
         </div>
         <div class="action-card">
-          <h3><i class="fas fa-percentage"></i> Earn Up To 15%</h3>
+          <h3><i class="fas fa-percentage"></i> Earn Interest</h3>
           <p>Start earning daily compound interest on your crypto assets.</p>
           <button class="btn btn-secondary">
             <i class="fas fa-chart-line"></i> Start Earning
           </button>
         </div>
         <div class="action-card">
-          <h3><i class="fas fa-credit-card"></i> Get Your Card</h3>
-          <p>Order your BitNest Card and spend your crypto with 0% fees.</p>
+          <h3><i class="fas fa-download"></i> Withdraw</h3>
+          <p>Withdraw your funds to an external wallet or bank account.</p>
           <button class="btn btn-secondary">
-            <i class="fas fa-arrow-right"></i> Order Now
+            <i class="fas fa-arrow-up"></i> Withdraw
           </button>
-        </div>
-      </div>
-
-      <!-- Assets Grid -->
-      <div class="section-header">
-        <h2 class="section-title">Your Assets</h2>
-        <button class="btn-secondary">
-          <i class="fas fa-eye"></i> Hide Small Balances
-        </button>
-      </div>
-      <div class="assets-grid">
-        <div class="asset-card">
-          <div class="asset-header">
-            <div class="asset-info">
-              <div class="asset-icon">
-                <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Bitcoin">
-              </div>
-              <div>
-                <div class="asset-name">Bitcoin</div>
-                <div class="asset-symbol">BTC</div>
-              </div>
-            </div>
-            <div class="asset-change positive-bg">+5.2%</div>
-          </div>
-          <div class="asset-price">$42,156.78</div>
-          <div class="asset-balance">0.5832 BTC</div>
-          <div class="asset-actions">
-            <button class="asset-btn buy-btn">
-              <i class="fas fa-arrow-down"></i> Buy
-            </button>
-            <button class="asset-btn sell-btn">
-              <i class="fas fa-arrow-up"></i> Sell
-            </button>
-          </div>
-        </div>
-        <div class="asset-card">
-          <div class="asset-header">
-            <div class="asset-info">
-              <div class="asset-icon">
-                <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="Ethereum">
-              </div>
-              <div>
-                <div class="asset-name">Ethereum</div>
-                <div class="asset-symbol">ETH</div>
-              </div>
-            </div>
-            <div class="asset-change positive-bg">+8.7%</div>
-          </div>
-          <div class="asset-price">$2,345.67</div>
-          <div class="asset-balance">4.2315 ETH</div>
-          <div class="asset-actions">
-            <button class="asset-btn buy-btn">
-              <i class="fas fa-arrow-down"></i> Buy
-            </button>
-            <button class="asset-btn sell-btn">
-              <i class="fas fa-arrow-up"></i> Sell
-            </button>
-          </div>
-        </div>
-        <div class="asset-card">
-          <div class="asset-header">
-            <div class="asset-info">
-              <div class="asset-icon">
-                <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" alt="BNB">
-              </div>
-              <div>
-                <div class="asset-name">BNB</div>
-                <div class="asset-symbol">BNB</div>
-              </div>
-            </div>
-            <div class="asset-change negative-bg">-2.1%</div>
-          </div>
-          <div class="asset-price">$305.89</div>
-          <div class="asset-balance">12.4567 BNB</div>
-          <div class="asset-actions">
-            <button class="asset-btn buy-btn">
-              <i class="fas fa-arrow-down"></i> Buy
-            </button>
-            <button class="asset-btn sell-btn">
-              <i class="fas fa-arrow-up"></i> Sell
-            </button>
-          </div>
-        </div>
-        <div class="asset-card">
-          <div class="asset-header">
-            <div class="asset-info">
-              <div class="asset-icon">
-                <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="Solana">
-              </div>
-              <div>
-                <div class="asset-name">Solana</div>
-                <div class="asset-symbol">SOL</div>
-              </div>
-            </div>
-            <div class="asset-change positive-bg">+15.3%</div>
-          </div>
-          <div class="asset-price">$98.76</div>
-          <div class="asset-balance">45.6789 SOL</div>
-          <div class="asset-actions">
-            <button class="asset-btn buy-btn">
-              <i class="fas fa-arrow-down"></i> Buy
-            </button>
-            <button class="asset-btn sell-btn">
-              <i class="fas fa-arrow-up"></i> Sell
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Promo Section -->
-      <div class="promo-section">
-        <h2 class="section-title">Boost Your Earnings</h2>
-        <div class="promo-cards">
-          <div class="promo-card">
-            <div class="promo-icon">
-              <i class="fas fa-gem"></i>
-            </div>
-            <div class="promo-content">
-              <div class="promo-badge">Limited Time</div>
-              <h3>Earn 5% Extra Interest</h3>
-              <p>Lock your assets for 3 months and get an additional 5% APR on top of your current rate.</p>
-              <button class="btn btn-secondary">
-                <i class="fas fa-lock"></i> Lock & Earn
-              </button>
-            </div>
-          </div>
-          <div class="promo-card">
-            <div class="promo-icon">
-              <i class="fas fa-user-friends"></i>
-            </div>
-            <div class="promo-content">
-              <div class="promo-badge">New</div>
-              <h3>Refer Friends, Earn $100</h3>
-              <p>Invite friends to BitNest and earn $100 in BTC for each friend who deposits $1000+.</p>
-              <button class="btn btn-secondary">
-                <i class="fas fa-share-alt"></i> Invite Now
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -1248,12 +1435,8 @@
     // DOM Elements
     const userNameElement = document.getElementById('userName');
     const userProfilePicElement = document.getElementById('userProfilePic');
-    const welcomeTitleElement = document.getElementById('welcomeTitle');
-    const portfolioValueElement = document.getElementById('portfolioValue');
-    const portfolioChangeElement = document.getElementById('portfolioChange');
-    const earnedThisMonthElement = document.getElementById('earnedThisMonth');
-    const mainPortfolioValueElement = document.getElementById('mainPortfolioValue');
-    const mainPortfolioChangeElement = document.getElementById('mainPortfolioChange');
+    const totalPortfolioValueElement = document.getElementById('totalPortfolioValue');
+    const portfolioChange24hElement = document.getElementById('portfolioChange24h');
     const userProfileElement = document.getElementById('userProfile');
 
     // Check auth state
@@ -1273,7 +1456,6 @@
           // Update UI with user data
           const displayName = userData.name || user.displayName || "User";
           userNameElement.textContent = displayName;
-          welcomeTitleElement.textContent = `Welcome back, ${displayName}!`;
           
           // Format balance with 2 decimal places
           const userBalance = userData.balance || 0;
@@ -1283,40 +1465,23 @@
           });
           
           // Update portfolio values
-          portfolioValueElement.textContent = `$${formattedBalance}`;
-          mainPortfolioValueElement.textContent = `$${formattedBalance}`;
+          totalPortfolioValueElement.textContent = `$${formattedBalance}`;
           
           // Calculate random growth for demo purposes
           const growthPercent = (Math.random() * 15).toFixed(1);
-          portfolioChangeElement.textContent = `+${growthPercent}%`;
-          mainPortfolioChangeElement.textContent = `+${growthPercent}%`;
-          
-          // Calculate random earnings for demo purposes
-          const earnings = (Math.random() * 1500).toFixed(2);
-          earnedThisMonthElement.textContent = `$${earnings}`;
+          portfolioChange24hElement.textContent = `+${growthPercent}%`;
           
           // Update profile picture if available
           if (user.photoURL) {
             userProfilePicElement.src = user.photoURL;
           }
-
-          // Update chart data values based on balance
-          const chartBars = document.querySelectorAll('.chart-bar');
-          const baseValue = userBalance * 0.9; // Start at 90% of current balance
-          const increment = userBalance * 0.02; // 2% increments
           
-          chartBars.forEach((bar, index) => {
-            const value = baseValue + (increment * index);
-            bar.setAttribute('data-value', `$${value.toLocaleString('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })}`);
-          });
+          // Simulate real-time price updates
+          simulatePriceUpdates();
         } else {
           console.log("No user data found in Firestore");
           // Set default values if no user data
-          portfolioValueElement.textContent = '$0.00';
-          mainPortfolioValueElement.textContent = '$0.00';
+          totalPortfolioValueElement.textContent = '$0.00';
         }
         
         // Add logout functionality
@@ -1337,20 +1502,99 @@
       }
     });
 
+    // Function to simulate real-time price updates
+    function simulatePriceUpdates() {
+      const cryptoPrices = {
+        BTC: 42156.78,
+        ETH: 2345.67,
+        BNB: 305.89,
+        SOL: 98.76,
+        USDC: 1.00
+      };
+      
+      const assetRows = document.querySelectorAll('.asset-table tbody tr');
+      
+      // Update prices every 5 seconds
+      setInterval(() => {
+        // Update each crypto price with small random fluctuations
+        for (const crypto in cryptoPrices) {
+          if (crypto !== 'USDC') { // USDC is stablecoin
+            const changePercent = (Math.random() * 2 - 1); // -1% to +1%
+            cryptoPrices[crypto] = cryptoPrices[crypto] * (1 + changePercent/100);
+          }
+        }
+        
+        // Update the table with new prices
+        assetRows.forEach(row => {
+          const symbol = row.querySelector('.asset-symbol').textContent;
+          const priceCell = row.querySelector('.asset-price');
+          const changeCell = row.querySelector('.price-change');
+          const changeValue = row.querySelector('.price-change span');
+          const changeIcon = row.querySelector('.price-change i');
+          
+          if (symbol && priceCell) {
+            // Format price to 2 decimal places
+            const formattedPrice = cryptoPrices[symbol].toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            });
+            
+            // Calculate 24h change (for demo, just random)
+            const changePercent = (Math.random() * 10 - 2).toFixed(2); // -2% to +8%
+            const isPositive = parseFloat(changePercent) >= 0;
+            
+            // Update price cell
+            priceCell.textContent = `$${formattedPrice}`;
+            
+            // Update change cell
+            changeValue.textContent = `${isPositive ? '+' : ''}${changePercent}%`;
+            
+            // Update change styling
+            if (isPositive) {
+              changeCell.classList.remove('negative');
+              changeCell.classList.add('positive');
+              changeIcon.className = 'fas fa-arrow-up';
+            } else {
+              changeCell.classList.remove('positive');
+              changeCell.classList.add('negative');
+              changeIcon.className = 'fas fa-arrow-down';
+            }
+            
+            // Update value column based on balance and new price
+            const balanceText = row.querySelector('td:nth-child(4)').textContent;
+            const balance = parseFloat(balanceText.split(' ')[0]);
+            const value = balance * cryptoPrices[symbol];
+            
+            row.querySelector('td:nth-child(5)').textContent = `$${value.toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })}`;
+          }
+        });
+        
+        // Update total portfolio value
+        let totalValue = 0;
+        assetRows.forEach(row => {
+          const valueText = row.querySelector('td:nth-child(5)').textContent;
+          totalValue += parseFloat(valueText.replace(/[^0-9.]/g, ''));
+        });
+        
+        totalPortfolioValueElement.textContent = `$${totalValue.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}`;
+        
+      }, 5000); // Update every 5 seconds
+    }
+
     // Modal and UI Interactions
     const depositBtn = document.getElementById('depositBtn');
-    const quickDepositBtn = document.getElementById('quickDepositBtn');
     const depositModal = document.getElementById('depositModal');
     const closeModal = document.getElementById('closeModal');
     const currencyOptions = document.querySelectorAll('.currency-option');
     
     // Show deposit modal
     depositBtn.addEventListener('click', () => {
-      depositModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    });
-    
-    quickDepositBtn.addEventListener('click', () => {
       depositModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     });
@@ -1377,44 +1621,6 @@
       });
     });
     
-    // Time filter buttons
-    const timeFilters = document.querySelectorAll('.time-filters .btn-secondary');
-    timeFilters.forEach(btn => {
-      btn.addEventListener('click', () => {
-        timeFilters.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        // Update chart bars with random data for demo
-        const chartBars = document.querySelectorAll('.chart-bar');
-        chartBars.forEach((bar, index) => {
-          const randomHeight = Math.floor(Math.random() * 60) + 30;
-          bar.style.height = `${randomHeight}%`;
-          
-          // Get current portfolio value
-          const currentValue = parseFloat(mainPortfolioValueElement.textContent.replace(/[^0-9.]/g, '')) || 0;
-          const value = currentValue * (0.8 + (Math.random() * 0.4)); // Random value between 80-120% of current
-          bar.setAttribute('data-value', `$${value.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          })}`);
-        });
-      });
-    });
-    
-    // Asset card hover effects
-    const assetCards = document.querySelectorAll('.asset-card');
-    assetCards.forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-5px)';
-        card.style.boxShadow = '0 16px 40px rgba(0, 0, 0, 0.4)';
-      });
-      
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateY(0)';
-        card.style.boxShadow = 'var(--box-shadow)';
-      });
-    });
-    
     // Notification bell animation
     const notificationBell = document.querySelector('.notification-bell');
     notificationBell.addEventListener('click', () => {
@@ -1424,23 +1630,6 @@
       }, 500);
       alert("You have 3 new notifications!");
     });
-    
-    // Simulate portfolio growth animation
-    setTimeout(() => {
-      const portfolioValue = document.querySelector('.portfolio-value');
-      const originalValue = parseFloat(portfolioValue.textContent.replace(/[^0-9.]/g, '')) || 0;
-      let currentValue = originalValue;
-      
-      const interval = setInterval(() => {
-        currentValue += 123.45;
-        portfolioValue.textContent = `$${currentValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-        mainPortfolioValueElement.textContent = `$${currentValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-        
-        if (currentValue >= originalValue + 1000) {
-          clearInterval(interval);
-        }
-      }, 1000);
-    }, 3000);
   </script>
 </body>
 </html>

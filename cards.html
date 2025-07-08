@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BitNest | Crypto Cards</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1ed3c6;
+      --primary-dark: #17b3a8;
+      --dark-bg: #0a0b0e;
+      --card-bg: #16181d;
+      --card-hover: #1e2128;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b3b8;
+      --accent-blue: #3a86ff;
+      --accent-green: #4cc9f0;
+      --accent-purple: #8338ec;
+      --accent-orange: #ff7b25;
+      --border-radius: 16px;
+      --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --glass-effect: rgba(16, 18, 22, 0.7);
+      --success: #00e676;
+      --warning: #ffab00;
+      --danger: #ff5252;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--card-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    /* Floating Animations */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Notification Bell Animation */
+    @keyframes bellRing {
+      0% { transform: rotate(0deg); }
+      10% { transform: rotate(15deg); }
+      20% { transform: rotate(-15deg); }
+      30% { transform: rotate(10deg); }
+      40% { transform: rotate(-10deg); }
+      50% { transform: rotate(5deg); }
+      60% { transform: rotate(-5deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    /* Crypto Chart Animation */
+    @keyframes chartGrow {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      background-color: var(--glass-effect);
+      padding: 1rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .navbar .left {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .navbar .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .navbar a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+      padding: 0.5rem 0;
+    }
+
+    .navbar a:hover {
+      color: var(--text-primary);
+    }
+
+    .navbar a.active {
+      color: var(--primary);
+    }
+
+    .navbar a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .navbar .right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .notification-bell:hover {
+      animation: bellRing 0.5s ease;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--danger);
+      color: white;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .profile-pic {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.75rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(30, 211, 198, 0.4);
+    }
+
+    .btn span {
+      transition: transform 0.3s ease;
+    }
+
+    .btn:hover span {
+      transform: translateX(3px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: none;
+    }
+
+    /* Main Container */
+    .container {
+      padding: 2rem 3rem;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* Welcome Banner */
+    .welcome-banner {
+      grid-column: span 12;
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(30, 211, 198, 0.08), rgba(58, 134, 255, 0.05));
+      clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+      z-index: 0;
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 1;
+      max-width: 60%;
+    }
+
+    .welcome-content h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      width: fit-content;
+    }
+
+    .welcome-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .welcome-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .welcome-image {
+      position: relative;
+      z-index: 1;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .welcome-image img {
+      width: 300px;
+      height: auto;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .section-title::before {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 20px;
+      background: linear-gradient(var(--primary), var(--accent-blue));
+      border-radius: 3px;
+    }
+
+    /* Card Customization Section */
+    .card-customization {
+      grid-column: span 12;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+    }
+
+    .card-preview {
+      grid-column: span 5;
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 300px;
+    }
+
+    .card-preview:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .virtual-card {
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1.586 / 1;
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #3a86ff, #8338ec);
+      box-shadow: 0 10px 30px rgba(58, 134, 255, 0.3);
+      transition: var(--transition);
+    }
+
+    .virtual-card.purple {
+      background: linear-gradient(135deg, #8338ec, #3a0ca3);
+    }
+
+    .virtual-card.green {
+      background: linear-gradient(135deg, #4cc9f0, #4895ef);
+    }
+
+    .virtual-card.orange {
+      background: linear-gradient(135deg, #ff7b25, #ff9e00);
+    }
+
+    .virtual-card.black {
+      background: linear-gradient(135deg, #212529, #343a40);
+    }
+
+    .card-logo {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .card-logo img {
+      height: 30px;
+    }
+
+    .card-number {
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      margin: 1rem 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .card-name {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .card-expiry {
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .card-chip {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      width: 40px;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-chip i {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .card-customization-options {
+      grid-column: span 7;
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+
+    .card-customization-options:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-option-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .card-option-group h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .color-options {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .color-option {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: var(--transition);
+    }
+
+    .color-option:hover {
+      transform: scale(1.05);
+    }
+
+    .color-option.selected {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(30, 211, 198, 0.3);
+    }
+
+    .color-option.blue {
+      background: linear-gradient(135deg, #3a86ff, #8338ec);
+    }
+
+    .color-option.purple {
+      background: linear-gradient(135deg, #8338ec, #3a0ca3);
+    }
+
+    .color-option.green {
+      background: linear-gradient(135deg, #4cc9f0, #4895ef);
+    }
+
+    .color-option.orange {
+      background: linear-gradient(135deg, #ff7b25, #ff9e00);
+    }
+
+    .color-option.black {
+      background: linear-gradient(135deg, #212529, #343a40);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
+    }
+
+    /* Card Benefits Section */
+    .card-benefits {
+      grid-column: span 12;
+      margin-top: 1.5rem;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .benefit-card {
+      background-color: var(--card-bg);
+      padding: 1.75rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+
+    .benefit-card:hover {
+      transform: translateY(-5px);
+      background-color: var(--card-hover);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .benefit-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .benefit-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Order Summary */
+    .order-summary {
+      grid-column: span 12;
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      margin-top: 1.5rem;
+    }
+
+    .order-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .order-price {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .order-features {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .feature-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(30, 211, 198, 0.1);
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .order-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+
+    /* Deposit Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      width: 90%;
+      max-width: 500px;
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--box-shadow);
+      position: relative;
+      animation: slideUp 0.4s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .close-modal:hover {
+      color: var(--text-primary);
+      transform: rotate(90deg);
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1200px) {
+      .card-customization {
+        grid-template-columns: 1fr;
+      }
+      
+      .card-preview {
+        grid-column: span 1;
+      }
+      
+      .card-customization-options {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .container {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .nav-links {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      
+      .order-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .order-actions {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .color-options {
+        flex-wrap: wrap;
+      }
+      
+      .color-option {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="left">
+      <div class="logo">
+        <i class="fas fa-coins logo-icon"></i>
+        <span>BitNest</span>
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="#">Assets</a>
+        <a href="earn.html">Earn</a>
+        <a href="trading_view.html">Trade</a>
+        <a href="deposit.html">Deposit</a>
+        <a href="#" class="active">Cards</a>
+      </div>
+    </div>
+    <div class="right">
+      <div class="notification-bell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-badge">3</div>
+      </div>
+      <div class="user-profile" id="userProfile">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
+        <span id="userName">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="dashboard-grid">
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-content">
+          <h1 id="welcomeTitle">Your BitNest Card</h1>
+          <p>Spend your crypto anywhere in the world with our virtual and physical cards. Only $5 to order with no minimum balance requirements.</p>
+          <div class="welcome-stats">
+            <div class="stat-item">
+              <div class="stat-value">$5</div>
+              <div class="stat-label">Card Cost</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">0%</div>
+              <div class="stat-label">FX Fees</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">Global</div>
+              <div class="stat-label">Acceptance</div>
+            </div>
+          </div>
+        </div>
+        <div class="welcome-image">
+          <img src="https://cryptologos.cc/logos/versions/bitcoin-btc-logo.svg" alt="Crypto">
+        </div>
+      </div>
+
+      <!-- Card Customization -->
+      <div class="card-customization">
+        <div class="card-preview">
+          <div class="virtual-card blue" id="cardPreview">
+            <div class="card-chip">
+              <i class="fas fa-microchip"></i>
+            </div>
+            <div class="card-logo">
+              <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg" alt="BitNest">
+            </div>
+            <div class="card-number">•••• •••• •••• 4242</div>
+            <div class="card-details">
+              <div class="card-name" id="cardNamePreview">JOHN DOE</div>
+              <div class="card-expiry">12/25</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-customization-options">
+          <h2 class="section-title">Customize Your Card</h2>
+          
+          <div class="card-option-group">
+            <h3>Card Color</h3>
+            <div class="color-options">
+              <div class="color-option blue selected" data-color="blue"></div>
+              <div class="color-option purple" data-color="purple"></div>
+              <div class="color-option green" data-color="green"></div>
+              <div class="color-option orange" data-color="orange"></div>
+              <div class="color-option black" data-color="black"></div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="cardType">Card Type</label>
+            <select id="cardType" class="form-control">
+              <option value="virtual">Virtual Card (Instant)</option>
+              <option value="physical">Physical Card (7-10 business days)</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="baseCurrency">Base Currency</label>
+            <select id="baseCurrency" class="form-control">
+              <option value="usd">USD (Default)</option>
+              <option value="eur">EUR</option>
+              <option value="gbp">GBP</option>
+              <option value="btc">BTC</option>
+              <option value="eth">ETH</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="cardDesign">Card Design</label>
+            <select id="cardDesign" class="form-control">
+              <option value="standard">Standard Design</option>
+              <option value="crypto">Crypto Theme</option>
+              <option value="premium">Premium Black</option>
+              <option value="custom">Custom Image (Coming Soon)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Card Benefits -->
+      <div class="card-benefits">
+        <h2 class="section-title">Card Benefits</h2>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <h3><i class="fas fa-globe"></i> Global Acceptance</h3>
+            <p>Use your BitNest Card anywhere Visa is accepted worldwide, online and offline.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-exchange-alt"></i> Instant Conversion</h3>
+            <p>Automatically convert your crypto to fiat at the point of sale with competitive rates.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-percentage"></i> Low Fees</h3>
+            <p>Enjoy 0% foreign transaction fees and minimal conversion fees compared to competitors.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-shield-alt"></i> Enhanced Security</h3>
+            <p>Freeze/unfreeze your card instantly, set spending limits, and enable 2FA protection.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-coins"></i> Crypto Rewards</h3>
+            <p>Earn up to 5% back in Bitcoin on all your purchases with our premium card tier.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-mobile-alt"></i> Mobile App</h3>
+            <p>Manage your card, track spending, and view transactions all from our mobile app.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <div class="order-details">
+          <div>
+            <h3 class="section-title">Order Summary</h3>
+            <p style="color: var(--text-secondary);">Review your card details before ordering</p>
+          </div>
+          <div class="order-price">$5.00</div>
+        </div>
+        
+        <div class="order-features">
+          <div class="feature-badge">
+            <i class="fas fa-check-circle"></i>
+            <span>Virtual Card Included</span>
+          </div>
+          <div class="feature-badge">
+            <i class="fas fa-check-circle"></i>
+            <span>No Annual Fees</span>
+          </div>
+          <div class="feature-badge">
+            <i class="fas fa-check-circle"></i>
+            <span>0% Foreign Transaction Fees</span>
+          </div>
+          <div class="feature-badge">
+            <i class="fas fa-check-circle"></i>
+            <span>Instant Freeze/Unfreeze</span>
+          </div>
+        </div>
+        
+        <div class="order-actions">
+          <button class="btn" id="orderCardBtn">
+            <i class="fas fa-credit-card"></i> Order Your Card Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deposit Modal -->
+  <div class="modal" id="depositModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeModal">&times;</button>
+      <h2 class="modal-title">Deposit Required</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">To order your BitNest Card, you need to have at least $10 in your account balance.</p>
+      
+      <div class="bonus-notice" style="background: rgba(30, 211, 198, 0.1); padding: 1rem; border-radius: 8px; margin: 1.5rem 0; border-left: 3px solid var(--primary);">
+        <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--primary);">Card Order Fee: $5</h4>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">The $5 card fee will be deducted from your account balance after successful deposit.</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelDepositBtn">Cancel</button>
+        <button class="btn" id="proceedDepositBtn">
+          <i class="fas fa-arrow-right"></i> Proceed to Deposit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase and App Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged,
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.firebasestorage.app",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
+      measurementId: "G-PGJNHTL03J"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // DOM Elements
+    const userNameElement = document.getElementById('userName');
+    const userProfilePicElement = document.getElementById('userProfilePic');
+    const welcomeTitleElement = document.getElementById('welcomeTitle');
+    const cardNamePreview = document.getElementById('cardNamePreview');
+    const userProfileElement = document.getElementById('userProfile');
+    const orderCardBtn = document.getElementById('orderCardBtn');
+    const depositModal = document.getElementById('depositModal');
+    const closeModal = document.getElementById('closeModal');
+    const cancelDepositBtn = document.getElementById('cancelDepositBtn');
+    const proceedDepositBtn = document.getElementById('proceedDepositBtn');
+
+    // Card color selection
+    const colorOptions = document.querySelectorAll('.color-option');
+    const cardPreview = document.getElementById('cardPreview');
+
+    colorOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        // Remove selected class from all options
+        colorOptions.forEach(opt => opt.classList.remove('selected'));
+        
+        // Add selected class to clicked option
+        option.classList.add('selected');
+        
+        // Update card preview color
+        const color = option.getAttribute('data-color');
+        cardPreview.className = 'virtual-card ' + color;
+      });
+    });
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is signed in:", user);
+        
+        // Get user data from Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          console.log("User data:", userData);
+          
+          // Update UI with user data
+          const displayName = userData.name || user.displayName || "User";
+          userNameElement.textContent = displayName;
+          welcomeTitleElement.textContent = `Your BitNest Card, ${displayName}`;
+          cardNamePreview.textContent = displayName.toUpperCase();
+          
+          // Update profile picture if available
+          if (user.photoURL) {
+            userProfilePicElement.src = user.photoURL;
+          }
+        } else {
+          console.log("No user data found in Firestore");
+        }
+        
+        // Add logout functionality
+        userProfileElement.addEventListener('click', () => {
+          if (confirm('Are you sure you want to sign out?')) {
+            signOut(auth).then(() => {
+              window.location.href = 'login.html';
+            }).catch((error) => {
+              console.error('Sign out error:', error);
+            });
+          }
+        });
+        
+      } else {
+        // User is signed out
+        console.log("User is signed out");
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Order card button click
+    orderCardBtn.addEventListener('click', () => {
+      depositModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Close modal
+    closeModal.addEventListener('click', () => {
+      depositModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === depositModal) {
+        depositModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    // Cancel deposit button
+    cancelDepositBtn.addEventListener('click', () => {
+      depositModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    // Proceed to deposit button
+    proceedDepositBtn.addEventListener('click', () => {
+      window.location.href = 'deposit.html';
+    });
+
+    // Notification bell animation
+    const notificationBell = document.querySelector('.notification-bell');
+    notificationBell.addEventListener('click', () => {
+      notificationBell.style.animation = 'bellRing 0.5s ease';
+      setTimeout(() => {
+        notificationBell.style.animation = '';
+      }, 500);
+      alert("You have 3 new notifications!");
+    });
+  </script>
+</body>
+</html>
