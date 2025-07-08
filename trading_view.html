@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Crypto Swap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1ed3c6;
+      --primary-dark: #17b3a8;
+      --dark-bg: #0a0b0e;
+      --card-bg: #16181d;
+      --card-hover: #1e2128;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b3b8;
+      --accent-blue: #3a86ff;
+      --accent-green: #00e676;
+      --accent-red: #ff5252;
+      --accent-purple: #8338ec;
+      --border-radius: 16px;
+      --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .wallet-btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .wallet-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 20px;
+    }
+
+    .market-data {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .swap-container {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--box-shadow);
+      position: sticky;
+      top: 20px;
+    }
+
+    .token-selector {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .token-input {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .token-input input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      outline: none;
+    }
+
+    .token-balance {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    .token-select {
+      background: rgba(30, 211, 198, 0.1);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .swap-button {
+      width: 100%;
+      background: var(--primary);
+      color: black;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .swap-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
+    }
+
+    .swap-button:disabled {
+      background: var(--text-secondary);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .swap-arrow {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .swap-arrow button {
+      background: var(--card-bg);
+      border: 2px solid var(--text-secondary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-primary);
+      transition: var(--transition);
+    }
+
+    .swap-arrow button:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: rotate(180deg);
+    }
+
+    .price-info {
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin: 15px 0;
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    .token-list {
+      position: absolute;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 10px;
+      z-index: 10;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .token-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .token-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .token-item img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+
+    .token-search {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .swap-details {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .detail-label {
+      color: var(--text-secondary);
+    }
+
+    .detail-value {
+      font-weight: 500;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .tab.active {
+      color: var(--primary);
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .market-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 15px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .market-card:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-3px);
+    }
+
+    .market-card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .market-card img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+
+    .market-price {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .market-change {
+      font-size: 14px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .positive {
+      background: rgba(0, 230, 118, 0.1);
+      color: var(--accent-green);
+    }
+
+    .negative {
+      background: rgba(255, 82, 82, 0.1);
+      color: var(--accent-red);
+    }
+
+    .transaction-history {
+      margin-top: 30px;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .history-amount {
+      font-weight: 500;
+    }
+
+    .history-date {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    .slippage-settings {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .slippage-option {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .slippage-option.active {
+      background: var(--primary);
+      color: black;
+    }
+
+    .slippage-custom input {
+      width: 50px;
+      background: rgba(255,255,255,0.05);
+      border: none;
+      border-radius: 8px;
+      padding: 6px;
+      color: white;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+      
+      .swap-container {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <div class="logo">
+        <i class="fas fa-coins"></i>
+        <span>CryptoSwap Pro</span>
+      </div>
+      <button class="wallet-btn" id="connectWallet">
+        <i class="fas fa-wallet"></i>
+        <span>Connect Wallet</span>
+      </button>
+    </header>
+
+    <div class="main-layout">
+      <div class="market-data">
+        <div class="tabs">
+          <div class="tab active">Market</div>
+          <div class="tab">Watchlist</div>
+          <div class="tab">Trending</div>
+        </div>
+        
+        <div class="market-grid" id="marketGrid">
+          <!-- Market data will be populated here -->
+        </div>
+
+        <div class="transaction-history">
+          <h3>Recent Transactions</h3>
+          <div id="transactionList">
+            <!-- Transactions will be populated here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="swap-container">
+        <div class="tabs">
+          <div class="tab active">Swap</div>
+          <div class="tab">Limit</div>
+          <div class="tab">Liquidity</div>
+        </div>
+
+        <div class="token-selector">
+          <div class="token-select" id="fromTokenSelect">
+            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH">
+            <span>ETH</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="token-input">
+            <input type="number" id="fromAmount" value="0.1" min="0" step="any">
+          </div>
+          <div class="token-balance">Balance: 2.45 ETH</div>
+          
+          <div class="token-list" id="fromTokenList">
+            <input type="text" class="token-search" placeholder="Search token...">
+            <!-- Tokens will be populated here -->
+          </div>
+        </div>
+        
+        <div class="swap-arrow">
+          <button id="switchTokens">
+            <i class="fas fa-arrow-down"></i>
+          </button>
+        </div>
+        
+        <div class="token-selector">
+          <div class="token-select" id="toTokenSelect">
+            <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC">
+            <span>USDC</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="token-input">
+            <input type="number" id="toAmount" readonly>
+          </div>
+          <div class="token-balance">Balance: 1,250 USDC</div>
+          
+          <div class="token-list" id="toTokenList">
+            <input type="text" class="token-search" placeholder="Search token...">
+            <!-- Tokens will be populated here -->
+          </div>
+        </div>
+        
+        <div class="price-info" id="priceInfo">
+          <div>1 ETH = $3,250.42</div>
+          <div style="font-size:12px;margin-top:5px;">Expected output: 325.04 USDC</div>
+        </div>
+        
+        <div class="swap-details">
+          <div class="detail-row">
+            <span class="detail-label">Exchange Rate</span>
+            <span class="detail-value" id="exchangeRate">1 ETH = 3250.42 USDC</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Price Impact</span>
+            <span class="detail-value" id="priceImpact"><0.01%</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Minimum Received</span>
+            <span class="detail-value" id="minReceived">324.35 USDC</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Network Fee</span>
+            <span class="detail-value" id="networkFee">~$5.42</span>
+          </div>
+        </div>
+
+        <div class="slippage-settings">
+          <span style="font-size:14px;color:var(--text-secondary)">Slippage:</span>
+          <div class="slippage-option active">0.5%</div>
+          <div class="slippage-option">1%</div>
+          <div class="slippage-option">2%</div>
+          <div class="slippage-custom">
+            <input type="number" value="0.5" min="0" max="50" step="0.1">%
+          </div>
+        </div>
+        
+        <button class="swap-button" id="swapButton">
+          <i class="fas fa-exchange-alt"></i> Swap
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Token data with current prices
+    const tokens = [
+      { symbol: 'ETH', name: 'Ethereum', image: 'https://cryptologos.cc/logos/ethereum-eth-logo.png', price: 3250.42, change24h: 2.5 },
+      { symbol: 'BTC', name: 'Bitcoin', image: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png', price: 42500.78, change24h: -1.2 },
+      { symbol: 'USDC', name: 'USD Coin', image: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png', price: 1.00, change24h: 0 },
+      { symbol: 'SOL', name: 'Solana', image: 'https://cryptologos.cc/logos/solana-sol-logo.png', price: 98.76, change24h: 5.8 },
+      { symbol: 'BNB', name: 'Binance Coin', image: 'https://cryptologos.cc/logos/bnb-bnb-logo.png', price: 305.89, change24h: 3.1 },
+      { symbol: 'ADA', name: 'Cardano', image: 'https://cryptologos.cc/logos/cardano-ada-logo.png', price: 0.45, change24h: -0.7 },
+      { symbol: 'XRP', name: 'Ripple', image: 'https://cryptologos.cc/logos/xrp-xrp-logo.png', price: 0.52, change24h: 1.3 },
+      { symbol: 'DOT', name: 'Polkadot', image: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png', price: 6.78, change24h: -2.1 },
+      { symbol: 'DOGE', name: 'Dogecoin', image: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png', price: 0.12, change24h: 8.5 },
+      { symbol: 'AVAX', name: 'Avalanche', image: 'https://cryptologos.cc/logos/avalanche-avax-logo.png', price: 35.67, change24h: 4.2 }
+    ];
+
+    // Sample transaction history
+    const transactions = [
+      { from: 'ETH', to: 'USDC', amount: 0.5, value: 1625.21, date: '2023-05-15 14:30' },
+      { from: 'SOL', to: 'BTC', amount: 10, value: 0.023, date: '2023-05-14 09:15' },
+      { from: 'USDC', to: 'ETH', amount: 500, value: 0.153, date: '2023-05-12 18:45' }
+    ];
+
+    // DOM elements
+    const fromTokenSelect = document.getElementById('fromTokenSelect');
+    const toTokenSelect = document.getElementById('toTokenSelect');
+    const fromTokenList = document.getElementById('fromTokenList');
+    const toTokenList = document.getElementById('toTokenList');
+    const fromAmount = document.getElementById('fromAmount');
+    const toAmount = document.getElementById('toAmount');
+    const priceInfo = document.getElementById('priceInfo');
+    const switchButton = document.getElementById('switchTokens');
+    const swapButton = document.getElementById('swapButton');
+    const connectWallet = document.getElementById('connectWallet');
+    const marketGrid = document.getElementById('marketGrid');
+    const transactionList = document.getElementById('transactionList');
+    const exchangeRate = document.getElementById('exchangeRate');
+    const priceImpact = document.getElementById('priceImpact');
+    const minReceived = document.getElementById('minReceived');
+    const networkFee = document.getElementById('networkFee');
+
+    // Current selected tokens
+    let fromToken = tokens[0]; // ETH by default
+    let toToken = tokens[2];   // USDC by default
+    let slippage = 0.5; // Default slippage tolerance
+    let walletConnected = false;
+
+    // Initialize the app
+    function initApp() {
+      populateTokenLists();
+      populateMarketGrid();
+      populateTransactionHistory();
+      updateConversion();
+      setupEventListeners();
+      simulatePriceChanges();
+    }
+
+    // Populate token lists
+    function populateTokenLists() {
+      // Clear existing lists
+      const fromListContainer = fromTokenList.querySelector('.token-list-items') || document.createElement('div');
+      const toListContainer = toTokenList.querySelector('.token-list-items') || document.createElement('div');
+      
+      fromListContainer.className = 'token-list-items';
+      toListContainer.className = 'token-list-items';
+      fromListContainer.innerHTML = '';
+      toListContainer.innerHTML = '';
+      
+      // Add search functionality
+      const fromSearch = fromTokenList.querySelector('.token-search');
+      const toSearch = toTokenList.querySelector('.token-search');
+      
+      fromSearch.addEventListener('input', (e) => filterTokenList(e.target.value, fromListContainer));
+      toSearch.addEventListener('input', (e) => filterTokenList(e.target.value, toListContainer));
+      
+      // Add tokens to lists
+      tokens.forEach(token => {
+        const fromItem = createTokenItem(token, () => {
+          fromToken = token;
+          updateTokenDisplay(fromTokenSelect, token);
+          fromTokenList.style.display = 'none';
+          updateConversion();
+        });
+        
+        const toItem = createTokenItem(token, () => {
+          toToken = token;
+          updateTokenDisplay(toTokenSelect, token);
+          toTokenList.style.display = 'none';
+          updateConversion();
+        });
+        
+        fromListContainer.appendChild(fromItem);
+        toListContainer.appendChild(toItem);
+      });
+      
+      fromTokenList.appendChild(fromListContainer);
+      toTokenList.appendChild(toListContainer);
+      
+      // Set initial token displays
+      updateTokenDisplay(fromTokenSelect, fromToken);
+      updateTokenDisplay(toTokenSelect, toToken);
+    }
+
+    function createTokenItem(token, onClick) {
+      const item = document.createElement('div');
+      item.className = 'token-item';
+      item.innerHTML = `
+        <img src="${token.image}" alt="${token.symbol}">
+        <div style="flex:1">
+          <div>${token.symbol}</div>
+          <div style="font-size:12px;color:var(--text-secondary)">${token.name}</div>
+        </div>
+        <div style="text-align:right">
+          <div>$${token.price.toLocaleString()}</div>
+          <div class="${token.change24h >= 0 ? 'positive' : 'negative'}" style="font-size:12px">
+            ${token.change24h >= 0 ? '+' : ''}${token.change24h}%
+          </div>
+        </div>
+      `;
+      item.addEventListener('click', onClick);
+      return item;
+    }
+
+    function filterTokenList(searchTerm, container) {
+      const items = container.querySelectorAll('.token-item');
+      const term = searchTerm.toLowerCase();
+      
+      items.forEach(item => {
+        const symbol = item.querySelector('div').textContent.toLowerCase();
+        const name = item.querySelector('div:nth-child(2)').textContent.toLowerCase();
+        const show = symbol.includes(term) || name.includes(term);
+        item.style.display = show ? 'flex' : 'none';
+      });
+    }
+
+    function updateTokenDisplay(element, token) {
+      element.innerHTML = `
+        <img src="${token.image}" alt="${token.symbol}">
+        <span>${token.symbol}</span>
+        <i class="fas fa-chevron-down"></i>
+      `;
+    }
+
+    // Populate market data grid
+    function populateMarketGrid() {
+      marketGrid.innerHTML = '';
+      
+      tokens.forEach(token => {
+        const card = document.createElement('div');
+        card.className = 'market-card';
+        card.innerHTML = `
+          <div class="market-card-header">
+            <img src="${token.image}" alt="${token.symbol}">
+            <div>${token.symbol}</div>
+          </div>
+          <div class="market-price">$${token.price.toLocaleString()}</div>
+          <div class="market-change ${token.change24h >= 0 ? 'positive' : 'negative'}">
+            ${token.change24h >= 0 ? '+' : ''}${token.change24h}%
+          </div>
+        `;
+        
+        card.addEventListener('click', () => {
+          fromToken = token;
+          updateTokenDisplay(fromTokenSelect, token);
+          fromAmount.value = '1';
+          updateConversion();
+        });
+        
+        marketGrid.appendChild(card);
+      });
+    }
+
+    // Populate transaction history
+    function populateTransactionHistory() {
+      transactionList.innerHTML = '';
+      
+      transactions.forEach(tx => {
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `
+          <div>
+            <div>Swapped ${tx.amount} ${tx.from} to ${tx.value} ${tx.to}</div>
+            <div class="history-date">${tx.date}</div>
+          </div>
+          <div class="history-amount">$${(tx.amount * (tokens.find(t => t.symbol === tx.from)?.price || 0).toFixed(2)}</div>
+        `;
+        transactionList.appendChild(item);
+      });
+    }
+
+    // Calculate conversion and update UI
+    function updateConversion() {
+      const amount = parseFloat(fromAmount.value) || 0;
+      const conversionRate = fromToken.price / toToken.price;
+      const convertedAmount = amount * conversionRate;
+      
+      // Update outputs
+      toAmount.value = convertedAmount.toFixed(6);
+      priceInfo.innerHTML = `
+        <div>1 ${fromToken.symbol} = ${conversionRate.toFixed(6)} ${toToken.symbol}</div>
+        <div style="font-size:12px;margin-top:5px;">Expected output: ${convertedAmount.toFixed(2)} ${toToken.symbol}</div>
+      `;
+      
+      // Update details
+      exchangeRate.textContent = `1 ${fromToken.symbol} = ${conversionRate.toFixed(6)} ${toToken.symbol}`;
+      priceImpact.textContent = "<0.01%"; // Simplified for demo
+      minReceived.textContent = `${(convertedAmount * (1 - slippage/100)).toFixed(2)} ${toToken.symbol}`;
+      networkFee.textContent = "~$5.42"; // Static for demo
+      
+      // Update button state
+      swapButton.disabled = amount <= 0 || !walletConnected;
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Token selection
+      fromTokenSelect.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fromTokenList.style.display = fromTokenList.style.display === 'block' ? 'none' : 'block';
+        toTokenList.style.display = 'none';
+      });
+
+      toTokenSelect.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toTokenList.style.display = toTokenList.style.display === 'block' ? 'none' : 'block';
+        fromTokenList.style.display = 'none';
+      });
+
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', () => {
+        fromTokenList.style.display = 'none';
+        toTokenList.style.display = 'none';
+      });
+
+      // Switch tokens
+      switchButton.addEventListener('click', () => {
+        [fromToken, toToken] = [toToken, toToken];
+        
+        updateTokenDisplay(fromTokenSelect, fromToken);
+        updateTokenDisplay(toTokenSelect, toToken);
+        
+        // Also swap the input values
+        const temp = fromAmount.value;
+        fromAmount.value = toAmount.value;
+        toAmount.value = temp;
+        
+        updateConversion();
+      });
+
+      // Amount input
+      fromAmount.addEventListener('input', updateConversion);
+
+      // Connect wallet
+      connectWallet.addEventListener('click', () => {
+        walletConnected = !walletConnected;
+        if (walletConnected) {
+          connectWallet.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
+          connectWallet.style.background = 'var(--accent-green)';
+          swapButton.disabled = false;
+          
+          // Simulate fetching wallet balance
+          setTimeout(() => {
+            document.querySelector('.token-balance').textContent = `Balance: ${(Math.random() * 10).toFixed(4)} ${fromToken.symbol}`;
+          }, 500);
+        } else {
+          connectWallet.innerHTML = '<i class="fas fa-wallet"></i> Connect Wallet';
+          connectWallet.style.background = 'linear-gradient(90deg, var(--primary), var(--accent-blue))';
+          swapButton.disabled = true;
+        }
+      });
+
+      // Swap button
+      swapButton.addEventListener('click', () => {
+        const amount = parseFloat(fromAmount.value);
+        if (!amount || amount <= 0) {
+          alert('Please enter a valid amount');
+          return;
+        }
+        
+        const tx = {
+          from: fromToken.symbol,
+          to: toToken.symbol,
+          amount: amount,
+          value: parseFloat(toAmount.value),
+          date: new Date().toISOString().replace('T', ' ').substring(0, 16)
+        };
+        
+        transactions.unshift(tx);
+        populateTransactionHistory();
+        
+        // Show success message
+        const originalText = swapButton.innerHTML;
+        swapButton.innerHTML = '<i class="fas fa-check"></i> Swap Successful!';
+        swapButton.style.background = 'var(--accent-green)';
+        
+        setTimeout(() => {
+          swapButton.innerHTML = originalText;
+          swapButton.style.background = 'var(--primary)';
+        }, 2000);
+      });
+
+      // Slippage settings
+      document.querySelectorAll('.slippage-option').forEach(option => {
+        option.addEventListener('click', () => {
+          document.querySelectorAll('.slippage-option').forEach(opt => opt.classList.remove('active'));
+          option.classList.add('active');
+          slippage = parseFloat(option.textContent);
+          updateConversion();
+        });
+      });
+
+      document.querySelector('.slippage-custom input').addEventListener('change', (e) => {
+        slippage = parseFloat(e.target.value) || 0.5;
+        updateConversion();
+      });
+    }
+
+    // Simulate price changes
+    function simulatePriceChanges() {
+      setInterval(() => {
+        tokens.forEach(token => {
+          if (token.symbol !== 'USDC') { // Stablecoin doesn't change
+            const changePercent = (Math.random() - 0.5) * 0.02; // ±1%
+            token.price = token.price * (1 + changePercent);
+            token.change24h = (token.change24h + (Math.random() - 0.5) * 0.5).toFixed(2);
+          }
+        });
+        
+        populateMarketGrid();
+        updateConversion();
+      }, 5000);
+    }
+
+    // Initialize the app
+    initApp();
+  </script>
+</body>
+</html>
