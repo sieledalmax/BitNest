@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BitNest | P2P Trading</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1ed3c6;
+      --primary-dark: #17b3a8;
+      --dark-bg: #0a0b0e;
+      --card-bg: #16181d;
+      --card-hover: #1e2128;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b3b8;
+      --accent-blue: #3a86ff;
+      --accent-green: #4cc9f0;
+      --accent-purple: #8338ec;
+      --accent-orange: #ff7b25;
+      --border-radius: 16px;
+      --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --glass-effect: rgba(16, 18, 22, 0.7);
+      --success: #00e676;
+      --warning: #ffab00;
+      --danger: #ff5252;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--card-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    /* Floating Animations */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Notification Bell Animation */
+    @keyframes bellRing {
+      0% { transform: rotate(0deg); }
+      10% { transform: rotate(15deg); }
+      20% { transform: rotate(-15deg); }
+      30% { transform: rotate(10deg); }
+      40% { transform: rotate(-10deg); }
+      50% { transform: rotate(5deg); }
+      60% { transform: rotate(-5deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    /* Crypto Chart Animation */
+    @keyframes chartGrow {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      background-color: var(--glass-effect);
+      padding: 1rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .navbar .left {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .navbar .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .navbar a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+      padding: 0.5rem 0;
+    }
+
+    .navbar a:hover {
+      color: var(--text-primary);
+    }
+
+    .navbar a.active {
+      color: var(--primary);
+    }
+
+    .navbar a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .navbar .right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .notification-bell:hover {
+      animation: bellRing 0.5s ease;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--danger);
+      color: white;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .profile-pic {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.75rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(30, 211, 198, 0.4);
+    }
+
+    .btn span {
+      transition: transform 0.3s ease;
+    }
+
+    .btn:hover span {
+      transform: translateX(3px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: none;
+    }
+
+    /* Main Container */
+    .container {
+      padding: 2rem 3rem;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* Welcome Banner */
+    .welcome-banner {
+      grid-column: span 12;
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(30, 211, 198, 0.08), rgba(58, 134, 255, 0.05));
+      clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+      z-index: 0;
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 1;
+      max-width: 60%;
+    }
+
+    .welcome-content h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      width: fit-content;
+    }
+
+    .welcome-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .welcome-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .welcome-image {
+      position: relative;
+      z-index: 1;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .welcome-image img {
+      width: 300px;
+      height: auto;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .section-title::before {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 20px;
+      background: linear-gradient(var(--primary), var(--accent-blue));
+      border-radius: 3px;
+    }
+
+    /* P2P Trading Styles */
+    .p2p-container {
+      grid-column: span 12;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .p2p-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--card-bg);
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .p2p-filters {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .filter-dropdown {
+      position: relative;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .filter-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .filter-dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: var(--card-bg);
+      min-width: 200px;
+      box-shadow: var(--box-shadow);
+      z-index: 1;
+      border-radius: 8px;
+      padding: 0.5rem 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .filter-dropdown-content a {
+      color: var(--text-primary);
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      display: block;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .filter-dropdown-content a:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--primary);
+    }
+
+    .filter-dropdown:hover .filter-dropdown-content {
+      display: block;
+    }
+
+    .search-box {
+      position: relative;
+      flex-grow: 1;
+      max-width: 300px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    .become-vendor-btn {
+      background: linear-gradient(90deg, var(--accent-purple), var(--primary));
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 16px rgba(131, 56, 236, 0.3);
+    }
+
+    .become-vendor-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(131, 56, 236, 0.4);
+    }
+
+    /* P2P Offers Table */
+    .p2p-offers {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+    }
+
+    .p2p-offers-header {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+      padding: 1rem 1.5rem;
+      background-color: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .p2p-offer {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: var(--transition);
+    }
+
+    .p2p-offer:last-child {
+      border-bottom: none;
+    }
+
+    .p2p-offer:hover {
+      background-color: var(--card-hover);
+    }
+
+    .offer-trader {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .trader-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .trader-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .trader-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .trader-stats {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .trader-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: var(--warning);
+    }
+
+    .offer-price {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .offer-price span {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-left: 0.25rem;
+    }
+
+    .offer-limits {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .offer-limits span {
+      font-size: 0.9rem;
+    }
+
+    .offer-payment {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .payment-method {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .offer-action {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .buy-btn {
+      background: var(--success);
+      color: #000;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .buy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 230, 118, 0.3);
+    }
+
+    /* P2P Trading Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      width: 90%;
+      max-width: 500px;
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--box-shadow);
+      position: relative;
+      animation: slideUp 0.4s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .close-modal:hover {
+      color: var(--text-primary);
+      transform: rotate(90deg);
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1200px) {
+      .p2p-offers-header, .p2p-offer {
+        grid-template-columns: 1.2fr 1fr 1fr 1fr 0.8fr;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      .p2p-controls {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+      
+      .search-box {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .nav-links {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      
+      .p2p-offers-header {
+        display: none;
+      }
+      
+      .p2p-offer {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1.5rem;
+      }
+      
+      .offer-action {
+        justify-content: flex-start;
+        margin-top: 1rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .welcome-banner {
+        padding: 1.5rem;
+      }
+      
+      .welcome-content h1 {
+        font-size: 1.8rem;
+      }
+      
+      .p2p-filters {
+        flex-wrap: wrap;
+      }
+      
+      .filter-dropdown {
+        width: 100%;
+      }
+      
+      .filter-btn {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="left">
+      <div class="logo">
+        <i class="fas fa-coins logo-icon"></i>
+        <span>BitNest</span>
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="assets.html">Assets</a>
+        <a href="earn.html">Earn</a>
+        <a href="trading_view.html">Trade</a>
+        <a href="p2p.html" class="active">P2P</a>
+        <a href="deposit.html">Deposit</a>
+        <a href="cards.html">Cards</a>
+      </div>
+    </div>
+    <div class="right">
+      <div class="notification-bell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-badge">3</div>
+      </div>
+      <div class="user-profile" id="userProfile">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
+        <span id="userName">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="dashboard-grid">
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-content">
+          <h1 id="welcomeTitle">P2P Trading Platform</h1>
+          <p>Buy and sell cryptocurrencies directly with other users. Enjoy competitive rates and multiple payment methods.</p>
+          <div class="welcome-stats">
+            <div class="stat-item">
+              <div class="stat-value" id="activeTrades">1,245</div>
+              <div class="stat-label">Active Trades</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="dailyVolume">$2.4M</div>
+              <div class="stat-label">Daily Volume</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="successRate">99.8%</div>
+              <div class="stat-label">Success Rate</div>
+            </div>
+          </div>
+        </div>
+        <div class="welcome-image">
+          <img src="https://cryptologos.cc/logos/versions/tether-usdt-logo.svg" alt="P2P Trading">
+        </div>
+      </div>
+
+      <!-- P2P Trading Section -->
+      <div class="p2p-container">
+        <div class="section-header">
+          <h2 class="section-title">P2P Marketplace</h2>
+          <div class="p2p-controls">
+            <div class="p2p-filters">
+              <div class="filter-dropdown">
+                <button class="filter-btn" id="cryptoFilterBtn">
+                  <i class="fas fa-coins"></i> All Cryptos
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown-content" id="cryptoFilter">
+                  <a href="#" class="active" data-value="all">All Cryptos</a>
+                  <a href="#" data-value="BTC"><i class="fab fa-bitcoin"></i> Bitcoin (BTC)</a>
+                  <a href="#" data-value="ETH"><i class="fab fa-ethereum"></i> Ethereum (ETH)</a>
+                  <a href="#" data-value="USDT"><i class="fas fa-dollar-sign"></i> Tether (USDT)</a>
+                </div>
+              </div>
+              
+              <div class="filter-dropdown">
+                <button class="filter-btn" id="fiatFilterBtn">
+                  <i class="fas fa-money-bill-wave"></i> All Fiat
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown-content" id="fiatFilter">
+                  <a href="#" class="active" data-value="all">All Fiat</a>
+                  <a href="#" data-value="USD"><i class="fas fa-dollar-sign"></i> US Dollar</a>
+                  <a href="#" data-value="EUR"><i class="fas fa-euro-sign"></i> Euro</a>
+                  <a href="#" data-value="GBP"><i class="fas fa-pound-sign"></i> British Pound</a>
+                </div>
+              </div>
+              
+              <div class="filter-dropdown">
+                <button class="filter-btn" id="countryFilterBtn">
+                  <i class="fas fa-globe"></i> All Countries
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown-content" id="countryFilter">
+                  <a href="#" class="active" data-value="all">All Countries</a>
+                  <a href="#" data-value="US"><i class="fas fa-flag-usa"></i> United States</a>
+                  <a href="#" data-value="NG"><i class="fas fa-flag"></i> Nigeria</a>
+                  <a href="#" data-value="UK"><i class="fas fa-flag"></i> United Kingdom</a>
+                </div>
+              </div>
+              
+              <div class="filter-dropdown">
+                <button class="filter-btn" id="paymentFilterBtn">
+                  <i class="fas fa-money-bill-wave"></i> All Payments
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown-content" id="paymentFilter">
+                  <a href="#" class="active" data-value="all">All Payments</a>
+                  <a href="#" data-value="Bank"><i class="fas fa-university"></i> Bank Transfer</a>
+                  <a href="#" data-value="PayPal"><i class="fab fa-paypal"></i> PayPal</a>
+                  <a href="#" data-value="Cash"><i class="fas fa-money-bill-alt"></i> Cash</a>
+                </div>
+              </div>
+              
+              <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search traders..." id="searchInput">
+              </div>
+            </div>
+            
+            <button class="become-vendor-btn" id="becomeVendorBtn">
+              <i class="fas fa-store"></i> Become a Vendor
+            </button>
+          </div>
+        </div>
+        
+        <div class="p2p-offers" id="p2pOffersContainer">
+          <div class="p2p-offers-header">
+            <div>Trader</div>
+            <div>Price</div>
+            <div>Limits</div>
+            <div>Payment</div>
+            <div>Action</div>
+          </div>
+          <!-- Offers will be inserted here by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Become Vendor Modal -->
+  <div class="modal" id="vendorModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeVendorModal">&times;</button>
+      <h2 class="modal-title">Become a Verified Vendor</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">To become a vendor and start creating P2P offers, you need to deposit at least $10 to your BitNest account.</p>
+      
+      <div class="form-group">
+        <label>Vendor Requirements</label>
+        <div style="background: rgba(30, 211, 198, 0.1); padding: 1rem; border-radius: 8px; margin-top: 0.5rem;">
+          <ul style="padding-left: 1.25rem; color: var(--text-secondary);">
+            <li style="margin-bottom: 0.5rem;">Minimum $10 account balance</li>
+            <li style="margin-bottom: 0.5rem;">Completed KYC verification</li>
+            <li style="margin-bottom: 0.5rem;">30-day trading history on BitNest</li>
+            <li>Valid government-issued ID</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="vendorName">Vendor Name</label>
+        <input type="text" id="vendorName" class="form-control" placeholder="Choose your vendor display name">
+      </div>
+      
+      <div class="bonus-notice" style="background: rgba(30, 211, 198, 0.1); padding: 1rem; border-radius: 8px; margin: 1.5rem 0; border-left: 3px solid var(--primary);">
+        <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--primary);">Vendor Benefits</h4>
+        <ul style="padding-left: 1.25rem; color: var(--text-secondary); font-size: 0.9rem;">
+          <li style="margin-bottom: 0.25rem;">Earn from trading spreads</li>
+          <li style="margin-bottom: 0.25rem;">Higher withdrawal limits</li>
+          <li style="margin-bottom: 0.25rem;">Priority customer support</li>
+          <li>Special vendor badges</li>
+        </ul>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelVendorBtn">Cancel</button>
+        <button class="btn" id="proceedToDepositBtn">
+          <i class="fas fa-arrow-right"></i> Proceed to Deposit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Firebase initialization
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged,
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.appspot.com",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
+      measurementId: "G-PGJNHTL03J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // DOM Elements
+    const userNameElement = document.getElementById('userName');
+    const userProfilePicElement = document.getElementById('userProfilePic');
+    const welcomeTitleElement = document.getElementById('welcomeTitle');
+    const userProfileElement = document.getElementById('userProfile');
+    const becomeVendorBtn = document.getElementById('becomeVendorBtn');
+    const vendorModal = document.getElementById('vendorModal');
+    const closeVendorModal = document.getElementById('closeVendorModal');
+    const cancelVendorBtn = document.getElementById('cancelVendorBtn');
+    const proceedToDepositBtn = document.getElementById('proceedToDepositBtn');
+    const p2pOffersContainer = document.getElementById('p2pOffersContainer');
+    const searchInput = document.getElementById('searchInput');
+
+    // Filter variables
+    let currentFilters = {
+      crypto: 'all',
+      fiat: 'all',
+      country: 'all',
+      payment: 'all',
+      search: ''
+    };
+
+    // Vendor data - will be loaded from JSON
+    let vendors = [];
+
+    // Load vendors from JSON file
+    async function loadVendors() {
+      try {
+        const response = await fetch('vendors.json');
+        if (!response.ok) throw new Error('Failed to load vendor data');
+        const data = await response.json();
+        return data.vendors;
+      } catch (error) {
+        console.error('Error loading vendors:', error);
+        // Fallback data if JSON fails to load
+        return [
+          {
+            id: 1,
+            name: "Default Vendor",
+            avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+            trades: 100,
+            rating: 4.0,
+            crypto: "USDT",
+            fiat: "USD",
+            rate: 1.0,
+            limits: {
+              cryptoMin: 10,
+              cryptoMax: 1000,
+              fiatMin: 10,
+              fiatMax: 1000
+            },
+            available: 5000,
+            payments: ["Bank Transfer"],
+            countries: ["US"]
+          }
+        ];
+      }
+    }
+
+    // Display vendors in the UI
+    function displayVendors(vendorsToDisplay) {
+      const container = document.getElementById('p2pOffersContainer');
+      const header = container.querySelector('.p2p-offers-header');
+      container.innerHTML = '';
+      if (header) container.appendChild(header);
+      
+      if (vendorsToDisplay.length === 0) {
+        const noResults = document.createElement('div');
+        noResults.className = 'p2p-offer';
+        noResults.style.gridTemplateColumns = '1fr';
+        noResults.style.textAlign = 'center';
+        noResults.style.padding = '2rem';
+        noResults.innerHTML = '<p>No vendors match your current filters</p>';
+        container.appendChild(noResults);
+        return;
+      }
+      
+      vendorsToDisplay.forEach(vendor => {
+        const offerElement = document.createElement('div');
+        offerElement.className = 'p2p-offer';
+        offerElement.innerHTML = `
+          <div class="offer-trader">
+            <img src="${vendor.avatar}" alt="${vendor.name}" class="trader-avatar">
+            <div class="trader-info">
+              <div class="trader-name">${vendor.name}</div>
+              <div class="trader-stats">
+                <span>${vendor.trades.toLocaleString()} trades</span>
+                <span class="trader-rating">
+                  <i class="fas fa-star"></i> ${vendor.rating}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="offer-price">
+            ${vendor.rate.toFixed(2)} ${vendor.fiat}
+            <span>per ${vendor.crypto}</span>
+          </div>
+          <div class="offer-limits">
+            <span>${vendor.limits.cryptoMin} - ${vendor.limits.cryptoMax} ${vendor.crypto}</span>
+            <span>(${vendor.limits.fiatMin.toFixed(2)} - ${vendor.limits.fiatMax.toFixed(2)} ${vendor.fiat})</span>
+          </div>
+          <div class="offer-payment">
+            ${vendor.payments.map(payment => `
+              <span class="payment-method">
+                <i class="${getPaymentIcon(payment)}"></i> ${payment}
+              </span>
+            `).join('')}
+          </div>
+          <div class="offer-action">
+            <button class="buy-btn" data-vendor-id="${vendor.id}">
+              <i class="fas fa-shopping-cart"></i> Buy
+            </button>
+          </div>
+        `;
+        container.appendChild(offerElement);
+      });
+      
+      attachBuyButtonListeners();
+    }
+
+    // Filter vendors based on current filters
+    function filterVendors() {
+      const filtered = vendors.filter(vendor => {
+        if (currentFilters.crypto !== 'all' && vendor.crypto !== currentFilters.crypto) return false;
+        if (currentFilters.fiat !== 'all' && vendor.fiat !== currentFilters.fiat) return false;
+        if (currentFilters.country !== 'all' && !vendor.countries.includes(currentFilters.country)) return false;
+        if (currentFilters.payment !== 'all' && !vendor.payments.some(p => p.includes(currentFilters.payment))) return false;
+        if (currentFilters.search && !vendor.name.toLowerCase().includes(currentFilters.search)) return false;
+        return true;
+      });
+      displayVendors(filtered);
+    }
+
+    // Helper function to get payment icons
+    function getPaymentIcon(paymentMethod) {
+      const icons = {
+        'PayPal': 'fab fa-paypal',
+        'Bank Transfer': 'fas fa-university',
+        'Cash': 'fas fa-money-bill-alt',
+        'Mobile Money': 'fas fa-mobile-alt',
+        'Zelle': 'fas fa-exchange-alt',
+        'Venmo': 'fas fa-wallet',
+        'SEPA': 'fas fa-euro-sign',
+        'FPS': 'fas fa-pound-sign'
+      };
+      return icons[paymentMethod] || 'fas fa-money-bill-wave';
+    }
+
+    // Attach event listeners to buy buttons
+    function attachBuyButtonListeners() {
+      document.querySelectorAll('.buy-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const vendorId = e.target.closest('.buy-btn').getAttribute('data-vendor-id');
+          const vendor = vendors.find(v => v.id == vendorId);
+          alert(`Initiating trade with ${vendor.name}\nBuying ${vendor.crypto} at ${vendor.rate} ${vendor.fiat} per ${vendor.crypto}`);
+        });
+      });
+    }
+
+    // Filter dropdown functionality
+    const setupFilterDropdown = (btnId, contentId, filterType) => {
+      const btn = document.getElementById(btnId);
+      const content = document.getElementById(contentId);
+      
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.filter-dropdown-content').forEach(d => {
+          if (d !== content) d.style.display = 'none';
+        });
+        content.style.display = content.style.display === 'block' ? 'none' : 'block';
+      });
+      
+      content.querySelectorAll('a').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const icon = btn.querySelector('i:first-child').cloneNode(true);
+          btn.innerHTML = '';
+          btn.appendChild(icon);
+          btn.appendChild(document.createTextNode(' ' + e.target.textContent));
+          btn.appendChild(btn.querySelector('.fa-chevron-down'));
+          
+          currentFilters[filterType] = e.target.getAttribute('data-value');
+          
+          if (filterType === 'crypto') {
+            currentFilters.fiat = 'all';
+            const fiatBtn = document.getElementById('fiatFilterBtn');
+            fiatBtn.innerHTML = `
+              <i class="fas fa-money-bill-wave"></i> All Fiat
+              <i class="fas fa-chevron-down"></i>
+            `;
+          }
+          
+          filterVendors();
+          content.style.display = 'none';
+        });
+      });
+    };
+
+    // Initialize filter dropdowns
+    function setupFilters() {
+      setupFilterDropdown('cryptoFilterBtn', 'cryptoFilter', 'crypto');
+      setupFilterDropdown('fiatFilterBtn', 'fiatFilter', 'fiat');
+      setupFilterDropdown('countryFilterBtn', 'countryFilter', 'country');
+      setupFilterDropdown('paymentFilterBtn', 'paymentFilter', 'payment');
+      
+      searchInput.addEventListener('input', (e) => {
+        currentFilters.search = e.target.value.toLowerCase();
+        filterVendors();
+      });
+    }
+
+    // Auth state handler
+    function setupAuth() {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const userDocRef = doc(db, "users", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            const displayName = userData.name || user.displayName || "User";
+            userNameElement.textContent = displayName;
+            welcomeTitleElement.textContent = `Welcome to P2P, ${displayName}!`;
+            
+            if (user.photoURL) {
+              userProfilePicElement.src = user.photoURL;
+            }
+          }
+          
+          userProfileElement.addEventListener('click', () => {
+            if (confirm('Are you sure you want to sign out?')) {
+              signOut(auth).then(() => {
+                window.location.href = 'login.html';
+              });
+            }
+          });
+        } else {
+          window.location.href = 'login.html';
+        }
+      });
+    }
+
+    // Modal interactions
+    function setupModals() {
+      becomeVendorBtn.addEventListener('click', () => {
+        vendorModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      });
+      
+      closeVendorModal.addEventListener('click', () => {
+        vendorModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      });
+      
+      cancelVendorBtn.addEventListener('click', () => {
+        vendorModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      });
+      
+      proceedToDepositBtn.addEventListener('click', () => {
+        vendorModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        window.location.href = 'deposit.html';
+      });
+      
+      window.addEventListener('click', (e) => {
+        if (e.target === vendorModal) {
+          vendorModal.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }
+      });
+    }
+
+    // Notification bell
+    document.querySelector('.notification-bell').addEventListener('click', () => {
+      document.querySelector('.notification-bell').style.animation = 'bellRing 0.5s ease';
+      setTimeout(() => {
+        document.querySelector('.notification-bell').style.animation = '';
+      }, 500);
+      alert("You have 3 new notifications!");
+    });
+
+    // Initialize the application
+    async function initializeApp() {
+      vendors = await loadVendors();
+      displayVendors(vendors);
+      setupFilters();
+      setupAuth();
+      setupModals();
+    }
+
+    // Start the app
+    initializeApp();
+  </script>
+</body>
+</html>
