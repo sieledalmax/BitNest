@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firestore Vendor Loader</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0b0e;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    button {
+      background: #1ed3c6;
+      color: black;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 1rem;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(30, 211, 198, 0.5);
+    }
+    #status {
+      margin-top: 2rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+    }
+    .success {
+      color: #00e676;
+    }
+    .error {
+      color: #ff5252;
+    }
+  </style>
+</head>
+<body>
+  <h1>Firestore Vendor Loader</h1>
+  <p>This will generate 10 sample P2P vendors in your Firestore database</p>
+  
+  <button id="generateBtn">Generate Vendors</button>
+  <div id="status">Ready to generate...</div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Your Firebase Config (same as main app)
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.appspot.com",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
+      measurementId: "G-PGJNHTL03J"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const statusEl = document.getElementById('status');
+    const generateBtn = document.getElementById('generateBtn');
+
+    // Sample data generator
+    function generateVendor(index) {
+      const cryptos = ["BTC", "ETH", "USDT", "BNB"];
+      const fiats = ["USD", "EUR", "GBP", "NGN"];
+      const countries = ["US", "UK", "DE", "NG", "IN", "CA"];
+      const paymentMethods = [
+        ["Bank Transfer", "Wise"],
+        ["PayPal", "Venmo"],
+        ["Cash Deposit", "Mobile Money"],
+        ["Zelle", "Revolut"],
+        ["SEPA", "Faster Payments"]
+      ];
+
+      const crypto = cryptos[Math.floor(Math.random() * cryptos.length)];
+      const rate = getCryptoRate(crypto);
+      
+      return {
+        name: `Trader${index + 1}`,
+        avatar: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 50)}.jpg`,
+        trades: Math.floor(Math.random() * 500) + 50,
+        rating: (Math.random() * 1 + 4).toFixed(1), // 4.0-5.0
+        crypto: crypto,
+        fiat: fiats[Math.floor(Math.random() * fiats.length)],
+        rate: rate,
+        limits: {
+          cryptoMin: (Math.random() * 0.1).toFixed(4),
+          cryptoMax: (Math.random() * 5).toFixed(2)
+        },
+        available: (Math.random() * 10).toFixed(2),
+        payments: paymentMethods[Math.floor(Math.random() * paymentMethods.length)],
+        countries: [...new Set([...Array(2)].map(() => 
+          countries[Math.floor(Math.random() * countries.length)]))]
+      };
+    }
+
+    function getCryptoRate(crypto) {
+      const rates = {
+        BTC: 60000 + Math.random() * 5000,
+        ETH: 3000 + Math.random() * 500,
+        USDT: 0.99 + Math.random() * 0.02,
+        BNB: 500 + Math.random() * 50
+      };
+      return rates[crypto].toFixed(2);
+    }
+
+    // Generate and upload vendors
+    async function generateVendors() {
+      generateBtn.disabled = true;
+      statusEl.textContent = "Starting generation...";
+      
+      try {
+        for (let i = 0; i < 10; i++) {
+          const vendor = generateVendor(i);
+          // Calculate fiat limits
+          vendor.limits.fiatMin = (vendor.limits.cryptoMin * vendor.rate).toFixed(2);
+          vendor.limits.fiatMax = (vendor.limits.cryptoMax * vendor.rate).toFixed(2);
+          
+          await addDoc(collection(db, "vendors"), vendor);
+          statusEl.textContent = `Added vendor ${i + 1}/10: ${vendor.name}`;
+          await new Promise(resolve => setTimeout(resolve, 300)); // Small delay
+        }
+        
+        statusEl.innerHTML = '<span class="success">✓ Successfully generated 10 vendors!</span>';
+        generateBtn.textContent = "Done!";
+        
+      } catch (error) {
+        console.error(error);
+        statusEl.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+        generateBtn.disabled = false;
+      }
+    }
+
+    // Run on button click
+    generateBtn.addEventListener('click', generateVendors);
+  </script>
+</body>
+</html>

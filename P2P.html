@@ -808,6 +808,7 @@
       }
     }
   </style>
+
 </head>
 <body>
   <!-- Navbar -->
@@ -937,6 +938,7 @@
           </div>
         </div>
         
+        <!-- Vendor Offers Container -->
         <div class="p2p-offers" id="p2pOffersContainer">
           <div class="p2p-offers-header">
             <div>Trader</div>
@@ -945,7 +947,11 @@
             <div>Payment</div>
             <div>Action</div>
           </div>
-          <!-- Offers will be inserted here by JavaScript -->
+          <!-- Vendor cards will be inserted here by JavaScript -->
+          <div class="loading-placeholder" style="padding: 2rem; text-align: center;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+            <p>Loading vendors...</p>
+          </div>
         </div>
       </div>
     </div>
@@ -994,8 +1000,8 @@
     </div>
   </div>
 
+  <!-- Firebase and App Script -->
   <script type="module">
-    // Firebase initialization
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
     import { 
       getAuth, 
@@ -1004,10 +1010,13 @@
     } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
     import { 
       getFirestore, 
+      collection,
+      getDocs,
       doc, 
       getDoc 
     } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
@@ -1018,88 +1027,58 @@
       measurementId: "G-PGJNHTL03J"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
     // DOM Elements
-    const userNameElement = document.getElementById('userName');
-    const userProfilePicElement = document.getElementById('userProfilePic');
-    const welcomeTitleElement = document.getElementById('welcomeTitle');
-    const userProfileElement = document.getElementById('userProfile');
-    const becomeVendorBtn = document.getElementById('becomeVendorBtn');
-    const vendorModal = document.getElementById('vendorModal');
-    const closeVendorModal = document.getElementById('closeVendorModal');
-    const cancelVendorBtn = document.getElementById('cancelVendorBtn');
-    const proceedToDepositBtn = document.getElementById('proceedToDepositBtn');
     const p2pOffersContainer = document.getElementById('p2pOffersContainer');
     const searchInput = document.getElementById('searchInput');
 
-    // Filter variables
-    let currentFilters = {
-      crypto: 'all',
-      fiat: 'all',
-      country: 'all',
-      payment: 'all',
-      search: ''
-    };
-
-    // Vendor data - will be loaded from JSON
-    let vendors = [];
-
-    // Load vendors from JSON file
+    // Load vendors from Firestore
     async function loadVendors() {
       try {
-        const response = await fetch('/vendors.json');
-        if (!response.ok) throw new Error('Failed to load vendor data');
-        const data = await response.json();
-        return data.vendors;
+        const querySnapshot = await getDocs(collection(db, "vendors"));
+        const vendors = [];
+        
+        querySnapshot.forEach((doc) => {
+          vendors.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+
+        return vendors;
       } catch (error) {
-        console.error('Error loading vendors:', error);
-        // Fallback data if JSON fails to load
-        return [
-          {
-            id: 1,
-            name: "Default Vendor",
-            avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-            trades: 100,
-            rating: 4.0,
-            crypto: "USDT",
-            fiat: "USD",
-            rate: 1.0,
-            limits: {
-              cryptoMin: 10,
-              cryptoMax: 1000,
-              fiatMin: 10,
-              fiatMax: 1000
-            },
-            available: 5000,
-            payments: ["Bank Transfer"],
-            countries: ["US"]
-          }
-        ];
+        console.error("Error loading vendors:", error);
+        return [];
       }
     }
 
     // Display vendors in the UI
-    function displayVendors(vendorsToDisplay) {
+    function displayVendors(vendors) {
       const container = document.getElementById('p2pOffersContainer');
       const header = container.querySelector('.p2p-offers-header');
-      container.innerHTML = '';
-      if (header) container.appendChild(header);
       
-      if (vendorsToDisplay.length === 0) {
+      // Clear loading placeholder
+      container.querySelector('.loading-placeholder')?.remove();
+      
+      // Clear existing offers (except header)
+      container.querySelectorAll('.p2p-offer').forEach(el => el.remove());
+      
+      if (vendors.length === 0) {
         const noResults = document.createElement('div');
         noResults.className = 'p2p-offer';
         noResults.style.gridTemplateColumns = '1fr';
         noResults.style.textAlign = 'center';
         noResults.style.padding = '2rem';
-        noResults.innerHTML = '<p>No vendors match your current filters</p>';
+        noResults.innerHTML = '<p>No vendors available at the moment</p>';
         container.appendChild(noResults);
         return;
       }
       
-      vendorsToDisplay.forEach(vendor => {
+      vendors.forEach(vendor => {
         const offerElement = document.createElement('div');
         offerElement.className = 'p2p-offer';
         offerElement.innerHTML = `
@@ -1116,12 +1095,12 @@
             </div>
           </div>
           <div class="offer-price">
-            ${vendor.rate.toFixed(2)} ${vendor.fiat}
+            ${Number(vendor.rate).toFixed(2)} ${vendor.fiat}
             <span>per ${vendor.crypto}</span>
           </div>
           <div class="offer-limits">
             <span>${vendor.limits.cryptoMin} - ${vendor.limits.cryptoMax} ${vendor.crypto}</span>
-            <span>(${vendor.limits.fiatMin.toFixed(2)} - ${vendor.limits.fiatMax.toFixed(2)} ${vendor.fiat})</span>
+            <span>(${vendor.limits.fiatMin} - ${vendor.limits.fiatMax} ${vendor.fiat})</span>
           </div>
           <div class="offer-payment">
             ${vendor.payments.map(payment => `
@@ -1142,19 +1121,6 @@
       attachBuyButtonListeners();
     }
 
-    // Filter vendors based on current filters
-    function filterVendors() {
-      const filtered = vendors.filter(vendor => {
-        if (currentFilters.crypto !== 'all' && vendor.crypto !== currentFilters.crypto) return false;
-        if (currentFilters.fiat !== 'all' && vendor.fiat !== currentFilters.fiat) return false;
-        if (currentFilters.country !== 'all' && !vendor.countries.includes(currentFilters.country)) return false;
-        if (currentFilters.payment !== 'all' && !vendor.payments.some(p => p.includes(currentFilters.payment))) return false;
-        if (currentFilters.search && !vendor.name.toLowerCase().includes(currentFilters.search)) return false;
-        return true;
-      });
-      displayVendors(filtered);
-    }
-
     // Helper function to get payment icons
     function getPaymentIcon(paymentMethod) {
       const icons = {
@@ -1165,156 +1131,27 @@
         'Zelle': 'fas fa-exchange-alt',
         'Venmo': 'fas fa-wallet',
         'SEPA': 'fas fa-euro-sign',
-        'FPS': 'fas fa-pound-sign'
+        'Faster Payments': 'fas fa-pound-sign',
+        'Wise': 'fas fa-money-bill-wave',
+        'Cash App': 'fas fa-mobile-alt',
+        'Revolut': 'fas fa-credit-card'
       };
       return icons[paymentMethod] || 'fas fa-money-bill-wave';
     }
 
-    // Attach event listeners to buy buttons
-    function attachBuyButtonListeners() {
-      document.querySelectorAll('.buy-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const vendorId = e.target.closest('.buy-btn').getAttribute('data-vendor-id');
-          const vendor = vendors.find(v => v.id == vendorId);
-          alert(`Initiating trade with ${vendor.name}\nBuying ${vendor.crypto} at ${vendor.rate} ${vendor.fiat} per ${vendor.crypto}`);
-        });
-      });
-    }
-
-    // Filter dropdown functionality
-    const setupFilterDropdown = (btnId, contentId, filterType) => {
-      const btn = document.getElementById(btnId);
-      const content = document.getElementById(contentId);
-      
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        document.querySelectorAll('.filter-dropdown-content').forEach(d => {
-          if (d !== content) d.style.display = 'none';
-        });
-        content.style.display = content.style.display === 'block' ? 'none' : 'block';
-      });
-      
-      content.querySelectorAll('a').forEach(item => {
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          const icon = btn.querySelector('i:first-child').cloneNode(true);
-          btn.innerHTML = '';
-          btn.appendChild(icon);
-          btn.appendChild(document.createTextNode(' ' + e.target.textContent));
-          btn.appendChild(btn.querySelector('.fa-chevron-down'));
-          
-          currentFilters[filterType] = e.target.getAttribute('data-value');
-          
-          if (filterType === 'crypto') {
-            currentFilters.fiat = 'all';
-            const fiatBtn = document.getElementById('fiatFilterBtn');
-            fiatBtn.innerHTML = `
-              <i class="fas fa-money-bill-wave"></i> All Fiat
-              <i class="fas fa-chevron-down"></i>
-            `;
-          }
-          
-          filterVendors();
-          content.style.display = 'none';
-        });
-      });
-    };
-
-    // Initialize filter dropdowns
-    function setupFilters() {
-      setupFilterDropdown('cryptoFilterBtn', 'cryptoFilter', 'crypto');
-      setupFilterDropdown('fiatFilterBtn', 'fiatFilter', 'fiat');
-      setupFilterDropdown('countryFilterBtn', 'countryFilter', 'country');
-      setupFilterDropdown('paymentFilterBtn', 'paymentFilter', 'payment');
-      
-      searchInput.addEventListener('input', (e) => {
-        currentFilters.search = e.target.value.toLowerCase();
-        filterVendors();
-      });
-    }
-
-    // Auth state handler
-    function setupAuth() {
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          const userDocRef = doc(db, "users", user.uid);
-          const userDocSnap = await getDoc(userDocRef);
-          
-          if (userDocSnap.exists()) {
-            const userData = userDocSnap.data();
-            const displayName = userData.name || user.displayName || "User";
-            userNameElement.textContent = displayName;
-            welcomeTitleElement.textContent = `Welcome to P2P, ${displayName}!`;
-            
-            if (user.photoURL) {
-              userProfilePicElement.src = user.photoURL;
-            }
-          }
-          
-          userProfileElement.addEventListener('click', () => {
-            if (confirm('Are you sure you want to sign out?')) {
-              signOut(auth).then(() => {
-                window.location.href = 'login.html';
-              });
-            }
-          });
-        } else {
-          window.location.href = 'login.html';
-        }
-      });
-    }
-
-    // Modal interactions
-    function setupModals() {
-      becomeVendorBtn.addEventListener('click', () => {
-        vendorModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-      });
-      
-      closeVendorModal.addEventListener('click', () => {
-        vendorModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-      });
-      
-      cancelVendorBtn.addEventListener('click', () => {
-        vendorModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-      });
-      
-      proceedToDepositBtn.addEventListener('click', () => {
-        vendorModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        window.location.href = 'deposit.html';
-      });
-      
-      window.addEventListener('click', (e) => {
-        if (e.target === vendorModal) {
-          vendorModal.style.display = 'none';
-          document.body.style.overflow = 'auto';
-        }
-      });
-    }
-
-    // Notification bell
-    document.querySelector('.notification-bell').addEventListener('click', () => {
-      document.querySelector('.notification-bell').style.animation = 'bellRing 0.5s ease';
-      setTimeout(() => {
-        document.querySelector('.notification-bell').style.animation = '';
-      }, 500);
-      alert("You have 3 new notifications!");
-    });
-
     // Initialize the application
-    async function initializeApp() {
-      vendors = await loadVendors();
+    async function initApp() {
+      const vendors = await loadVendors();
       displayVendors(vendors);
+      
+      // Setup other event listeners...
       setupFilters();
       setupAuth();
       setupModals();
     }
 
     // Start the app
-    initializeApp();
+    initApp();
   </script>
 </body>
 </html>
