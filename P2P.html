@@ -1050,7 +1050,7 @@
     // Load vendors from JSON file
     async function loadVendors() {
       try {
-        const response = await fetch('vendors.json');
+        const response = await fetch('/vendors.json');
         if (!response.ok) throw new Error('Failed to load vendor data');
         const data = await response.json();
         return data.vendors;
