@@ -403,6 +403,55 @@
       display: flex;
       gap: 1rem;
       align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .filter-group-secondary {
+      position: relative;
+    }
+
+    .filter-toggle-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .filter-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .secondary-filters {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 100%;
+      background: var(--card-bg);
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--box-shadow);
+      z-index: 10;
+      min-width: 300px;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .secondary-filters.active {
+      display: flex;
     }
 
     .filter-dropdown {
@@ -500,6 +549,25 @@
       box-shadow: 0 8px 24px rgba(131, 56, 236, 0.4);
     }
 
+    /* Sort Options */
+    .sort-options {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+      padding-right: 15px;
+    }
+    
+    #sortSelect {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
     /* P2P Offers Table */
     .p2p-offers {
       background-color: var(--card-bg);
@@ -573,16 +641,21 @@
       color: var(--warning);
     }
 
-    .offer-price {
+    .offer-premium {
       font-weight: 600;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      justify-content: center;
     }
 
-    .offer-price span {
-      font-size: 0.9rem;
+    .premium-value {
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .market-rate {
+      font-size: 0.8rem;
       color: var(--text-secondary);
-      margin-left: 0.25rem;
     }
 
     .offer-limits {
@@ -599,6 +672,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .payment-method {
@@ -754,6 +828,17 @@
         max-width: 100%;
         width: 100%;
       }
+
+      .sort-options {
+        margin-left: 0;
+        padding-right: 0;
+        width: 100%;
+      }
+
+      .secondary-filters {
+        position: static;
+        width: 100%;
+      }
     }
 
     @media (max-width: 768px) {
@@ -788,6 +873,11 @@
     @media (max-width: 576px) {
       .welcome-banner {
         padding: 1.5rem;
+        flex-direction: column;
+      }
+      
+      .welcome-content {
+        max-width: 100%;
       }
       
       .welcome-content h1 {
@@ -806,9 +896,13 @@
         width: 100%;
         justify-content: space-between;
       }
+
+      .welcome-image img {
+        width: 200px;
+        margin-top: 1rem;
+      }
     }
   </style>
-
 </head>
 <body>
   <!-- Navbar -->
@@ -874,55 +968,100 @@
           <h2 class="section-title">P2P Marketplace</h2>
           <div class="p2p-controls">
             <div class="p2p-filters">
-              <div class="filter-dropdown">
-                <button class="filter-btn" id="cryptoFilterBtn">
-                  <i class="fas fa-coins"></i> All Cryptos
-                  <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-dropdown-content" id="cryptoFilter">
-                  <a href="#" class="active" data-value="all">All Cryptos</a>
-                  <a href="#" data-value="BTC"><i class="fab fa-bitcoin"></i> Bitcoin (BTC)</a>
-                  <a href="#" data-value="ETH"><i class="fab fa-ethereum"></i> Ethereum (ETH)</a>
-                  <a href="#" data-value="USDT"><i class="fas fa-dollar-sign"></i> Tether (USDT)</a>
+              <div class="filter-group">
+                <div class="filter-dropdown">
+                  <button class="filter-btn" id="cryptoFilterBtn">
+                    <i class="fas fa-coins"></i> All Cryptos
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                  <div class="filter-dropdown-content" id="cryptoFilter">
+                    <a href="#" class="active" data-value="all">All Cryptos</a>
+                    <a href="#" data-value="BTC"><i class="fab fa-bitcoin"></i> Bitcoin (BTC)</a>
+                    <a href="#" data-value="ETH"><i class="fab fa-ethereum"></i> Ethereum (ETH)</a>
+                    <a href="#" data-value="USDT"><i class="fas fa-dollar-sign"></i> Tether (USDT)</a>
+                    <a href="#" data-value="USDC"><i class="fas fa-dollar-sign"></i> USD Coin (USDC)</a>
+                  </div>
+                </div>
+                
+                <div class="filter-dropdown">
+                  <button class="filter-btn" id="fiatFilterBtn">
+                    <i class="fas fa-money-bill-wave"></i> All Fiat
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                  <div class="filter-dropdown-content" id="fiatFilter">
+                    <a href="#" class="active" data-value="all">All Fiat</a>
+                    <a href="#" data-value="USD"><i class="fas fa-dollar-sign"></i> US Dollar</a>
+                    <a href="#" data-value="EUR"><i class="fas fa-euro-sign"></i> Euro</a>
+                    <a href="#" data-value="GBP"><i class="fas fa-pound-sign"></i> British Pound</a>
+                    <a href="#" data-value="CAD"><i class="fas fa-dollar-sign"></i> Canadian Dollar</a>
+                    <a href="#" data-value="AUD"><i class="fas fa-dollar-sign"></i> Australian Dollar</a>
+                    <a href="#" data-value="NGN"><i class="fas fa-naira-sign"></i> Nigerian Naira</a>
+                    <a href="#" data-value="GHS"><i class="fas fa-cedi-sign"></i> Ghanaian Cedi</a>
+                    <a href="#" data-value="XAF"><i class="fas fa-franc-sign"></i> CFA Franc</a>
+                    <a href="#" data-value="KES"><i class="fas fa-shilling-sign"></i> Kenyan Shilling</a>
+                  </div>
                 </div>
               </div>
               
-              <div class="filter-dropdown">
-                <button class="filter-btn" id="fiatFilterBtn">
-                  <i class="fas fa-money-bill-wave"></i> All Fiat
-                  <i class="fas fa-chevron-down"></i>
+              <div class="filter-group filter-group-secondary">
+                <button class="filter-toggle-btn" id="moreFiltersBtn">
+                  <i class="fas fa-sliders-h"></i> More Filters
                 </button>
-                <div class="filter-dropdown-content" id="fiatFilter">
-                  <a href="#" class="active" data-value="all">All Fiat</a>
-                  <a href="#" data-value="USD"><i class="fas fa-dollar-sign"></i> US Dollar</a>
-                  <a href="#" data-value="EUR"><i class="fas fa-euro-sign"></i> Euro</a>
-                  <a href="#" data-value="GBP"><i class="fas fa-pound-sign"></i> British Pound</a>
-                </div>
-              </div>
-              
-              <div class="filter-dropdown">
-                <button class="filter-btn" id="countryFilterBtn">
-                  <i class="fas fa-globe"></i> All Countries
-                  <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-dropdown-content" id="countryFilter">
-                  <a href="#" class="active" data-value="all">All Countries</a>
-                  <a href="#" data-value="US"><i class="fas fa-flag-usa"></i> United States</a>
-                  <a href="#" data-value="NG"><i class="fas fa-flag"></i> Nigeria</a>
-                  <a href="#" data-value="UK"><i class="fas fa-flag"></i> United Kingdom</a>
-                </div>
-              </div>
-              
-              <div class="filter-dropdown">
-                <button class="filter-btn" id="paymentFilterBtn">
-                  <i class="fas fa-money-bill-wave"></i> All Payments
-                  <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-dropdown-content" id="paymentFilter">
-                  <a href="#" class="active" data-value="all">All Payments</a>
-                  <a href="#" data-value="Bank"><i class="fas fa-university"></i> Bank Transfer</a>
-                  <a href="#" data-value="PayPal"><i class="fab fa-paypal"></i> PayPal</a>
-                  <a href="#" data-value="Cash"><i class="fas fa-money-bill-alt"></i> Cash</a>
+                
+                <div class="secondary-filters" id="secondaryFilters">
+                  <div class="filter-dropdown">
+                    <button class="filter-btn" id="countryFilterBtn">
+                      <i class="fas fa-globe"></i> All Countries
+                      <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="filter-dropdown-content" id="countryFilter">
+                      <a href="#" class="active" data-value="all">All Countries</a>
+                      <a href="#" data-value="US"><i class="fas fa-flag-usa"></i> United States</a>
+                      <a href="#" data-value="CA"><i class="fas fa-flag"></i> Canada</a>
+                      <a href="#" data-value="GB"><i class="fas fa-flag"></i> United Kingdom</a>
+                      <a href="#" data-value="EU"><i class="fas fa-flag-europe"></i> European Union</a>
+                      <a href="#" data-value="AU"><i class="fas fa-flag"></i> Australia</a>
+                      <a href="#" data-value="NG"><i class="fas fa-flag"></i> Nigeria</a>
+                      <a href="#" data-value="GH"><i class="fas fa-flag"></i> Ghana</a>
+                      <a href="#" data-value="CM"><i class="fas fa-flag"></i> Cameroon</a>
+                      <a href="#" data-value="KE"><i class="fas fa-flag"></i> Kenya</a>
+                    </div>
+                  </div>
+                  
+                  <div class="filter-dropdown">
+                    <button class="filter-btn" id="paymentFilterBtn">
+                      <i class="fas fa-money-bill-wave"></i> All Payments
+                      <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="filter-dropdown-content" id="paymentFilter">
+                      <a href="#" class="active" data-value="all">All Payments</a>
+                      <a href="#" data-value="Bank"><i class="fas fa-university"></i> Bank Transfer</a>
+                      <a href="#" data-value="PayPal"><i class="fab fa-paypal"></i> PayPal</a>
+                      <a href="#" data-value="Cash"><i class="fas fa-money-bill-alt"></i> Cash</a>
+                      <a href="#" data-value="Zelle"><i class="fas fa-exchange-alt"></i> Zelle</a>
+                      <a href="#" data-value="Venmo"><i class="fas fa-wallet"></i> Venmo</a>
+                      <a href="#" data-value="Cash App"><i class="fas fa-mobile-alt"></i> Cash App</a>
+                      <a href="#" data-value="Mobile Money"><i class="fas fa-mobile-alt"></i> Mobile Money</a>
+                      <a href="#" data-value="M-Pesa"><i class="fas fa-mobile-alt"></i> M-Pesa</a>
+                      <a href="#" data-value="Wise"><i class="fas fa-money-bill-wave"></i> Wise</a>
+                      <a href="#" data-value="Revolut"><i class="fas fa-credit-card"></i> Revolut</a>
+                      <a href="#" data-value="SEPA"><i class="fas fa-euro-sign"></i> SEPA</a>
+                      <a href="#" data-value="Faster Payments"><i class="fas fa-pound-sign"></i> Faster Payments</a>
+                    </div>
+                  </div>
+                  
+                  <div class="filter-dropdown">
+                    <button class="filter-btn" id="ratingFilterBtn">
+                      <i class="fas fa-star"></i> All Ratings
+                      <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="filter-dropdown-content" id="ratingFilter">
+                      <a href="#" class="active" data-value="0">All Ratings</a>
+                      <a href="#" data-value="4.5">4.5+ Stars</a>
+                      <a href="#" data-value="4">4+ Stars</a>
+                      <a href="#" data-value="3">3+ Stars</a>
+                    </div>
+                  </div>
                 </div>
               </div>
               
@@ -930,6 +1069,16 @@
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Search traders..." id="searchInput">
               </div>
+            </div>
+            
+            <div class="sort-options">
+              <span>Sort by:</span>
+              <select id="sortSelect">
+                <option value="premium-asc">Price: Low Premium First</option>
+                <option value="premium-desc">Price: High Premium First</option>
+                <option value="rating-asc">Rating: Low to High</option>
+                <option value="rating-desc">Rating: High to Low</option>
+              </select>
             </div>
             
             <button class="become-vendor-btn" id="becomeVendorBtn">
@@ -942,7 +1091,7 @@
         <div class="p2p-offers" id="p2pOffersContainer">
           <div class="p2p-offers-header">
             <div>Trader</div>
-            <div>Price</div>
+            <div>Price Premium</div>
             <div>Limits</div>
             <div>Payment</div>
             <div>Action</div>
@@ -962,23 +1111,18 @@
     <div class="modal-content">
       <button class="close-modal" id="closeVendorModal">&times;</button>
       <h2 class="modal-title">Become a Verified Vendor</h2>
-      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">To become a vendor and start creating P2P offers, you need to deposit at least $10 to your BitNest account.</p>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">To become a vendor and start creating P2P offers, you need to have at least $25 worth of cryptocurrency in your BitNest account.</p>
       
       <div class="form-group">
         <label>Vendor Requirements</label>
         <div style="background: rgba(30, 211, 198, 0.1); padding: 1rem; border-radius: 8px; margin-top: 0.5rem;">
           <ul style="padding-left: 1.25rem; color: var(--text-secondary);">
-            <li style="margin-bottom: 0.5rem;">Minimum $10 account balance</li>
+            <li style="margin-bottom: 0.5rem;">Minimum $25 account balance in crypto</li>
             <li style="margin-bottom: 0.5rem;">Completed KYC verification</li>
             <li style="margin-bottom: 0.5rem;">30-day trading history on BitNest</li>
             <li>Valid government-issued ID</li>
           </ul>
         </div>
-      </div>
-      
-      <div class="form-group">
-        <label for="vendorName">Vendor Name</label>
-        <input type="text" id="vendorName" class="form-control" placeholder="Choose your vendor display name">
       </div>
       
       <div class="bonus-notice" style="background: rgba(30, 211, 198, 0.1); padding: 1rem; border-radius: 8px; margin: 1.5rem 0; border-left: 3px solid var(--primary);">
@@ -1000,6 +1144,32 @@
     </div>
   </div>
 
+  <!-- Buy Crypto Modal -->
+  <div class="modal" id="buyModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeBuyModal">&times;</button>
+      <h2 class="modal-title">Account Activation Required</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">To buy crypto through P2P, you need to activate your account by depositing at least $10 worth of cryptocurrency.</p>
+      
+      <div class="bonus-notice" style="background: rgba(30, 211, 198, 0.1); padding: 1rem; border-radius: 8px; margin: 1.5rem 0; border-left: 3px solid var(--primary);">
+        <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--primary);">Benefits of Activation</h4>
+        <ul style="padding-left: 1.25rem; color: var(--text-secondary); font-size: 0.9rem;">
+          <li style="margin-bottom: 0.25rem;">Buy and sell crypto P2P</li>
+          <li style="margin-bottom: 0.25rem;">Higher trading limits</li>
+          <li style="margin-bottom: 0.25rem;">Faster verification</li>
+          <li>Access to all features</li>
+        </ul>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelBuyBtn">Cancel</button>
+        <button class="btn" id="activateAccountBtn">
+          <i class="fas fa-arrow-right"></i> Activate Account
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase and App Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
@@ -1013,7 +1183,9 @@
       collection,
       getDocs,
       doc, 
-      getDoc 
+      getDoc,
+      query,
+      orderBy
     } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 
     // Firebase Configuration
@@ -1035,11 +1207,56 @@
     // DOM Elements
     const p2pOffersContainer = document.getElementById('p2pOffersContainer');
     const searchInput = document.getElementById('searchInput');
+    const becomeVendorBtn = document.getElementById('becomeVendorBtn');
+    const vendorModal = document.getElementById('vendorModal');
+    const closeVendorModal = document.getElementById('closeVendorModal');
+    const cancelVendorBtn = document.getElementById('cancelVendorBtn');
+    const proceedToDepositBtn = document.getElementById('proceedToDepositBtn');
+    const buyModal = document.getElementById('buyModal');
+    const closeBuyModal = document.getElementById('closeBuyModal');
+    const cancelBuyBtn = document.getElementById('cancelBuyBtn');
+    const activateAccountBtn = document.getElementById('activateAccountBtn');
+    const sortSelect = document.getElementById('sortSelect');
+    const moreFiltersBtn = document.getElementById('moreFiltersBtn');
+    const secondaryFilters = document.getElementById('secondaryFilters');
+
+    // Market rates for premium calculation
+    const marketRates = {
+      BTC: { USD: 60000, EUR: 55000, GBP: 48000, CAD: 80000, AUD: 90000, NGN: 90000000, GHS: 750000, XAF: 36000000, KES: 9000000 },
+      ETH: { USD: 3000, EUR: 2800, GBP: 2500, CAD: 4000, AUD: 4500, NGN: 4500000, GHS: 37500, XAF: 1800000, KES: 450000 },
+      USDT: { USD: 1, EUR: 0.92, GBP: 0.79, CAD: 1.36, AUD: 1.51, NGN: 1500, GHS: 12.5, XAF: 600, KES: 150 },
+      USDC: { USD: 1, EUR: 0.92, GBP: 0.79, CAD: 1.36, AUD: 1.51, NGN: 1500, GHS: 12.5, XAF: 600, KES: 150 }
+    };
+
+    // Current vendors and filters
+    let allVendors = [];
+    const filters = {
+      crypto: 'all',
+      fiat: 'all',
+      country: 'all',
+      payment: 'all',
+      minRating: 0,
+      search: ''
+    };
+    let currentSort = 'premium-asc';
 
     // Load vendors from Firestore
     async function loadVendors() {
       try {
-        const querySnapshot = await getDocs(collection(db, "vendors"));
+        let q;
+        if (currentSort === 'premium-asc') {
+          q = query(collection(db, "vendors"), orderBy("premium", "asc"));
+        } else if (currentSort === 'premium-desc') {
+          q = query(collection(db, "vendors"), orderBy("premium", "desc"));
+        } else if (currentSort === 'rating-asc') {
+          q = query(collection(db, "vendors"), orderBy("rating", "asc"));
+        } else if (currentSort === 'rating-desc') {
+          q = query(collection(db, "vendors"), orderBy("rating", "desc"));
+        } else {
+          q = query(collection(db, "vendors"));
+        }
+
+        const querySnapshot = await getDocs(q);
         const vendors = [];
         
         querySnapshot.forEach((doc) => {
@@ -1049,11 +1266,132 @@
           });
         });
 
-        return vendors;
+        // If no vendors in Firestore, use sample data
+        return vendors.length > 0 ? vendors : generateSampleVendors();
       } catch (error) {
         console.error("Error loading vendors:", error);
-        return [];
+        return generateSampleVendors();
       }
+    }
+
+    // Generate sample vendors with premium percentages
+    function generateSampleVendors() {
+      return [
+        {
+          id: "vendor1",
+          name: "CryptoKing",
+          avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+          crypto: "BTC",
+          fiat: "USD",
+          country: "US",
+          rate: 61200, // +2% premium
+          premium: 2.0,
+          rating: 4.8,
+          trades: 1245,
+          limits: {
+            cryptoMin: 0.001,
+            cryptoMax: 2,
+            fiatMin: 50,
+            fiatMax: 100000
+          },
+          payments: ["Bank", "PayPal", "Zelle"]
+        },
+        {
+          id: "vendor2",
+          name: "EuroTrader",
+          avatar: "https://randomuser.me/api/portraits/women/2.jpg",
+          crypto: "ETH",
+          fiat: "EUR",
+          country: "EU",
+          rate: 2940, // +5% premium
+          premium: 5.0,
+          rating: 4.9,
+          trades: 876,
+          limits: {
+            cryptoMin: 0.01,
+            cryptoMax: 10,
+            fiatMin: 30,
+            fiatMax: 28000
+          },
+          payments: ["SEPA", "Revolut", "Wise"]
+        },
+        {
+          id: "vendor3",
+          name: "NGNDealer",
+          avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+          crypto: "USDT",
+          fiat: "NGN",
+          country: "NG",
+          rate: 1470, // -2% premium
+          premium: -2.0,
+          rating: 4.5,
+          trades: 543,
+          limits: {
+            cryptoMin: 10,
+            cryptoMax: 10000,
+            fiatMin: 15000,
+            fiatMax: 15000000
+          },
+          payments: ["Bank", "Mobile Money", "Cash"]
+        },
+        {
+          id: "vendor4",
+          name: "AussieCrypto",
+          avatar: "https://randomuser.me/api/portraits/women/4.jpg",
+          crypto: "USDC",
+          fiat: "AUD",
+          country: "AU",
+          rate: 1.53, // +2% premium
+          premium: 2.0,
+          rating: 4.7,
+          trades: 321,
+          limits: {
+            cryptoMin: 10,
+            cryptoMax: 5000,
+            fiatMin: 15,
+            fiatMax: 7500
+          },
+          payments: ["Bank", "PayPal", "Cash"]
+        },
+        {
+          id: "vendor5",
+          name: "GhanaBit",
+          avatar: "https://randomuser.me/api/portraits/men/5.jpg",
+          crypto: "BTC",
+          fiat: "GHS",
+          country: "GH",
+          rate: 312000, // -2.5% premium
+          premium: -2.5,
+          rating: 4.3,
+          trades: 267,
+          limits: {
+            cryptoMin: 0.001,
+            cryptoMax: 1,
+            fiatMin: 320,
+            fiatMax: 320000
+          },
+          payments: ["Mobile Money", "Bank", "Cash"]
+        },
+        {
+          id: "vendor6",
+          name: "KenyaCoin",
+          avatar: "https://randomuser.me/api/portraits/women/6.jpg",
+          crypto: "USDT",
+          fiat: "KES",
+          country: "KE",
+          rate: 147, // -2% premium
+          premium: -2.0,
+          rating: 4.6,
+          trades: 412,
+          limits: {
+            cryptoMin: 10,
+            cryptoMax: 5000,
+            fiatMin: 1500,
+            fiatMax: 750000
+          },
+          payments: ["M-Pesa", "Bank", "Cash"]
+        }
+      ];
     }
 
     // Display vendors in the UI
@@ -1073,12 +1411,20 @@
         noResults.style.gridTemplateColumns = '1fr';
         noResults.style.textAlign = 'center';
         noResults.style.padding = '2rem';
-        noResults.innerHTML = '<p>No vendors available at the moment</p>';
+        noResults.innerHTML = '<p>No vendors match your filters</p>';
         container.appendChild(noResults);
         return;
       }
       
       vendors.forEach(vendor => {
+        // Calculate the effective rate (market rate + premium)
+        const marketRate = marketRates[vendor.crypto][vendor.fiat];
+        const effectiveRate = marketRate * (1 + vendor.premium/100);
+        
+        // Calculate what user gets for 10 units of fiat
+        const fiatAmount = 10;
+        const cryptoAmount = (fiatAmount / effectiveRate).toFixed(6);
+        
         const offerElement = document.createElement('div');
         offerElement.className = 'p2p-offer';
         offerElement.innerHTML = `
@@ -1094,13 +1440,26 @@
               </div>
             </div>
           </div>
-          <div class="offer-price">
-            ${Number(vendor.rate).toFixed(2)} ${vendor.fiat}
-            <span>per ${vendor.crypto}</span>
+          <div class="offer-premium">
+            <span class="premium-value">
+              Rate: ${vendor.premium >= 0 ? '+' : ''}${vendor.premium}%
+            </span>
+            <span class="market-rate">${vendor.premium >= 0 ? 'Above' : 'Below'} market price</span>
           </div>
           <div class="offer-limits">
-            <span>${vendor.limits.cryptoMin} - ${vendor.limits.cryptoMax} ${vendor.crypto}</span>
-            <span>(${vendor.limits.fiatMin} - ${vendor.limits.fiatMax} ${vendor.fiat})</span>
+            <span>
+              ${
+              vendor.crypto === 'BTC'
+              ? '<i class="fab fa-btc"></i>'
+              : vendor.crypto === 'ETH'
+              ? '<i class="fab fa-ethereum"></i>'
+              : vendor.crypto === 'USDT' || vendor.crypto === 'USDC'
+              ? '$'
+              : vendor.crypto
+              } ${vendor.crypto}
+               </span>
+               <span>Limits: ${vendor.limits.fiatMin.toLocaleString()} - ${vendor.limits.fiatMax.toLocaleString()} ${vendor.fiat}
+                </span>
           </div>
           <div class="offer-payment">
             ${vendor.payments.map(payment => `
@@ -1125,6 +1484,7 @@
     function getPaymentIcon(paymentMethod) {
       const icons = {
         'PayPal': 'fab fa-paypal',
+        'Bank': 'fas fa-university',
         'Bank Transfer': 'fas fa-university',
         'Cash': 'fas fa-money-bill-alt',
         'Mobile Money': 'fas fa-mobile-alt',
@@ -1134,20 +1494,245 @@
         'Faster Payments': 'fas fa-pound-sign',
         'Wise': 'fas fa-money-bill-wave',
         'Cash App': 'fas fa-mobile-alt',
-        'Revolut': 'fas fa-credit-card'
+        'Revolut': 'fas fa-credit-card',
+        'M-Pesa': 'fas fa-mobile-alt'
       };
       return icons[paymentMethod] || 'fas fa-money-bill-wave';
     }
 
+    // Set up filter functionality
+    function setupFilters() {
+      // Get all filter buttons and their corresponding dropdowns
+      const cryptoFilterBtn = document.getElementById('cryptoFilterBtn');
+      const fiatFilterBtn = document.getElementById('fiatFilterBtn');
+      const countryFilterBtn = document.getElementById('countryFilterBtn');
+      const paymentFilterBtn = document.getElementById('paymentFilterBtn');
+      const ratingFilterBtn = document.getElementById('ratingFilterBtn');
+      
+      // Get all filter dropdown items
+      const cryptoFilterItems = document.querySelectorAll('#cryptoFilter a');
+      const fiatFilterItems = document.querySelectorAll('#fiatFilter a');
+      const countryFilterItems = document.querySelectorAll('#countryFilter a');
+      const paymentFilterItems = document.querySelectorAll('#paymentFilter a');
+      const ratingFilterItems = document.querySelectorAll('#ratingFilter a');
+      
+      // Set up event listeners for filter items
+      cryptoFilterItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const value = item.getAttribute('data-value');
+          filters.crypto = value;
+          cryptoFilterBtn.innerHTML = `<i class="fas fa-coins"></i> ${item.textContent} <i class="fas fa-chevron-down"></i>`;
+          applyFilters();
+        });
+      });
+      
+      fiatFilterItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const value = item.getAttribute('data-value');
+          filters.fiat = value;
+          fiatFilterBtn.innerHTML = `<i class="fas fa-money-bill-wave"></i> ${item.textContent} <i class="fas fa-chevron-down"></i>`;
+          applyFilters();
+        });
+      });
+      
+      countryFilterItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const value = item.getAttribute('data-value');
+          filters.country = value;
+          countryFilterBtn.innerHTML = `<i class="fas fa-globe"></i> ${item.textContent} <i class="fas fa-chevron-down"></i>`;
+          applyFilters();
+        });
+      });
+      
+      paymentFilterItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const value = item.getAttribute('data-value');
+          filters.payment = value;
+          paymentFilterBtn.innerHTML = `<i class="fas fa-money-bill-wave"></i> ${item.textContent} <i class="fas fa-chevron-down"></i>`;
+          applyFilters();
+        });
+      });
+      
+      ratingFilterItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const value = parseFloat(item.getAttribute('data-value'));
+          filters.minRating = value;
+          ratingFilterBtn.innerHTML = `<i class="fas fa-star"></i> ${item.textContent} <i class="fas fa-chevron-down"></i>`;
+          applyFilters();
+        });
+      });
+      
+      // Set up search input listener
+      searchInput.addEventListener('input', (e) => {
+        filters.search = e.target.value.toLowerCase();
+        applyFilters();
+      });
+      
+      // Set up sort select listener
+      sortSelect.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        loadAndDisplayVendors();
+      });
+    }
+
+    // Function to apply all active filters
+    function applyFilters() {
+      let filteredVendors = [...allVendors];
+      
+      // Apply crypto filter
+      if (filters.crypto !== 'all') {
+        filteredVendors = filteredVendors.filter(vendor => 
+          vendor.crypto === filters.crypto
+        );
+      }
+      
+      // Apply fiat filter
+      if (filters.fiat !== 'all') {
+        filteredVendors = filteredVendors.filter(vendor => 
+          vendor.fiat === filters.fiat
+        );
+      }
+      
+      // Apply country filter
+      if (filters.country !== 'all') {
+        filteredVendors = filteredVendors.filter(vendor => 
+          vendor.country === filters.country
+        );
+      }
+      
+      // Apply payment method filter
+      if (filters.payment !== 'all') {
+        filteredVendors = filteredVendors.filter(vendor => 
+          vendor.payments.includes(filters.payment)
+        );
+      }
+      
+      // Apply rating filter
+      if (filters.minRating > 0) {
+        filteredVendors = filteredVendors.filter(vendor => 
+          vendor.rating >= filters.minRating
+        );
+      }
+      
+      // Apply search filter
+      if (filters.search) {
+        filteredVendors = filteredVendors.filter(vendor => 
+          vendor.name.toLowerCase().includes(filters.search) ||
+          (vendor.crypto.toLowerCase().includes(filters.search)) ||
+          (vendor.fiat.toLowerCase().includes(filters.search)) ||
+          vendor.payments.some(payment => 
+            payment.toLowerCase().includes(filters.search)
+          )
+        );
+      }
+      
+      // Display the filtered results
+      displayVendors(filteredVendors);
+    }
+
+    // Load and display vendors with current sort
+    async function loadAndDisplayVendors() {
+      try {
+        allVendors = await loadVendors();
+        applyFilters();
+      } catch (error) {
+        console.error("Error loading vendors:", error);
+      }
+    }
+
+    // Set up modal functionality
+    function setupModals() {
+      // Become Vendor Modal
+      becomeVendorBtn.addEventListener('click', () => {
+        vendorModal.style.display = 'flex';
+      });
+      
+      closeVendorModal.addEventListener('click', () => {
+        vendorModal.style.display = 'none';
+      });
+      
+      cancelVendorBtn.addEventListener('click', () => {
+        vendorModal.style.display = 'none';
+      });
+      
+      proceedToDepositBtn.addEventListener('click', () => {
+        vendorModal.style.display = 'none';
+        window.location.href = 'deposit.html';
+      });
+      
+      // Buy Modal
+      closeBuyModal.addEventListener('click', () => {
+        buyModal.style.display = 'none';
+      });
+      
+      cancelBuyBtn.addEventListener('click', () => {
+        buyModal.style.display = 'none';
+      });
+      
+      activateAccountBtn.addEventListener('click', () => {
+        buyModal.style.display = 'none';
+        window.location.href = 'deposit.html';
+      });
+      
+      // Close modals when clicking outside
+      window.addEventListener('click', (e) => {
+        if (e.target === vendorModal) {
+          vendorModal.style.display = 'none';
+        }
+        if (e.target === buyModal) {
+          buyModal.style.display = 'none';
+        }
+      });
+    }
+
+    // Set up filter toggle functionality
+    function setupFilterToggle() {
+      moreFiltersBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        secondaryFilters.classList.toggle('active');
+      });
+      
+      // Close when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.filter-group-secondary')) {
+          secondaryFilters.classList.remove('active');
+        }
+      });
+    }
+
+    // Attach event listeners to buy buttons
+    function attachBuyButtonListeners() {
+      document.querySelectorAll('.buy-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const vendorId = e.currentTarget.getAttribute('data-vendor-id');
+          buyModal.style.display = 'flex';
+        });
+      });
+    }
+
+    // Set up authentication
+    function setupAuth() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          document.getElementById('userName').textContent = user.displayName || 'User';
+        } else {
+          window.location.href = 'login.html';
+        }
+      });
+    }
+
     // Initialize the application
     async function initApp() {
-      const vendors = await loadVendors();
-      displayVendors(vendors);
-      
-      // Setup other event listeners...
-      setupFilters();
       setupAuth();
       setupModals();
+      setupFilters();
+      setupFilterToggle();
+      await loadAndDisplayVendors();
     }
 
     // Start the app

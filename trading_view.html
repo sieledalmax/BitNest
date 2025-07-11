@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced Crypto Swap</title>
+  <title>Advanced Crypto Trading | BitNest</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- TradingView Lightweight Charts -->
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
   <style>
     :root {
       --primary: #1ed3c6;
@@ -23,6 +25,20 @@
       --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
       --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       --glass-effect: rgba(16, 18, 22, 0.7);
+    }
+
+    /* Reset and Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
     }
 
     /* Navbar Styles */
@@ -151,30 +167,91 @@
       100% { transform: rotate(0deg); }
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--dark-bg);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-    }
-
+    /* Main App Container */
     .app-container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       padding: 0 20px;
     }
 
-    .swap-header {
+    /* Trading View Header */
+    .trading-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+    }
+
+    .pair-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pair-selector .pair {
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pair-selector .pair img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .pair-stats {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .price {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .change {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .positive {
+      background: rgba(0, 230, 118, 0.1);
+      color: var(--accent-green);
+    }
+
+    .negative {
+      background: rgba(255, 82, 82, 0.1);
+      color: var(--accent-red);
+    }
+
+    .timeframes {
+      display: flex;
+      gap: 5px;
+      background: var(--card-bg);
+      padding: 5px;
+      border-radius: 8px;
+    }
+
+    .timeframe {
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .timeframe.active {
+      background: var(--primary);
+      color: #000;
+    }
+
+    .trading-actions {
+      display: flex;
+      gap: 15px;
     }
 
     .wallet-btn {
@@ -196,215 +273,173 @@
       box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
     }
 
-    .main-layout {
+    /* Main Trading Layout */
+    .main-trading-layout {
       display: grid;
-      grid-template-columns: 1fr 400px;
+      grid-template-columns: 1fr 350px;
       gap: 20px;
     }
 
-    .market-data {
+    /* Chart Container */
+    .chart-container {
       background: var(--card-bg);
       border-radius: var(--border-radius);
       padding: 20px;
       box-shadow: var(--box-shadow);
-    }
-
-    .swap-container {
-      background: var(--card-bg);
-      border-radius: var(--border-radius);
-      padding: 20px;
-      box-shadow: var(--box-shadow);
-      position: sticky;
-      top: 100px;
-    }
-
-    .token-selector {
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 10px;
+      height: 500px;
       position: relative;
     }
 
-    .token-input {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-    }
-
-    .token-input input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 24px;
-      outline: none;
-    }
-
-    .token-balance {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 5px;
-      text-align: right;
-    }
-
-    .token-select {
-      background: rgba(30, 211, 198, 0.1);
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      gap: 8px;
-      font-weight: 500;
-    }
-
-    .swap-button {
+    #trading-chart {
       width: 100%;
-      background: var(--primary);
-      color: black;
-      border: none;
-      padding: 16px;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 16px;
-      margin: 10px 0;
-      cursor: pointer;
-      transition: var(--transition);
+      height: 100%;
     }
 
-    .swap-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
-    }
-
-    .swap-button:disabled {
-      background: var(--text-secondary);
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .swap-arrow {
-      display: flex;
-      justify-content: center;
-      margin: 10px 0;
-    }
-
-    .swap-arrow button {
-      background: var(--card-bg);
-      border: 2px solid var(--text-secondary);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--text-primary);
-      transition: var(--transition);
-    }
-
-    .swap-arrow button:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-      transform: rotate(180deg);
-    }
-
-    .price-info {
-      font-size: 14px;
-      color: var(--text-secondary);
-      text-align: center;
-      margin: 15px 0;
-      padding: 10px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-    }
-
-    .token-list {
+    .chart-controls {
       position: absolute;
-      top: 70px;
-      left: 0;
-      right: 0;
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 10px;
+      top: 25px;
+      right: 25px;
+      display: flex;
+      gap: 10px;
       z-index: 10;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-      max-height: 300px;
-      overflow-y: auto;
-      display: none;
     }
 
-    .token-item {
+    .chart-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
-      padding: 10px;
+      justify-content: center;
+      color: var(--text-primary);
       cursor: pointer;
-      border-radius: 8px;
+      transition: var(--transition);
     }
 
-    .token-item:hover {
-      background: rgba(255,255,255,0.05);
+    .chart-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
     }
 
-    .token-item img {
-      width: 24px;
-      height: 24px;
-      margin-right: 10px;
+    .chart-btn.active {
+      background: var(--primary);
+      color: #000;
     }
 
-    .token-search {
-      width: 100%;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 8px 12px;
-      color: white;
-      margin-bottom: 10px;
+    /* Crypto Pairs List */
+    .crypto-pairs {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--box-shadow);
+      height: 500px;
+      display: flex;
+      flex-direction: column;
     }
 
-    .swap-details {
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 15px;
-    }
-
-    .detail-row {
+    .crypto-pairs-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 14px;
+      margin-bottom: 15px;
     }
 
-    .detail-label {
-      color: var(--text-secondary);
+    .crypto-pairs-title {
+      font-weight: 600;
     }
 
-    .detail-value {
+    .crypto-pairs-search {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: white;
+      font-size: 0.9rem;
+      width: 60%;
+    }
+
+    .crypto-pairs-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .pair-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pair-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .pair-item.active {
+      background: rgba(30, 211, 198, 0.1);
+    }
+
+    .pair-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pair-info img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .pair-name {
       font-weight: 500;
     }
 
-    .tabs {
+    .pair-price {
+      font-weight: 600;
+    }
+
+    .pair-change {
+      font-size: 0.85rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Trading Panel - Adjusted to fit under chart */
+    .trading-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+      grid-column: 1 / span 1;
+    }
+
+    .trade-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .trade-tabs {
       display: flex;
       margin-bottom: 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .tab {
-      padding: 10px 20px;
+    .trade-tab {
+      padding: 8px 15px;
       cursor: pointer;
       position: relative;
+      font-size: 0.9rem;
     }
 
-    .tab.active {
+    .trade-tab.active {
       color: var(--primary);
     }
 
-    .tab.active::after {
+    .trade-tab.active::after {
       content: '';
       position: absolute;
       bottom: -1px;
@@ -414,15 +449,112 @@
       background: var(--primary);
     }
 
-    .market-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    /* Trade Form */
+    .trade-form {
+      display: flex;
+      flex-direction: column;
       gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .form-input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 12px 15px;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .amount-controls {
+      display: flex;
+      gap: 5px;
+      margin-top: 5px;
+    }
+
+    .amount-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      border-radius: 6px;
+      padding: 5px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .amount-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .trade-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 10px;
+    }
+
+    .buy-btn {
+      background: var(--accent-green);
+      color: #000;
+    }
+
+    .buy-btn:hover {
+      background: #00c968;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 230, 118, 0.3);
+    }
+
+    .sell-btn {
+      background: var(--accent-red);
+      color: #000;
+    }
+
+    .sell-btn:hover {
+      background: #e64848;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 82, 82, 0.3);
+    }
+
+    /* Market Data */
+    .market-data {
+      grid-column: span 2;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--box-shadow);
       margin-top: 20px;
     }
 
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
     .market-card {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 8px;
       padding: 15px;
       transition: var(--transition);
@@ -430,7 +562,7 @@
     }
 
     .market-card:hover {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       transform: translateY(-3px);
     }
 
@@ -447,7 +579,7 @@
     }
 
     .market-price {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       margin-bottom: 5px;
     }
@@ -459,74 +591,22 @@
       display: inline-block;
     }
 
-    .positive {
-      background: rgba(0, 230, 118, 0.1);
-      color: var(--accent-green);
-    }
-
-    .negative {
-      background: rgba(255, 82, 82, 0.1);
-      color: var(--accent-red);
-    }
-
-    .transaction-history {
-      margin-top: 30px;
-    }
-
-    .history-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .history-amount {
-      font-weight: 500;
-    }
-
-    .history-date {
-      color: var(--text-secondary);
-      font-size: 12px;
-    }
-
-    .slippage-settings {
-      display: flex;
-      gap: 8px;
-      margin-top: 15px;
-    }
-
-    .slippage-option {
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-      padding: 6px 12px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .slippage-option.active {
-      background: var(--primary);
-      color: black;
-    }
-
-    .slippage-custom input {
-      width: 50px;
-      background: rgba(255,255,255,0.05);
-      border: none;
-      border-radius: 8px;
-      padding: 6px;
-      color: white;
-      text-align: center;
-    }
-
-    @media (max-width: 768px) {
-      .main-layout {
+    /* Responsive Styles */
+    @media (max-width: 1200px) {
+      .main-trading-layout {
         grid-template-columns: 1fr;
       }
       
-      .swap-container {
-        position: static;
+      .crypto-pairs {
+        height: 300px;
       }
+      
+      .trading-panel {
+        grid-column: 1 / span 1;
+      }
+    }
 
+    @media (max-width: 768px) {
       .navbar {
         padding: 1rem;
         flex-direction: column;
@@ -538,15 +618,34 @@
         justify-content: space-between;
         flex-wrap: wrap;
       }
-    }
-
-    @media (max-width: 576px) {
+      
+      .trading-panel {
+        grid-template-columns: 1fr;
+      }
+      
       .market-grid {
         grid-template-columns: 1fr 1fr;
       }
+    }
 
-      .tabs {
-        overflow-x: auto;
+    @media (max-width: 576px) {
+      .trading-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .pair-stats {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .timeframes {
+        display: none;
+      }
+      
+      .market-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -583,121 +682,119 @@
   </div>
 
   <div class="app-container">
-    <div class="swap-header">
-      <h1 class="logo">
-        <i class="fas fa-exchange-alt"></i>
-        <span>CryptoSwap Pro</span>
-      </h1>
-      <button class="wallet-btn" id="connectWallet">
-        <i class="fas fa-wallet"></i>
-        <span>Connect Wallet</span>
-      </button>
-    </div>
-
-    <div class="main-layout">
-      <div class="market-data">
-        <div class="tabs">
-          <div class="tab active">Market</div>
-          <div class="tab">Watchlist</div>
-          <div class="tab">Trending</div>
+    <!-- Trading View Header -->
+    <div class="trading-header">
+      <div class="pair-selector">
+        <div class="pair" id="currentPair">
+          <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC">
+          <span>BTC/USDT</span>
+          <i class="fas fa-chevron-down"></i>
         </div>
-        
-        <div class="market-grid" id="marketGrid">
-          <!-- Market data will be populated here -->
-        </div>
-
-        <div class="transaction-history">
-          <h3>Recent Transactions</h3>
-          <div id="transactionList">
-            <!-- Transactions will be populated here -->
+        <div class="pair-stats">
+          <div class="price">$42,350.75</div>
+          <div class="change positive">+2.5%</div>
+          <div class="timeframes">
+            <div class="timeframe">1h</div>
+            <div class="timeframe">4h</div>
+            <div class="timeframe active">1d</div>
+            <div class="timeframe">1w</div>
+            <div class="timeframe">1m</div>
           </div>
         </div>
       </div>
-
-      <div class="swap-container">
-        <div class="tabs">
-          <div class="tab active">Swap</div>
-          <div class="tab">Limit</div>
-          <div class="tab">Liquidity</div>
-        </div>
-
-        <div class="token-selector">
-          <div class="token-select" id="fromTokenSelect">
-            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH">
-            <span>ETH</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="token-input">
-            <input type="number" id="fromAmount" value="0.1" min="0" step="any">
-          </div>
-          <div class="token-balance">Balance: 2.45 ETH</div>
-          
-          <div class="token-list" id="fromTokenList">
-            <input type="text" class="token-search" placeholder="Search token...">
-            <!-- Tokens will be populated here -->
-          </div>
-        </div>
-        
-        <div class="swap-arrow">
-          <button id="switchTokens">
-            <i class="fas fa-arrow-down"></i>
-          </button>
-        </div>
-        
-        <div class="token-selector">
-          <div class="token-select" id="toTokenSelect">
-            <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC">
-            <span>USDC</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="token-input">
-            <input type="number" id="toAmount" readonly>
-          </div>
-          <div class="token-balance">Balance: 1,250 USDC</div>
-          
-          <div class="token-list" id="toTokenList">
-            <input type="text" class="token-search" placeholder="Search token...">
-            <!-- Tokens will be populated here -->
-          </div>
-        </div>
-        
-        <div class="price-info" id="priceInfo">
-          <div>1 ETH = $3,250.42</div>
-          <div style="font-size:12px;margin-top:5px;">Expected output: 325.04 USDC</div>
-        </div>
-        
-        <div class="swap-details">
-          <div class="detail-row">
-            <span class="detail-label">Exchange Rate</span>
-            <span class="detail-value" id="exchangeRate">1 ETH = 3250.42 USDC</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Price Impact</span>
-            <span class="detail-value" id="priceImpact"><0.01%</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Minimum Received</span>
-            <span class="detail-value" id="minReceived">324.35 USDC</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Network Fee</span>
-            <span class="detail-value" id="networkFee">~$5.42</span>
-          </div>
-        </div>
-
-        <div class="slippage-settings">
-          <span style="font-size:14px;color:var(--text-secondary)">Slippage:</span>
-          <div class="slippage-option active">0.5%</div>
-          <div class="slippage-option">1%</div>
-          <div class="slippage-option">2%</div>
-          <div class="slippage-custom">
-            <input type="number" value="0.5" min="0" max="50" step="0.1">%
-          </div>
-        </div>
-        
-        <button class="swap-button" id="swapButton">
-          <i class="fas fa-exchange-alt"></i> Swap
+      <div class="trading-actions">
+        <button class="wallet-btn" id="connectWallet">
+          <i class="fas fa-wallet"></i>
+          <span>Connect Wallet</span>
         </button>
+      </div>
+    </div>
+
+    <!-- Main Trading Layout -->
+    <div class="main-trading-layout">
+      <!-- Chart Container -->
+      <div class="chart-container">
+        <div class="chart-controls">
+          <button class="chart-btn" title="Candlestick"><i class="fas fa-chart-line"></i></button>
+          <button class="chart-btn active" title="Line Chart"><i class="fas fa-chart-simple"></i></button>
+          <button class="chart-btn" title="Depth Chart"><i class="fas fa-chart-area"></i></button>
+          <button class="chart-btn" title="Indicator"><i class="fas fa-plus"></i></button>
+        </div>
+        <div id="trading-chart"></div>
+      </div>
+
+      <!-- Crypto Pairs List -->
+      <div class="crypto-pairs">
+        <div class="crypto-pairs-header">
+          <div class="crypto-pairs-title">Markets</div>
+          <input type="text" class="crypto-pairs-search" placeholder="Search pairs...">
+        </div>
+        <div class="crypto-pairs-list" id="cryptoPairsList">
+          <!-- Crypto pairs will be populated here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Trading Panel - Now placed under the chart -->
+    <div class="trading-panel">
+      <!-- Buy Card -->
+      <div class="trade-card">
+        <div class="trade-tabs">
+          <div class="trade-tab active">Market</div>
+          <div class="trade-tab">Limit</div>
+          <div class="trade-tab">Stop</div>
+        </div>
+        <form class="trade-form">
+          <div class="form-group">
+            <label class="form-label">Amount (BTC)</label>
+            <input type="number" class="form-input" placeholder="0.00" step="0.000001">
+            <div class="amount-controls">
+              <button type="button" class="amount-btn">25%</button>
+              <button type="button" class="amount-btn">50%</button>
+              <button type="button" class="amount-btn">75%</button>
+              <button type="button" class="amount-btn">100%</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total (USDT)</label>
+            <input type="number" class="form-input" placeholder="0.00" readonly>
+          </div>
+          <button type="button" class="trade-btn buy-btn">Buy BTC</button>
+        </form>
+      </div>
+
+      <!-- Sell Card -->
+      <div class="trade-card">
+        <div class="trade-tabs">
+          <div class="trade-tab active">Market</div>
+          <div class="trade-tab">Limit</div>
+          <div class="trade-tab">Stop</div>
+        </div>
+        <form class="trade-form">
+          <div class="form-group">
+            <label class="form-label">Amount (BTC)</label>
+            <input type="number" class="form-input" placeholder="0.00" step="0.000001">
+            <div class="amount-controls">
+              <button type="button" class="amount-btn">25%</button>
+              <button type="button" class="amount-btn">50%</button>
+              <button type="button" class="amount-btn">75%</button>
+              <button type="button" class="amount-btn">100%</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total (USDT)</label>
+            <input type="number" class="form-input" placeholder="0.00" readonly>
+          </div>
+          <button type="button" class="trade-btn sell-btn">Sell BTC</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Market Data -->
+    <div class="market-data">
+      <h3>Top Cryptocurrencies</h3>
+      <div class="market-grid" id="marketGrid">
+        <!-- Market data will be populated here -->
       </div>
     </div>
   </div>
@@ -721,7 +818,7 @@
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
       projectId: "bitnest-c7452",
-      storageBucket: "bitnest-c7452.firebasestorage.app",
+      storageBucket: "bitnest-c7452.appspot.com",
       messagingSenderId: "583165336540",
       appId: "1:583165336540:web:25719de02e18bc60eb0d19",
       measurementId: "G-PGJNHTL03J"
@@ -736,6 +833,198 @@
     const userNameElement = document.getElementById('userName');
     const userProfilePicElement = document.getElementById('userProfilePic');
     const userProfileElement = document.getElementById('userProfile');
+    const connectWallet = document.getElementById('connectWallet');
+    const marketGrid = document.getElementById('marketGrid');
+    const currentPair = document.getElementById('currentPair');
+    const cryptoPairsList = document.getElementById('cryptoPairsList');
+
+    // Token data with current prices
+    const tokens = [
+      { symbol: 'BTC', name: 'Bitcoin', image: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png', price: 42350.75, change24h: 2.5, pair: 'BTC/USDT' },
+      { symbol: 'ETH', name: 'Ethereum', image: 'https://cryptologos.cc/logos/ethereum-eth-logo.png', price: 2250.42, change24h: 1.8, pair: 'ETH/USDT' },
+      { symbol: 'USDT', name: 'Tether', image: 'https://cryptologos.cc/logos/tether-usdt-logo.png', price: 1.00, change24h: 0, pair: 'USDT/USD' },
+      { symbol: 'SOL', name: 'Solana', image: 'https://cryptologos.cc/logos/solana-sol-logo.png', price: 98.76, change24h: 5.8, pair: 'SOL/USDT' },
+      { symbol: 'BNB', name: 'Binance Coin', image: 'https://cryptologos.cc/logos/bnb-bnb-logo.png', price: 305.89, change24h: 3.1, pair: 'BNB/USDT' },
+      { symbol: 'ADA', name: 'Cardano', image: 'https://cryptologos.cc/logos/cardano-ada-logo.png', price: 0.45, change24h: -0.7, pair: 'ADA/USDT' },
+      { symbol: 'XRP', name: 'Ripple', image: 'https://cryptologos.cc/logos/xrp-xrp-logo.png', price: 0.52, change24h: 1.3, pair: 'XRP/USDT' },
+      { symbol: 'DOGE', name: 'Dogecoin', image: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png', price: 0.12, change24h: 8.5, pair: 'DOGE/USDT' },
+      { symbol: 'DOT', name: 'Polkadot', image: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png', price: 6.78, change24h: -2.1, pair: 'DOT/USDT' },
+      { symbol: 'LTC', name: 'Litecoin', image: 'https://cryptologos.cc/logos/litecoin-ltc-logo.png', price: 68.90, change24h: 0.5, pair: 'LTC/USDT' },
+      { symbol: 'AVAX', name: 'Avalanche', image: 'https://cryptologos.cc/logos/avalanche-avax-logo.png', price: 35.67, change24h: 4.2, pair: 'AVAX/USDT' },
+      { symbol: 'LINK', name: 'Chainlink', image: 'https://cryptologos.cc/logos/chainlink-link-logo.png', price: 18.25, change24h: -1.2, pair: 'LINK/USDT' },
+      { symbol: 'MATIC', name: 'Polygon', image: 'https://cryptologos.cc/logos/polygon-matic-logo.png', price: 0.75, change24h: 2.3, pair: 'MATIC/USDT' },
+      { symbol: 'UNI', name: 'Uniswap', image: 'https://cryptologos.cc/logos/uniswap-uni-logo.png', price: 6.20, change24h: -0.8, pair: 'UNI/USDT' },
+      { symbol: 'ATOM', name: 'Cosmos', image: 'https://cryptologos.cc/logos/cosmos-atom-logo.png', price: 9.45, change24h: 1.5, pair: 'ATOM/USDT' },
+      { symbol: 'FIL', name: 'Filecoin', image: 'https://cryptologos.cc/logos/filecoin-fil-logo.png', price: 5.60, change24h: -3.2, pair: 'FIL/USDT' },
+      { symbol: 'XLM', name: 'Stellar', image: 'https://cryptologos.cc/logos/stellar-xlm-logo.png', price: 0.12, change24h: 0.7, pair: 'XLM/USDT' },
+      { symbol: 'ETC', name: 'Ethereum Classic', image: 'https://cryptologos.cc/logos/ethereum-classic-etc-logo.png', price: 23.40, change24h: -1.8, pair: 'ETC/USDT' },
+      { symbol: 'USDC', name: 'USD Coin', image: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png', price: 1.00, change24h: 0, pair: 'USDC/USD' },
+      { symbol: 'BCH', name: 'Bitcoin Cash', image: 'https://cryptologos.cc/logos/bitcoin-cash-bch-logo.png', price: 245.60, change24h: 1.2, pair: 'BCH/USDT' }
+    ];
+
+    // Initialize the chart
+    function initChart() {
+      const chart = LightweightCharts.createChart(document.getElementById('trading-chart'), {
+        width: document.getElementById('trading-chart').clientWidth,
+        height: document.getElementById('trading-chart').clientHeight,
+        layout: {
+          backgroundColor: '#16181d',
+          textColor: '#b0b3b8',
+        },
+        grid: {
+          vertLines: {
+            color: 'rgba(255, 255, 255, 0.05)',
+          },
+          horzLines: {
+            color: 'rgba(255, 255, 255, 0.05)',
+          },
+        },
+        crosshair: {
+          mode: LightweightCharts.CrosshairMode.Normal,
+        },
+        rightPriceScale: {
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+        },
+        timeScale: {
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+        },
+      });
+
+      const lineSeries = chart.addLineSeries({
+        color: '#1ed3c6',
+        lineWidth: 2,
+      });
+
+      // Generate sample data
+      const now = Math.floor(Date.now() / 1000);
+      const oneDay = 24 * 60 * 60;
+      const data = [];
+      let value = 42000;
+      
+      for (let i = 0; i < 100; i++) {
+        const time = now - (100 - i) * oneDay;
+        value = value + (Math.random() - 0.5) * 1000;
+        data.push({ time, value });
+      }
+
+      lineSeries.setData(data);
+
+      // Update chart on resize
+      window.addEventListener('resize', () => {
+        chart.applyOptions({
+          width: document.getElementById('trading-chart').clientWidth,
+          height: document.getElementById('trading-chart').clientHeight,
+        });
+      });
+
+      return chart;
+    }
+
+    // Populate crypto pairs list
+    function populateCryptoPairsList() {
+      cryptoPairsList.innerHTML = '';
+      
+      tokens.forEach(token => {
+        const pairItem = document.createElement('div');
+        pairItem.className = 'pair-item';
+        pairItem.innerHTML = `
+          <div class="pair-info">
+            <img src="${token.image}" alt="${token.symbol}">
+            <div class="pair-name">${token.pair}</div>
+          </div>
+          <div>
+            <div class="pair-price">$${token.price.toLocaleString()}</div>
+            <div class="pair-change ${token.change24h >= 0 ? 'positive' : 'negative'}">
+              ${token.change24h >= 0 ? '+' : ''}${token.change24h}%
+            </div>
+          </div>
+        `;
+        
+        pairItem.addEventListener('click', () => {
+          // Remove active class from all items
+          document.querySelectorAll('.pair-item').forEach(item => {
+            item.classList.remove('active');
+          });
+          
+          // Add active class to clicked item
+          pairItem.classList.add('active');
+          
+          // Update current pair display
+          currentPair.innerHTML = `
+            <img src="${token.image}" alt="${token.symbol}">
+            <span>${token.pair}</span>
+            <i class="fas fa-chevron-down"></i>
+          `;
+          
+          // Update price display
+          document.querySelector('.pair-stats .price').textContent = `$${token.price.toLocaleString()}`;
+          const changeElement = document.querySelector('.pair-stats .change');
+          changeElement.textContent = `${token.change24h >= 0 ? '+' : ''}${token.change24h}%`;
+          changeElement.className = `change ${token.change24h >= 0 ? 'positive' : 'negative'}`;
+          
+          // In a real app, we would also update the chart here
+        });
+        
+        cryptoPairsList.appendChild(pairItem);
+      });
+      
+      // Set BTC/USDT as active by default
+      if (cryptoPairsList.firstChild) {
+        cryptoPairsList.firstChild.classList.add('active');
+      }
+    }
+
+    // Populate market grid
+    function populateMarketGrid() {
+      marketGrid.innerHTML = '';
+      
+      tokens.forEach(token => {
+        const card = document.createElement('div');
+        card.className = 'market-card';
+        card.innerHTML = `
+          <div class="market-card-header">
+            <img src="${token.image}" alt="${token.symbol}">
+            <div>${token.symbol}</div>
+          </div>
+          <div class="market-price">$${token.price.toLocaleString()}</div>
+          <div class="market-change ${token.change24h >= 0 ? 'positive' : 'negative'}">
+            ${token.change24h >= 0 ? '+' : ''}${token.change24h}%
+          </div>
+        `;
+        
+        card.addEventListener('click', () => {
+          // Update current pair
+          currentPair.innerHTML = `
+            <img src="${token.image}" alt="${token.symbol}">
+            <span>${token.pair}</span>
+            <i class="fas fa-chevron-down"></i>
+          `;
+          
+          // Update price display
+          document.querySelector('.pair-stats .price').textContent = `$${token.price.toLocaleString()}`;
+          const changeElement = document.querySelector('.pair-stats .change');
+          changeElement.textContent = `${token.change24h >= 0 ? '+' : ''}${token.change24h}%`;
+          changeElement.className = `change ${token.change24h >= 0 ? 'positive' : 'negative'}`;
+          
+          // Update active item in pairs list
+          document.querySelectorAll('.pair-item').forEach(item => {
+            item.classList.remove('active');
+          });
+          
+          // Find and activate the corresponding pair in the list
+          const pairItems = Array.from(document.querySelectorAll('.pair-item'));
+          const matchingPair = pairItems.find(item => 
+            item.querySelector('.pair-name').textContent === token.pair
+          );
+          
+          if (matchingPair) {
+            matchingPair.classList.add('active');
+          }
+        });
+        
+        marketGrid.appendChild(card);
+      });
+    }
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
@@ -781,344 +1070,73 @@
       }
     });
 
-    // Token data with current prices
-    const tokens = [
-      { symbol: 'ETH', name: 'Ethereum', image: 'https://cryptologos.cc/logos/ethereum-eth-logo.png', price: 3250.42, change24h: 2.5 },
-      { symbol: 'BTC', name: 'Bitcoin', image: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png', price: 42500.78, change24h: -1.2 },
-      { symbol: 'USDC', name: 'USD Coin', image: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png', price: 1.00, change24h: 0 },
-      { symbol: 'SOL', name: 'Solana', image: 'https://cryptologos.cc/logos/solana-sol-logo.png', price: 98.76, change24h: 5.8 },
-      { symbol: 'BNB', name: 'Binance Coin', image: 'https://cryptologos.cc/logos/bnb-bnb-logo.png', price: 305.89, change24h: 3.1 },
-      { symbol: 'ADA', name: 'Cardano', image: 'https://cryptologos.cc/logos/cardano-ada-logo.png', price: 0.45, change24h: -0.7 },
-      { symbol: 'XRP', name: 'Ripple', image: 'https://cryptologos.cc/logos/xrp-xrp-logo.png', price: 0.52, change24h: 1.3 },
-      { symbol: 'DOT', name: 'Polkadot', image: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png', price: 6.78, change24h: -2.1 },
-      { symbol: 'DOGE', name: 'Dogecoin', image: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png', price: 0.12, change24h: 8.5 },
-      { symbol: 'AVAX', name: 'Avalanche', image: 'https://cryptologos.cc/logos/avalanche-avax-logo.png', price: 35.67, change24h: 4.2 }
-    ];
-
-    // Sample transaction history
-    const transactions = [
-      { from: 'ETH', to: 'USDC', amount: 0.5, value: 1625.21, date: '2023-05-15 14:30' },
-      { from: 'SOL', to: 'BTC', amount: 10, value: 0.023, date: '2023-05-14 09:15' },
-      { from: 'USDC', to: 'ETH', amount: 500, value: 0.153, date: '2023-05-12 18:45' }
-    ];
-
-    // DOM elements
-    const fromTokenSelect = document.getElementById('fromTokenSelect');
-    const toTokenSelect = document.getElementById('toTokenSelect');
-    const fromTokenList = document.getElementById('fromTokenList');
-    const toTokenList = document.getElementById('toTokenList');
-    const fromAmount = document.getElementById('fromAmount');
-    const toAmount = document.getElementById('toAmount');
-    const priceInfo = document.getElementById('priceInfo');
-    const switchButton = document.getElementById('switchTokens');
-    const swapButton = document.getElementById('swapButton');
-    const connectWallet = document.getElementById('connectWallet');
-    const marketGrid = document.getElementById('marketGrid');
-    const transactionList = document.getElementById('transactionList');
-    const exchangeRate = document.getElementById('exchangeRate');
-    const priceImpact = document.getElementById('priceImpact');
-    const minReceived = document.getElementById('minReceived');
-    const networkFee = document.getElementById('networkFee');
-
-    // Current selected tokens
-    let fromToken = tokens[0]; // ETH by default
-    let toToken = tokens[2];   // USDC by default
-    let slippage = 0.5; // Default slippage tolerance
-    let walletConnected = false;
-
     // Initialize the app
     function initApp() {
-      populateTokenLists();
+      initChart();
+      populateCryptoPairsList();
       populateMarketGrid();
-      populateTransactionHistory();
-      updateConversion();
-      setupEventListeners();
-      simulatePriceChanges();
-    }
-
-    // Populate token lists
-    function populateTokenLists() {
-      // Clear existing lists
-      const fromListContainer = fromTokenList.querySelector('.token-list-items') || document.createElement('div');
-      const toListContainer = toTokenList.querySelector('.token-list-items') || document.createElement('div');
       
-      fromListContainer.className = 'token-list-items';
-      toListContainer.className = 'token-list-items';
-      fromListContainer.innerHTML = '';
-      toListContainer.innerHTML = '';
+      // Connect wallet button
+      let walletConnected = false;
       
-      // Add search functionality
-      const fromSearch = fromTokenList.querySelector('.token-search');
-      const toSearch = toTokenList.querySelector('.token-search');
-      
-      fromSearch.addEventListener('input', (e) => filterTokenList(e.target.value, fromListContainer));
-      toSearch.addEventListener('input', (e) => filterTokenList(e.target.value, toListContainer));
-      
-      // Add tokens to lists
-      tokens.forEach(token => {
-        const fromItem = createTokenItem(token, () => {
-          fromToken = token;
-          updateTokenDisplay(fromTokenSelect, token);
-          fromTokenList.style.display = 'none';
-          updateConversion();
-        });
-        
-        const toItem = createTokenItem(token, () => {
-          toToken = token;
-          updateTokenDisplay(toTokenSelect, token);
-          toTokenList.style.display = 'none';
-          updateConversion();
-        });
-        
-        fromListContainer.appendChild(fromItem);
-        toListContainer.appendChild(toItem);
-      });
-      
-      fromTokenList.appendChild(fromListContainer);
-      toTokenList.appendChild(toListContainer);
-      
-      // Set initial token displays
-      updateTokenDisplay(fromTokenSelect, fromToken);
-      updateTokenDisplay(toTokenSelect, toToken);
-    }
-
-    function createTokenItem(token, onClick) {
-      const item = document.createElement('div');
-      item.className = 'token-item';
-      item.innerHTML = `
-        <img src="${token.image}" alt="${token.symbol}">
-        <div style="flex:1">
-          <div>${token.symbol}</div>
-          <div style="font-size:12px;color:var(--text-secondary)">${token.name}</div>
-        </div>
-        <div style="text-align:right">
-          <div>$${token.price.toLocaleString()}</div>
-          <div class="${token.change24h >= 0 ? 'positive' : 'negative'}" style="font-size:12px">
-            ${token.change24h >= 0 ? '+' : ''}${token.change24h}%
-          </div>
-        </div>
-      `;
-      item.addEventListener('click', onClick);
-      return item;
-    }
-
-    function filterTokenList(searchTerm, container) {
-      const items = container.querySelectorAll('.token-item');
-      const term = searchTerm.toLowerCase();
-      
-      items.forEach(item => {
-        const symbol = item.querySelector('div').textContent.toLowerCase();
-        const name = item.querySelector('div:nth-child(2)').textContent.toLowerCase();
-        const show = symbol.includes(term) || name.includes(term);
-        item.style.display = show ? 'flex' : 'none';
-      });
-    }
-
-    function updateTokenDisplay(element, token) {
-      element.innerHTML = `
-        <img src="${token.image}" alt="${token.symbol}">
-        <span>${token.symbol}</span>
-        <i class="fas fa-chevron-down"></i>
-      `;
-    }
-
-    // Populate market data grid
-    function populateMarketGrid() {
-      marketGrid.innerHTML = '';
-      
-      tokens.forEach(token => {
-        const card = document.createElement('div');
-        card.className = 'market-card';
-        card.innerHTML = `
-          <div class="market-card-header">
-            <img src="${token.image}" alt="${token.symbol}">
-            <div>${token.symbol}</div>
-          </div>
-          <div class="market-price">$${token.price.toLocaleString()}</div>
-          <div class="market-change ${token.change24h >= 0 ? 'positive' : 'negative'}">
-            ${token.change24h >= 0 ? '+' : ''}${token.change24h}%
-          </div>
-        `;
-        
-        card.addEventListener('click', () => {
-          fromToken = token;
-          updateTokenDisplay(fromTokenSelect, token);
-          fromAmount.value = '1';
-          updateConversion();
-        });
-        
-        marketGrid.appendChild(card);
-      });
-    }
-
-    // Populate transaction history
-    function populateTransactionHistory() {
-      transactionList.innerHTML = '';
-      
-      transactions.forEach(tx => {
-        const item = document.createElement('div');
-        item.className = 'history-item';
-        item.innerHTML = `
-          <div>
-            <div>Swapped ${tx.amount} ${tx.from} to ${tx.value} ${tx.to}</div>
-            <div class="history-date">${tx.date}</div>
-          </div>
-          <div class="history-amount">$${(tx.amount * (tokens.find(t => t.symbol === tx.from)?.price || 0).toFixed(2)}</div>
-        `;
-        transactionList.appendChild(item);
-      });
-    }
-
-    // Calculate conversion and update UI
-    function updateConversion() {
-      const amount = parseFloat(fromAmount.value) || 0;
-      const conversionRate = fromToken.price / toToken.price;
-      const convertedAmount = amount * conversionRate;
-      
-      // Update outputs
-      toAmount.value = convertedAmount.toFixed(6);
-      priceInfo.innerHTML = `
-        <div>1 ${fromToken.symbol} = ${conversionRate.toFixed(6)} ${toToken.symbol}</div>
-        <div style="font-size:12px;margin-top:5px;">Expected output: ${convertedAmount.toFixed(2)} ${toToken.symbol}</div>
-      `;
-      
-      // Update details
-      exchangeRate.textContent = `1 ${fromToken.symbol} = ${conversionRate.toFixed(6)} ${toToken.symbol}`;
-      priceImpact.textContent = "<0.01%"; // Simplified for demo
-      minReceived.textContent = `${(convertedAmount * (1 - slippage/100)).toFixed(2)} ${toToken.symbol}`;
-      networkFee.textContent = "~$5.42"; // Static for demo
-      
-      // Update button state
-      swapButton.disabled = amount <= 0 || !walletConnected;
-    }
-
-    // Setup event listeners
-    function setupEventListeners() {
-      // Token selection
-      fromTokenSelect.addEventListener('click', (e) => {
-        e.stopPropagation();
-        fromTokenList.style.display = fromTokenList.style.display === 'block' ? 'none' : 'block';
-        toTokenList.style.display = 'none';
-      });
-
-      toTokenSelect.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toTokenList.style.display = toTokenList.style.display === 'block' ? 'none' : 'block';
-        fromTokenList.style.display = 'none';
-      });
-
-      // Close dropdowns when clicking outside
-      document.addEventListener('click', () => {
-        fromTokenList.style.display = 'none';
-        toTokenList.style.display = 'none';
-      });
-
-      // Switch tokens
-      switchButton.addEventListener('click', () => {
-        [fromToken, toToken] = [toToken, toToken];
-        
-        updateTokenDisplay(fromTokenSelect, fromToken);
-        updateTokenDisplay(toTokenSelect, toToken);
-        
-        // Also swap the input values
-        const temp = fromAmount.value;
-        fromAmount.value = toAmount.value;
-        toAmount.value = temp;
-        
-        updateConversion();
-      });
-
-      // Amount input
-      fromAmount.addEventListener('input', updateConversion);
-
-      // Connect wallet
       connectWallet.addEventListener('click', () => {
         walletConnected = !walletConnected;
         if (walletConnected) {
           connectWallet.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
           connectWallet.style.background = 'var(--accent-green)';
-          swapButton.disabled = false;
-          
-          // Simulate fetching wallet balance
-          setTimeout(() => {
-            document.querySelector('.token-balance').textContent = `Balance: ${(Math.random() * 10).toFixed(4)} ${fromToken.symbol}`;
-          }, 500);
         } else {
           connectWallet.innerHTML = '<i class="fas fa-wallet"></i> Connect Wallet';
           connectWallet.style.background = 'linear-gradient(90deg, var(--primary), var(--accent-blue))';
-          swapButton.disabled = true;
         }
       });
-
-      // Swap button
-      swapButton.addEventListener('click', () => {
-        const amount = parseFloat(fromAmount.value);
-        if (!amount || amount <= 0) {
-          alert('Please enter a valid amount');
-          return;
-        }
-        
-        const tx = {
-          from: fromToken.symbol,
-          to: toToken.symbol,
-          amount: amount,
-          value: parseFloat(toAmount.value),
-          date: new Date().toISOString().replace('T', ' ').substring(0, 16)
-        };
-        
-        transactions.unshift(tx);
-        populateTransactionHistory();
-        
-        // Show success message
-        const originalText = swapButton.innerHTML;
-        swapButton.innerHTML = '<i class="fas fa-check"></i> Swap Successful!';
-        swapButton.style.background = 'var(--accent-green)';
-        
-        setTimeout(() => {
-          swapButton.innerHTML = originalText;
-          swapButton.style.background = 'var(--primary)';
-        }, 2000);
-      });
-
-      // Slippage settings
-      document.querySelectorAll('.slippage-option').forEach(option => {
-        option.addEventListener('click', () => {
-          document.querySelectorAll('.slippage-option').forEach(opt => opt.classList.remove('active'));
-          option.classList.add('active');
-          slippage = parseFloat(option.textContent);
-          updateConversion();
+      
+      // Timeframe selection
+      document.querySelectorAll('.timeframe').forEach(timeframe => {
+        timeframe.addEventListener('click', () => {
+          document.querySelectorAll('.timeframe').forEach(tf => tf.classList.remove('active'));
+          timeframe.classList.add('active');
+          // In a real app, we would update the chart timeframe here
         });
       });
-
-      document.querySelector('.slippage-custom input').addEventListener('change', (e) => {
-        slippage = parseFloat(e.target.value) || 0.5;
-        updateConversion();
+      
+      // Chart type selection
+      document.querySelectorAll('.chart-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          // In a real app, we would change the chart type here
+        });
       });
-
-      // Notification bell animation
-      const notificationBell = document.querySelector('.notification-bell');
-      notificationBell.addEventListener('click', () => {
-        notificationBell.style.animation = 'bellRing 0.5s ease';
-        setTimeout(() => {
-          notificationBell.style.animation = '';
-        }, 500);
-        alert("You have 3 new notifications!");
+      
+      // Search functionality for crypto pairs
+      const searchInput = document.querySelector('.crypto-pairs-search');
+      searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const pairItems = document.querySelectorAll('.pair-item');
+        
+        pairItems.forEach(item => {
+          const pairName = item.querySelector('.pair-name').textContent.toLowerCase();
+          if (pairName.includes(searchTerm)) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        });
       });
-    }
-
-    // Simulate price changes
-    function simulatePriceChanges() {
+      
+      // Simulate price changes
       setInterval(() => {
         tokens.forEach(token => {
-          if (token.symbol !== 'USDC') { // Stablecoin doesn't change
+          if (token.symbol !== 'USDT' && token.symbol !== 'USDC') {
             const changePercent = (Math.random() - 0.5) * 0.02; // ±1%
             token.price = token.price * (1 + changePercent);
-            token.change24h = (token.change24h + (Math.random() - 0.5) * 0.5).toFixed(2);
+            token.change24h = (parseFloat(token.change24h) + (Math.random() - 0.5) * 0.5;
+            token.change24h = token.change24h.toFixed(2);
           }
         });
         
         populateMarketGrid();
-        updateConversion();
+        populateCryptoPairsList();
       }, 5000);
     }
 
