@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up | BitNest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Login | BitNest</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * {
@@ -17,11 +17,12 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #0f0f0f;
       color: white;
+      overflow-x: hidden;
     }
 
     .container {
       display: flex;
-      height: 100vh;
+      min-height: 100vh;
       flex-direction: row;
     }
 
@@ -48,33 +49,26 @@
 
     .floater {
       position: absolute;
-      opacity: 0.6;
+      opacity: 0.8;
       animation: float 15s infinite linear;
-    }
-
-    .floater:nth-child(1) {
-      top: 10%;
-      left: 5%;
       width: 40px;
-      animation-delay: 0s;
-      animation-duration: 18s;
+      height: 40px;
+      filter: drop-shadow(0 0 5px rgba(30, 211, 198, 0.3));
     }
 
-    .floater:nth-child(2) {
-      top: 70%;
-      left: 15%;
-      width: 30px;
-      animation-delay: 2s;
-      animation-duration: 20s;
-    }
-
-    .floater:nth-child(3) {
-      top: 30%;
-      left: 80%;
-      width: 50px;
-      animation-delay: 4s;
-      animation-duration: 15s;
-    }
+    /* Floating elements positions */
+    .floater:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; animation-duration: 18s; }
+    .floater:nth-child(2) { top: 70%; left: 15%; width: 30px; height: 30px; animation-delay: 2s; animation-duration: 20s; }
+    .floater:nth-child(3) { top: 30%; left: 80%; width: 50px; height: 50px; animation-delay: 4s; animation-duration: 15s; }
+    .floater:nth-child(4) { top: 60%; left: 70%; width: 35px; height: 35px; animation-delay: 1s; animation-duration: 17s; }
+    .floater:nth-child(5) { top: 20%; left: 30%; width: 45px; height: 45px; animation-delay: 3s; animation-duration: 22s; }
+    .floater:nth-child(6) { top: 80%; left: 50%; width: 25px; height: 25px; animation-delay: 5s; animation-duration: 19s; }
+    .floater:nth-child(7) { top: 15%; left: 65%; width: 40px; height: 40px; animation-delay: 6s; animation-duration: 21s; }
+    .floater:nth-child(8) { top: 75%; left: 25%; width: 35px; height: 35px; animation-delay: 7s; animation-duration: 16s; }
+    .floater:nth-child(9) { top: 40%; left: 10%; width: 45px; height: 45px; animation-delay: 8s; animation-duration: 24s; }
+    .floater:nth-child(10) { top: 55%; left: 85%; width: 30px; height: 30px; animation-delay: 9s; animation-duration: 18s; }
+    .floater:nth-child(11) { top: 25%; left: 45%; width: 50px; height: 50px; animation-delay: 10s; animation-duration: 20s; }
+    .floater:nth-child(12) { top: 65%; left: 55%; width: 25px; height: 25px; animation-delay: 11s; animation-duration: 22s; }
 
     .logo {
       font-size: 1.8rem;
@@ -121,16 +115,18 @@
       justify-content: center;
       padding: 20px;
       background-color: #121212;
+      overflow-y: auto;
     }
 
     .form-box {
       background-color: #1e1e1e;
-      padding: 40px;
+      padding: 30px;
       border-radius: 16px;
       width: 100%;
       max-width: 400px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       animation: fadeInUp 0.5s ease-out;
+      margin: 20px 0;
     }
 
     .form-box h2 {
@@ -140,53 +136,6 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-    }
-
-    .account-switch {
-      display: flex;
-      margin-bottom: 25px;
-      background: #2a2a2a;
-      border-radius: 8px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .account-switch::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 50%;
-      height: 3px;
-      background: #1ed3c6;
-      transition: all 0.3s ease;
-    }
-
-    .account-switch.personal-active::after {
-      left: 0;
-      transform: translateX(0);
-    }
-
-    .account-switch.business-active::after {
-      left: 50%;
-      transform: translateX(0);
-    }
-
-    .account-switch button {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      background: transparent;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s;
-      position: relative;
-      z-index: 1;
-    }
-
-    .account-switch button.active {
-      color: #1ed3c6;
     }
 
     .form-group {
@@ -224,20 +173,6 @@
       font-size: 0.85rem;
       margin-top: 5px;
       display: none;
-    }
-
-    .password-strength {
-      height: 4px;
-      background: #333;
-      border-radius: 2px;
-      margin-top: 5px;
-      overflow: hidden;
-    }
-
-    .strength-bar {
-      height: 100%;
-      width: 0;
-      transition: width 0.3s, background 0.3s;
     }
 
     .form-box button.primary {
@@ -319,21 +254,39 @@
       font-size: 1.2rem;
     }
 
-    .login-link {
+    .forgot-password {
+      text-align: right;
+      margin-top: -15px;
+      margin-bottom: 20px;
+    }
+
+    .forgot-password a {
+      color: #1ed3c6;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.3s;
+    }
+
+    .forgot-password a:hover {
+      color: #17b3a8;
+      text-decoration: underline;
+    }
+
+    .register-link {
       text-align: center;
       margin-top: 25px;
       font-size: 0.95em;
       color: #aaa;
     }
 
-    .login-link a {
+    .register-link a {
       color: #1ed3c6;
       text-decoration: none;
       margin-left: 5px;
       transition: color 0.3s;
     }
 
-    .login-link a:hover {
+    .register-link a:hover {
       color: #17b3a8;
       text-decoration: underline;
     }
@@ -388,12 +341,54 @@
 
       .right {
         flex: none;
-        height: 100vh;
+        min-height: 100vh;
         padding: 20px;
+        align-items: flex-start;
       }
 
       .form-box {
-        padding: 30px;
+        padding: 25px;
+        margin-top: 20px;
+      }
+
+      .form-box h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        font-size: 0.9rem;
+      }
+
+      .form-box input {
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+
+      .form-box button.primary {
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .form-box {
+        padding: 20px;
+        border-radius: 12px;
+      }
+
+      .left-footer div {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+
+      .social-buttons button {
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+
+      .register-link, .lang {
+        font-size: 0.85rem;
       }
     }
   </style>
@@ -403,9 +398,18 @@
     <div class="left">
       <!-- Floating crypto elements -->
       <div class="crypto-floaters">
-        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="floater" alt="Bitcoin">
-        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="floater" alt="Ethereum">
-        <img src="https://cryptologos.cc/logos/cardano-ada-logo.png" class="floater" alt="Cardano">
+        <img src="crypto-logos/bitcoin.svg" class="floater" alt="Bitcoin">
+        <img src="crypto-logos/ethereum-eth-logo.svg" class="floater" alt="Ethereum">
+        <img src="crypto-logos/cardano-ada-logo.svg" class="floater" alt="Cardano">
+        <img src="crypto-logos/solana-sol-logo.svg" class="floater" alt="Solana">
+        <img src="crypto-logos/polkadot-new-dot-logo.svg" class="floater" alt="Polkadot">
+        <img src="crypto-logos/xrp-xrp-logo.svg" class="floater" alt="XRP">
+        <img src="crypto-logos/litecoin-ltc-logo.svg" class="floater" alt="Litecoin">
+        <img src="crypto-logos/chainlink-link-logo.svg" class="floater" alt="Chainlink">
+        <img src="crypto-logos/polygon-matic-logo.svg" class="floater" alt="Polygon">
+        <img src="crypto-logos/dogecoin-doge-logo.svg" class="floater" alt="Dogecoin">
+        <img src="crypto-logos/bnb-bnb-logo.svg" class="floater" alt="Binance Coin">
+        <img src="crypto-logos/avalanche-avax-logo.svg" class="floater" alt="Avalanche">
       </div>
       
       <div class="logo">
@@ -420,19 +424,9 @@
     </div>
     <div class="right">
       <div class="form-box">
-        <h2>Create your account</h2>
+        <h2>Welcome back</h2>
         
-        <div class="account-switch personal-active" id="accountSwitch">
-          <button class="active" data-type="personal">Personal account</button>
-          <button data-type="business">Business account</button>
-        </div>
-        
-        <form id="registerForm">
-          <div class="form-group">
-            <label for="name">Full name</label>
-            <input type="text" id="name" placeholder="Enter your full name" required>
-          </div>
-          
+        <form id="loginForm">
           <div class="form-group">
             <label for="email">Email</label>
             <input type="email" id="email" placeholder="Enter your email" required>
@@ -440,33 +434,34 @@
           
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Create a password" required minlength="6">
-            <div class="password-strength">
-              <div class="strength-bar" id="strengthBar"></div>
-            </div>
+            <input type="password" id="password" placeholder="Enter your password" required>
             <div class="error-message" id="error-message"></div>
           </div>
           
-          <button type="submit" class="primary" id="registerBtn">
-            <span id="registerText">Create account</span>
-            <div class="spinner" id="registerSpinner"></div>
+          <div class="forgot-password">
+            <a href="forgot-password.html">Forgot your password?</a>
+          </div>
+          
+          <button type="submit" class="primary" id="loginBtn">
+            <span id="loginText">Log in</span>
+            <div class="spinner" id="loginSpinner"></div>
           </button>
         </form>
 
         <div class="divider">OR</div>
 
         <div class="social-buttons">
-          <button id="googleSignup">
+          <button id="googleLogin">
             <i class="fab fa-google"></i> Continue with Google
           </button>
-          <button id="appleSignup">
+          <button id="appleLogin">
             <i class="fab fa-apple"></i> Continue with Apple
           </button>
         </div>
 
-        <div class="login-link">
-          Already have a BitNest account?
-          <a href="login.html">Log in</a>
+        <div class="register-link">
+          Don't have a BitNest account?
+          <a href="register.html">Sign up</a>
         </div>
 
         <div class="lang">🌐 English</div>
@@ -479,23 +474,17 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
     import { 
       getAuth, 
-      createUserWithEmailAndPassword,
-      updateProfile,
+      signInWithEmailAndPassword,
       GoogleAuthProvider,
       signInWithPopup
     } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
-    import { 
-      getFirestore, 
-      doc, 
-      setDoc 
-    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 
     // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
       projectId: "bitnest-c7452",
-      storageBucket: "bitnest-c7452.firebasestorage.app",
+      storageBucket: "bitnest-c7452.appspot.com",
       messagingSenderId: "583165336540",
       appId: "1:583165336540:web:25719de02e18bc60eb0d19"
     };
@@ -503,146 +492,65 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
     // DOM elements
-    const registerForm = document.getElementById('registerForm');
-    const nameInput = document.getElementById('name');
+    const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
-    const strengthBar = document.getElementById('strengthBar');
-    const registerBtn = document.getElementById('registerBtn');
-    const registerText = document.getElementById('registerText');
-    const registerSpinner = document.getElementById('registerSpinner');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginText = document.getElementById('loginText');
+    const loginSpinner = document.getElementById('loginSpinner');
     const errorMessage = document.getElementById('error-message');
-    const googleSignupBtn = document.getElementById('googleSignup');
-    const appleSignupBtn = document.getElementById('appleSignup');
-    const accountSwitch = document.getElementById('accountSwitch');
-    const accountTypeButtons = document.querySelectorAll('.account-switch button');
+    const googleLoginBtn = document.getElementById('googleLogin');
+    const appleLoginBtn = document.getElementById('appleLogin');
 
-    // Account type switcher
-    accountTypeButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault();
-        accountTypeButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        
-        if (button.dataset.type === 'personal') {
-          accountSwitch.classList.remove('business-active');
-          accountSwitch.classList.add('personal-active');
-        } else {
-          accountSwitch.classList.remove('personal-active');
-          accountSwitch.classList.add('business-active');
-        }
-      });
-    });
-
-    // Password strength indicator
-    passwordInput.addEventListener('input', () => {
-      const password = passwordInput.value;
-      let strength = 0;
-      
-      // Length check
-      if (password.length > 5) strength += 20;
-      if (password.length > 8) strength += 20;
-      
-      // Character type checks
-      if (/[A-Z]/.test(password)) strength += 20;
-      if (/[0-9]/.test(password)) strength += 20;
-      if (/[^A-Za-z0-9]/.test(password)) strength += 20;
-      
-      // Update strength bar
-      strengthBar.style.width = `${strength}%`;
-      
-      // Color coding
-      if (strength < 40) {
-        strengthBar.style.background = '#ff6b6b'; // Weak
-      } else if (strength < 80) {
-        strengthBar.style.background = '#feca57'; // Medium
-      } else {
-        strengthBar.style.background = '#1dd1a1'; // Strong
-      }
-    });
-
-    // Email/password registration
-    registerForm.addEventListener('submit', async (e) => {
+    // Email/password login
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = nameInput.value;
       const email = emailInput.value;
       const password = passwordInput.value;
-      const accountType = document.querySelector('.account-switch button.active').dataset.type;
       
       // Show loading state
-      registerText.style.display = 'none';
-      registerSpinner.style.display = 'block';
-      registerBtn.disabled = true;
+      loginText.style.display = 'none';
+      loginSpinner.style.display = 'block';
+      loginBtn.disabled = true;
       errorMessage.style.display = 'none';
       
       try {
-        // 1. Create user in Firebase Auth
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+        await signInWithEmailAndPassword(auth, email, password);
         
-        // 2. Update profile with displayName
-        await updateProfile(user, { displayName: name });
-        
-        // 3. Store additional user data in Firestore
-        await setDoc(doc(db, "users", user.uid), {
-          name: name,
-          email: email,
-          accountType: accountType,
-          createdAt: new Date(),
-          balance: 0,
-          lastLogin: null,
-          verified: false
-        });
-
         // Redirect to dashboard
         window.location.href = 'dashboard.html';
         
       } catch (error) {
         // Handle errors
-        console.error('Registration error:', error);
+        console.error('Login error:', error);
         errorMessage.textContent = getFriendlyErrorMessage(error.code);
         errorMessage.style.display = 'block';
         
         // Reset button state
-        registerText.style.display = 'block';
-        registerSpinner.style.display = 'none';
-        registerBtn.disabled = false;
+        loginText.style.display = 'block';
+        loginSpinner.style.display = 'none';
+        loginBtn.disabled = false;
       }
     });
 
-    // Google registration
-    googleSignupBtn.addEventListener('click', async () => {
+    // Google login
+    googleLoginBtn.addEventListener('click', async () => {
       try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        
-        // Store additional user data in Firestore
-        await setDoc(doc(db, "users", user.uid), {
-          name: user.displayName,
-          email: user.email,
-          accountType: 'personal', // Default to personal
-          createdAt: new Date(),
-          balance: 0,
-          lastLogin: new Date(),
-          verified: true,
-          photoURL: user.photoURL
-        });
-        
+        await signInWithPopup(auth, provider);
         window.location.href = 'dashboard.html';
       } catch (error) {
-        console.error('Google signup error:', error);
+        console.error('Google login error:', error);
         errorMessage.textContent = getFriendlyErrorMessage(error.code);
         errorMessage.style.display = 'block';
       }
     });
 
-    // Apple registration placeholder
-    appleSignupBtn.addEventListener('click', () => {
-      alert('Apple signup coming soon!');
+    // Apple login placeholder
+    appleLoginBtn.addEventListener('click', () => {
+      alert('Apple login coming soon!');
     });
 
     // Helper function to convert Firebase error codes to friendly messages
@@ -650,16 +558,20 @@
       switch(errorCode) {
         case 'auth/invalid-email':
           return 'Please enter a valid email address';
-        case 'auth/email-already-in-use':
-          return 'This email is already registered';
-        case 'auth/weak-password':
-          return 'Password should be at least 6 characters';
+        case 'auth/user-disabled':
+          return 'This account has been disabled';
+        case 'auth/user-not-found':
+          return 'No account found with this email';
+        case 'auth/wrong-password':
+          return 'Incorrect password';
+        case 'auth/too-many-requests':
+          return 'Too many attempts. Try again later';
         case 'auth/operation-not-allowed':
           return 'Email/password accounts are not enabled';
         case 'auth/popup-closed-by-user':
-          return 'Signup popup was closed';
+          return 'Login popup was closed';
         default:
-          return 'Registration failed. Please try again';
+          return 'Login failed. Please try again';
       }
     }
   </script>
