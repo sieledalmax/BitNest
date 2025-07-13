@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>BitNest | My Assets</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +21,6 @@
       --accent-orange: #ff7b25;
       --border-radius: 16px;
       --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       --glass-effect: rgba(16, 18, 22, 0.7);
       --success: #00e676;
       --warning: #ffab00;
@@ -43,62 +42,10 @@
       overflow-x: hidden;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--card-bg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 4px;
-    }
-
-    /* Floating Animations */
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Notification Bell Animation */
-    @keyframes bellRing {
-      0% { transform: rotate(0deg); }
-      10% { transform: rotate(15deg); }
-      20% { transform: rotate(-15deg); }
-      30% { transform: rotate(10deg); }
-      40% { transform: rotate(-10deg); }
-      50% { transform: rotate(5deg); }
-      60% { transform: rotate(-5deg); }
-      100% { transform: rotate(0deg); }
-    }
-
-    /* Crypto Chart Animation */
-    @keyframes chartGrow {
-      from { transform: scaleY(0); }
-      to { transform: scaleY(1); }
-    }
-
-    /* Navbar Styles */
+    /* Navbar - Centered with Animations */
     .navbar {
       background-color: var(--glass-effect);
-      padding: 1rem 3rem;
+      padding: 1rem 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -107,28 +54,37 @@
       z-index: 1000;
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .navbar:hover {
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
     }
 
     .navbar .left {
       display: flex;
       align-items: center;
-      gap: 2.5rem;
+      justify-content: flex-start;
+      gap: 2rem;
+      flex: 1;
     }
 
     .navbar .logo {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
 
-    .logo-icon {
-      animation: float 4s ease-in-out infinite;
+    .navbar .logo:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
     }
 
     .nav-links {
@@ -139,15 +95,31 @@
     .navbar a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: var(--transition);
       position: relative;
       padding: 0.5rem 0;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .navbar a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
     }
 
     .navbar a:hover {
       color: var(--text-primary);
+    }
+
+    .navbar a:hover::after {
+      width: 100%;
     }
 
     .navbar a.active {
@@ -155,30 +127,31 @@
     }
 
     .navbar a.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
       width: 100%;
-      height: 2px;
-      background: var(--primary);
-      border-radius: 2px;
     }
 
     .navbar .right {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 1.5rem;
+      flex: 1;
     }
 
     .notification-bell {
       position: relative;
       cursor: pointer;
-      transition: var(--transition);
+      transition: transform 0.2s ease;
     }
 
     .notification-bell:hover {
-      animation: bellRing 0.5s ease;
+      transform: translateY(-2px);
+      animation: bellShake 0.5s ease infinite alternate;
+    }
+
+    @keyframes bellShake {
+      0% { transform: rotate(-5deg); }
+      100% { transform: rotate(5deg); }
     }
 
     .notification-badge {
@@ -195,13 +168,26 @@
       justify-content: center;
       font-size: 0.7rem;
       font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     .user-profile {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
       cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .user-profile:hover {
+      transform: translateX(5px);
     }
 
     .profile-pic {
@@ -210,168 +196,156 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--primary);
+      transition: all 0.3s ease;
     }
 
-    .btn {
-      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
-      border: none;
-      padding: 0.75rem 1.75rem;
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: var(--transition);
-      display: inline-flex;
+    .user-profile:hover .profile-pic {
+      box-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
+      transform: scale(1.1);
+    }
+
+    .user-name {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Enhanced Dropdown Menus */
+    .user-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 240px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .user-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .user-menu-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
       font-size: 0.95rem;
-      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      white-space: nowrap;
+      transition: all 0.2s ease;
       position: relative;
       overflow: hidden;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(30, 211, 198, 0.4);
+    .user-menu-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(30, 211, 198, 0.1), transparent);
+      transition: all 0.5s ease;
     }
 
-    .btn span {
+    .user-menu-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    .user-menu-item:hover::before {
+      left: 100%;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.5rem;
       transition: transform 0.3s ease;
     }
 
-    .btn:hover span {
-      transform: translateX(3px);
+    .mobile-menu-btn:hover {
+      transform: rotate(90deg);
     }
 
-    .btn-secondary {
-      background: transparent;
-      color: var(--text-primary);
+    .mobile-nav-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 5%;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      width: 90%;
+      max-width: 280px;
+      z-index: 1001;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: none;
+    .mobile-nav-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    /* Main Container */
+    .mobile-nav-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    /* Enhanced Main Content */
     .container {
-      padding: 2rem 3rem;
+      padding: 2rem 1.5rem;
       max-width: 1800px;
       margin: 0 auto;
+      animation: fadeIn 0.5s ease;
     }
 
-    /* Dashboard Grid */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 1.5rem;
     }
 
-    /* Welcome Banner */
-    .welcome-banner {
+    /* Assets Header */
+    .assets-header {
       grid-column: span 12;
-      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
-      padding: 2.5rem;
-      border-radius: var(--border-radius);
-      margin-bottom: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: var(--box-shadow);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .welcome-banner::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 40%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(30, 211, 198, 0.08), rgba(58, 134, 255, 0.05));
-      clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
-      z-index: 0;
-    }
-
-    .welcome-content {
-      position: relative;
-      z-index: 1;
-      max-width: 60%;
-    }
-
-    .welcome-content h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      width: fit-content;
-    }
-
-    .welcome-content p {
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      font-size: 1.05rem;
-      line-height: 1.6;
-    }
-
-    .welcome-stats {
-      display: flex;
-      gap: 2rem;
-      margin-top: 1.5rem;
-    }
-
-    .stat-item {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .stat-value {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-label {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .welcome-image {
-      position: relative;
-      z-index: 1;
-      animation: float 6s ease-in-out infinite;
-    }
-
-    .welcome-image img {
-      width: 300px;
-      height: auto;
-    }
-
-    /* Portfolio Summary */
-    .portfolio-summary {
-      grid-column: span 8;
-      background-color: var(--card-bg);
-      padding: 1.75rem;
-      border-radius: var(--border-radius);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: var(--box-shadow);
-      transition: var(--transition);
-    }
-
-    .portfolio-summary:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -394,13 +368,54 @@
       height: 20px;
       background: linear-gradient(var(--primary), var(--accent-blue));
       border-radius: 3px;
+      animation: pulse 2s infinite;
     }
 
-    .portfolio-value {
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    /* Total Value Card */
+    .total-value-card {
+      grid-column: span 12;
+      background-color: var(--card-bg);
+      padding: 1.75rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .total-value-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .total-value-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .total-value-text h2 {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .total-value-amount {
       font-size: 2.5rem;
       font-weight: 700;
-      margin: 1rem 0;
-      color: var(--text-primary);
+      color: var(--primary);
+      transition: all 0.3s ease;
+    }
+
+    .total-value-card:hover .total-value-amount {
+      transform: scale(1.02);
     }
 
     .portfolio-change {
@@ -408,7 +423,6 @@
       align-items: center;
       gap: 0.5rem;
       font-size: 1.1rem;
-      margin-bottom: 1.5rem;
     }
 
     .positive {
@@ -419,133 +433,79 @@
       color: var(--danger);
     }
 
-    .portfolio-chart {
-      height: 200px;
-      margin-top: 1.5rem;
-      position: relative;
-    }
-
-    .chart-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: flex-end;
-      gap: 4px;
-    }
-
-    .chart-bar {
-      flex: 1;
-      background: linear-gradient(to top, var(--primary), var(--accent-blue));
-      border-radius: 4px 4px 0 0;
-      min-height: 1px;
-      transform-origin: bottom;
-      animation: chartGrow 1.5s ease-out forwards;
-      position: relative;
-    }
-
-    .chart-bar::after {
-      content: attr(data-value);
-      position: absolute;
-      top: -25px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-    }
-
-    /* Quick Actions */
-    .quick-actions {
-      grid-column: span 4;
-      display: grid;
-      grid-template-rows: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-
-    .action-card {
-      background-color: var(--card-bg);
-      padding: 1.5rem;
-      border-radius: var(--border-radius);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: var(--box-shadow);
-      transition: var(--transition);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .action-card:hover {
-      transform: translateY(-5px);
-      background-color: var(--card-hover);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    .action-card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.75rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      color: var(--text-primary);
-    }
-
-    .action-card p {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      margin-bottom: 1.25rem;
-      line-height: 1.5;
-    }
-
-    /* Assets Grid */
-    .assets-grid {
+    /* Asset Details Table */
+    .asset-details {
       grid-column: span 12;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .asset-card {
       background-color: var(--card-bg);
-      padding: 1.5rem;
+      padding: 1.75rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      transition: var(--transition);
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
     }
 
-    .asset-card:hover {
+    .asset-details:hover {
       transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .asset-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .asset-table thead th {
+      text-align: left;
+      padding: 1rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .asset-table tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    .asset-table tbody tr:hover {
       background-color: var(--card-hover);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
     }
 
-    .asset-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
+    .asset-table td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .asset-info {
+    .asset-cell {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 1rem;
     }
 
     .asset-icon {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       background: rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .asset-table tbody tr:hover .asset-icon {
+      transform: rotate(15deg) scale(1.1);
+      box-shadow: 0 0 15px rgba(30, 211, 198, 0.3);
     }
 
     .asset-icon img {
       width: 24px;
       height: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .asset-table tbody tr:hover .asset-icon img {
+      transform: scale(1.1);
     }
 
     .asset-name {
@@ -558,135 +518,222 @@
     }
 
     .asset-price {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin: 0.5rem 0;
-    }
-
-    .asset-change {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
       font-weight: 600;
+      transition: all 0.3s ease;
     }
 
-    .positive-bg {
-      background: rgba(0, 230, 118, 0.1);
-      color: var(--success);
+    .asset-table tbody tr:hover .asset-price {
+      transform: translateX(5px);
     }
 
-    .negative-bg {
-      background: rgba(255, 82, 82, 0.1);
-      color: var(--danger);
-    }
-
-    .asset-actions {
-      display: flex;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
-    }
-
-    .asset-btn {
-      flex: 1;
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
+    .price-change {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 0.5rem;
-      font-size: 0.85rem;
+      transition: all 0.3s ease;
     }
 
-    .buy-btn {
+    .asset-table tbody tr:hover .price-change {
+      transform: scale(1.05);
+    }
+
+    .price-change i {
+      font-size: 0.8rem;
+    }
+
+    .asset-balance {
+      transition: all 0.3s ease;
+    }
+
+    .asset-table tbody tr:hover .asset-balance {
+      transform: translateX(5px);
+    }
+
+    .asset-value {
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .asset-table tbody tr:hover .asset-value {
+      transform: translateX(5px);
+    }
+
+    .asset-actions-table {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .asset-btn-table {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .asset-btn-table:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .buy-btn-table {
       background: var(--success);
       color: #000;
     }
 
-    .sell-btn {
+    .sell-btn-table {
       background: var(--danger);
       color: white;
     }
 
-    .asset-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Promo Section */
-    .promo-section {
+    /* Asset Chart */
+    .asset-chart {
       grid-column: span 12;
-      margin-top: 1.5rem;
-    }
-
-    .promo-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .promo-card {
-      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      background-color: var(--card-bg);
       padding: 1.75rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      transition: var(--transition);
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
     }
 
-    .promo-card:hover {
+    .asset-chart:hover {
       transform: translateY(-5px);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
     }
 
-    .promo-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
+    .chart-placeholder {
+      height: 300px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, var(--primary), var(--accent-blue));
-      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      color: var(--text-secondary);
     }
 
-    .promo-content {
-      flex: 1;
+    /* Quick Actions */
+    .quick-actions {
+      grid-column: span 12;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
     }
 
-    .promo-card h3 {
+    .action-card {
+      background-color: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .action-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .action-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .action-card h3 {
       font-size: 1.2rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.3s ease;
     }
 
-    .promo-card p {
+    .action-card:hover h3 {
+      transform: translateX(5px);
+    }
+
+    .action-card p {
       color: var(--text-secondary);
       font-size: 0.95rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
       line-height: 1.5;
     }
 
-    .promo-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      background: var(--accent-purple);
-      color: white;
-      border-radius: 20px;
-      font-size: 0.8rem;
+    /* Enhanced Buttons */
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.75rem;
+      color: #000;
       font-weight: 600;
-      margin-bottom: 0.75rem;
-      animation: pulse 2s infinite;
+      cursor: pointer;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Deposit Modal */
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.5s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(30, 211, 198, 0.4);
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Modal Backdrop */
     .modal {
       display: none;
       position: fixed;
@@ -695,32 +742,37 @@
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(5px);
       z-index: 2000;
       align-items: center;
       justify-content: center;
-      animation: fadeIn 0.3s ease-out;
+      animation: fadeIn 0.3s ease;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
+    /* Modal Content */
     .modal-content {
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
-      width: 90%;
+      width: 100%;
       max-width: 500px;
+      max-height: 90vh;
       border-radius: var(--border-radius);
       padding: 2rem;
       box-shadow: var(--box-shadow);
       position: relative;
-      animation: slideUp 0.4s ease-out;
+      transform: scale(0.95);
+      opacity: 0;
+      animation: modalAppear 0.3s ease forwards;
+      overflow-y: auto;
+      margin: auto;
     }
 
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    @keyframes modalAppear {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .close-modal {
@@ -732,11 +784,11 @@
       color: var(--text-secondary);
       font-size: 1.5rem;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.2s ease;
     }
 
     .close-modal:hover {
-      color: var(--text-primary);
+      color: var(--primary);
       transform: rotate(90deg);
     }
 
@@ -744,7 +796,6 @@
       font-size: 1.5rem;
       margin-bottom: 1.5rem;
       font-weight: 600;
-      color: var(--text-primary);
     }
 
     .form-group {
@@ -766,30 +817,36 @@
       border-radius: 8px;
       color: var(--text-primary);
       font-size: 1rem;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .form-control:focus {
-      outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
     }
 
+    /* Currency Selector */
     .currency-select {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
 
     .currency-option {
-      flex: 1;
       padding: 0.75rem;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       text-align: center;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
+    }
+
+    .currency-option img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 0.5rem;
     }
 
     .currency-option:hover {
@@ -801,10 +858,92 @@
       border-color: var(--primary);
     }
 
-    .currency-option img {
-      width: 24px;
-      height: 24px;
+    /* Withdrawal Options */
+    .withdraw-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .withdraw-option {
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .withdraw-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .withdraw-option.active {
+      background: rgba(30, 211, 198, 0.1);
+      border-color: var(--primary);
+    }
+
+    .option-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .option-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(30, 211, 198, 0.1);
+    }
+
+    .option-icon i {
+      font-size: 1rem;
+    }
+
+    .option-name {
+      font-weight: 600;
+      flex: 1;
+      text-align: left;
+    }
+
+    .option-badge {
+      background: var(--accent-purple);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .option-details {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      padding-left: 2.75rem;
+      text-align: left;
+    }
+
+    .min-amount-notice {
+      background: rgba(255, 82, 82, 0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--danger);
+    }
+
+    .min-amount-notice h4 {
+      font-size: 1rem;
       margin-bottom: 0.5rem;
+      color: var(--danger);
+    }
+
+    .min-amount-notice p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
     }
 
     .modal-footer {
@@ -814,167 +953,10 @@
       margin-top: 2rem;
     }
 
-    /* Assets Page Specific Styles */
-    .assets-header {
-      grid-column: span 12;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    
-    .total-value-card {
-      grid-column: span 12;
-      background-color: var(--card-bg);
-      padding: 1.75rem;
-      border-radius: var(--border-radius);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: var(--box-shadow);
-      margin-bottom: 1.5rem;
-    }
-    
-    .total-value-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .total-value-text h2 {
-      font-size: 1.2rem;
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
-    }
-    
-    .total-value-amount {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-    
-    .asset-details {
-      grid-column: span 12;
-      background-color: var(--card-bg);
-      padding: 1.75rem;
-      border-radius: var(--border-radius);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: var(--box-shadow);
-      margin-bottom: 1.5rem;
-    }
-    
-    .asset-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    .asset-table thead th {
-      text-align: left;
-      padding: 1rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .asset-table tbody tr {
-      transition: var(--transition);
-    }
-    
-    .asset-table tbody tr:hover {
-      background-color: var(--card-hover);
-    }
-    
-    .asset-table td {
-      padding: 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .asset-table .asset-cell {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    
-    .asset-table .asset-icon {
-      width: 36px;
-      height: 36px;
-    }
-    
-    .asset-table .asset-name {
-      font-weight: 600;
-    }
-    
-    .asset-table .asset-symbol {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-    
-    .asset-table .price-change {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .asset-table .price-change i {
-      font-size: 0.8rem;
-    }
-    
-    .asset-actions-table {
-      display: flex;
-      gap: 0.5rem;
-    }
-    
-    .asset-btn-table {
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    
-    .asset-btn-table:hover {
-      transform: translateY(-2px);
-    }
-    
-    .buy-btn-table {
-      background: var(--success);
-      color: #000;
-    }
-    
-    .sell-btn-table {
-      background: var(--danger);
-      color: white;
-    }
-    
-    .asset-chart {
-      grid-column: span 12;
-      background-color: var(--card-bg);
-      padding: 1.75rem;
-      border-radius: var(--border-radius);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: var(--box-shadow);
-      margin-bottom: 1.5rem;
-    }
-    
-    .chart-placeholder {
-      height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 8px;
-      color: var(--text-secondary);
-    }
-    
     /* Responsive Styles */
     @media (max-width: 1200px) {
-      .portfolio-summary {
-        grid-column: span 12;
-      }
-      
       .quick-actions {
-        grid-column: span 12;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: auto;
+        grid-template-columns: 1fr;
       }
     }
 
@@ -983,50 +965,25 @@
         padding: 1.5rem;
       }
       
-      .welcome-banner {
-        flex-direction: column;
-        text-align: center;
-      }
-      
-      .welcome-content {
-        max-width: 100%;
-        margin-bottom: 1.5rem;
-      }
-      
-      .welcome-stats {
-        justify-content: center;
-      }
-      
-      .welcome-image img {
-        width: 200px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .navbar {
-        padding: 1rem;
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      .nav-links {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
-      }
-      
-      .quick-actions {
-        grid-template-columns: 1fr;
-      }
-      
-      .section-header {
+      .total-value-content {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
       }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
       
-      .portfolio-value {
-        font-size: 2rem;
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        width: 100%;
       }
       
       .asset-table thead {
@@ -1064,35 +1021,47 @@
         justify-content: flex-end;
         width: 100%;
       }
+      
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 576px) {
-      .welcome-banner {
+      .navbar {
+        padding: 1rem;
+      }
+      
+      .asset-chart {
+        padding: 1rem;
+      }
+      
+      .chart-placeholder {
+        height: 200px;
+      }
+      
+      .mobile-nav-menu {
+        right: 5%;
+        width: 90%;
+      }
+      
+      .modal-content {
         padding: 1.5rem;
       }
       
-      .welcome-content h1 {
-        font-size: 1.8rem;
-      }
-      
-      .welcome-stats {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      .promo-card {
-        flex-direction: column;
-        text-align: center;
-      }
-      
-      .promo-icon {
-        margin-bottom: 1rem;
-      }
-      
-      .total-value-content {
+      .withdraw-option .option-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 1rem;
+        gap: 0.5rem;
+      }
+      
+      .withdraw-option .option-details {
+        padding-left: 0;
+        padding-top: 0.5rem;
+      }
+      
+      .currency-select {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -1102,8 +1071,7 @@
   <!-- Navbar -->
   <div class="navbar">
     <div class="left">
-      <div class="logo">
-        <i class="fas fa-coins logo-icon"></i>
+      <div class="logo" onclick="window.location.href='dashboard.html'">
         <span>BitNest</span>
       </div>
       <div class="nav-links">
@@ -1121,10 +1089,47 @@
         <i class="fas fa-bell"></i>
         <div class="notification-badge">3</div>
       </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
       <div class="user-profile" id="userProfile">
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
-        <span id="userName">Loading...</span>
+        <span class="user-name" id="userName">Loading...</span>
+        <div class="user-menu" id="userMenu">
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="#" class="user-menu-item" id="logoutBtn" style="padding-left: 20px;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
       </div>
+    </div>
+    <div class="mobile-nav-menu" id="mobileNavMenu">
+      <a href="dashboard.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <a href="#" class="mobile-nav-item active" style="padding-left: 20px;">
+        <i class="fas fa-wallet"></i> Assets
+      </a>
+      <a href="earn.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-percentage"></i> Earn
+      </a>
+      <a href="trading_view.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-exchange-alt"></i> Trade
+      </a>
+      <a href="P2P.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-users"></i> P2P
+      </a>
+      <a href="deposit.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-plus-circle"></i> Deposit
+      </a>
+      <a href="cards.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-credit-card"></i> Cards
+      </a>
     </div>
   </div>
 
@@ -1134,12 +1139,12 @@
       <!-- Assets Header -->
       <div class="assets-header">
         <h2 class="section-title">My Assets</h2>
-        <div class="asset-filters">
-          <button class="btn-secondary">
-            <i class="fas fa-eye"></i> Hide Small Balances
-          </button>
+        <div class="action-buttons">
           <button class="btn" id="depositBtn">
             <i class="fas fa-plus-circle"></i> Deposit
+          </button>
+          <button class="btn btn-secondary" id="withdrawBtn">
+            <i class="fas fa-download"></i> Withdraw
           </button>
         </div>
       </div>
@@ -1152,7 +1157,7 @@
             <div class="total-value-amount" id="totalPortfolioValue">$0.00</div>
           </div>
           <div class="portfolio-change">
-            <span class="positive" id="portfolioChange24h">+0.0%</span>
+            <span id="portfolioChange24h">0.0%</span>
             <span>24h change</span>
           </div>
         </div>
@@ -1176,7 +1181,7 @@
               <td data-label="Asset">
                 <div class="asset-cell">
                   <div class="asset-icon">
-                    <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Bitcoin">
+                    <img src="crypto-logos/bitcoin.svg" alt="Bitcoin">
                   </div>
                   <div>
                     <div class="asset-name">Bitcoin</div>
@@ -1184,19 +1189,22 @@
                   </div>
                 </div>
               </td>
-              <td data-label="Price" class="asset-price">$42,156.78</td>
+              <td data-label="Price" class="asset-price" id="btc-price">$0.00</td>
               <td data-label="24h Change">
-                <div class="price-change positive">
-                  <i class="fas fa-arrow-up"></i>
-                  <span>+5.2%</span>
+                <div class="price-change" id="btc-change">
+                  <span>0.0%</span>
                 </div>
               </td>
-              <td data-label="Balance">0.5832 BTC</td>
-              <td data-label="Value">$24,597.83</td>
+              <td data-label="Balance">0.0000 BTC</td>
+              <td data-label="Value" id="btc-value">$0.00</td>
               <td data-label="Actions">
                 <div class="asset-actions-table">
-                  <button class="asset-btn-table buy-btn-table">Buy</button>
-                  <button class="asset-btn-table sell-btn-table">Sell</button>
+                  <button class="asset-btn-table buy-btn-table" onclick="window.location.href='trading_view.html'">
+                    <i class="fas fa-arrow-down"></i> Buy
+                  </button>
+                  <button class="asset-btn-table sell-btn-table" onclick="window.location.href='trading_view.html'">
+                    <i class="fas fa-arrow-up"></i> Sell
+                  </button>
                 </div>
               </td>
             </tr>
@@ -1204,7 +1212,7 @@
               <td data-label="Asset">
                 <div class="asset-cell">
                   <div class="asset-icon">
-                    <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="Ethereum">
+                    <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum">
                   </div>
                   <div>
                     <div class="asset-name">Ethereum</div>
@@ -1212,19 +1220,22 @@
                   </div>
                 </div>
               </td>
-              <td data-label="Price" class="asset-price">$2,345.67</td>
+              <td data-label="Price" class="asset-price" id="eth-price">$0.00</td>
               <td data-label="24h Change">
-                <div class="price-change positive">
-                  <i class="fas fa-arrow-up"></i>
-                  <span>+8.7%</span>
+                <div class="price-change" id="eth-change">
+                  <span>0.0%</span>
                 </div>
               </td>
-              <td data-label="Balance">4.2315 ETH</td>
-              <td data-label="Value">$9,925.41</td>
+              <td data-label="Balance">0.0000 ETH</td>
+              <td data-label="Value" id="eth-value">$0.00</td>
               <td data-label="Actions">
                 <div class="asset-actions-table">
-                  <button class="asset-btn-table buy-btn-table">Buy</button>
-                  <button class="asset-btn-table sell-btn-table">Sell</button>
+                  <button class="asset-btn-table buy-btn-table" onclick="window.location.href='trading_view.html'">
+                    <i class="fas fa-arrow-down"></i> Buy
+                  </button>
+                  <button class="asset-btn-table sell-btn-table" onclick="window.location.href='trading_view.html'">
+                    <i class="fas fa-arrow-up"></i> Sell
+                  </button>
                 </div>
               </td>
             </tr>
@@ -1232,7 +1243,7 @@
               <td data-label="Asset">
                 <div class="asset-cell">
                   <div class="asset-icon">
-                    <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" alt="BNB">
+                    <img src="crypto-logos/bnb-bnb-logo.svg" alt="BNB">
                   </div>
                   <div>
                     <div class="asset-name">BNB</div>
@@ -1240,19 +1251,22 @@
                   </div>
                 </div>
               </td>
-              <td data-label="Price" class="asset-price">$305.89</td>
+              <td data-label="Price" class="asset-price" id="bnb-price">$0.00</td>
               <td data-label="24h Change">
-                <div class="price-change negative">
-                  <i class="fas fa-arrow-down"></i>
-                  <span>-2.1%</span>
+                <div class="price-change" id="bnb-change">
+                  <span>0.0%</span>
                 </div>
               </td>
-              <td data-label="Balance">12.4567 BNB</td>
-              <td data-label="Value">$3,809.89</td>
+              <td data-label="Balance">0.0000 BNB</td>
+              <td data-label="Value" id="bnb-value">$0.00</td>
               <td data-label="Actions">
                 <div class="asset-actions-table">
-                  <button class="asset-btn-table buy-btn-table">Buy</button>
-                  <button class="asset-btn-table sell-btn-table">Sell</button>
+                  <button class="asset-btn-table buy-btn-table" onclick="window.location.href='trading_view.html'">
+                    <i class="fas fa-arrow-down"></i> Buy
+                  </button>
+                  <button class="asset-btn-table sell-btn-table" onclick="window.location.href='trading_view.html'">
+                    <i class="fas fa-arrow-up"></i> Sell
+                  </button>
                 </div>
               </td>
             </tr>
@@ -1260,7 +1274,7 @@
               <td data-label="Asset">
                 <div class="asset-cell">
                   <div class="asset-icon">
-                    <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="Solana">
+                    <img src="crypto-logos/solana-sol-logo.svg" alt="Solana">
                   </div>
                   <div>
                     <div class="asset-name">Solana</div>
@@ -1268,19 +1282,22 @@
                   </div>
                 </div>
               </td>
-              <td data-label="Price" class="asset-price">$98.76</td>
+              <td data-label="Price" class="asset-price" id="sol-price">$0.00</td>
               <td data-label="24h Change">
-                <div class="price-change positive">
-                  <i class="fas fa-arrow-up"></i>
-                  <span>+15.3%</span>
+                <div class="price-change" id="sol-change">
+                  <span>0.0%</span>
                 </div>
               </td>
-              <td data-label="Balance">45.6789 SOL</td>
-              <td data-label="Value">$4,511.25</td>
+              <td data-label="Balance">0.0000 SOL</td>
+              <td data-label="Value" id="sol-value">$0.00</td>
               <td data-label="Actions">
                 <div class="asset-actions-table">
-                  <button class="asset-btn-table buy-btn-table">Buy</button>
-                  <button class="asset-btn-table sell-btn-table">Sell</button>
+                  <button class="asset-btn-table buy-btn-table" onclick="window.location.href='trading_view.html'">
+                    <i class="fas fa-arrow-down"></i> Buy
+                  </button>
+                  <button class="asset-btn-table sell-btn-table" onclick="window.location.href='trading_view.html'">
+                    <i class="fas fa-arrow-up"></i> Sell
+                  </button>
                 </div>
               </td>
             </tr>
@@ -1288,7 +1305,7 @@
               <td data-label="Asset">
                 <div class="asset-cell">
                   <div class="asset-icon">
-                    <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC">
+                    <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC">
                   </div>
                   <div>
                     <div class="asset-name">USD Coin</div>
@@ -1296,18 +1313,22 @@
                   </div>
                 </div>
               </td>
-              <td data-label="Price" class="asset-price">$1.00</td>
+              <td data-label="Price" class="asset-price" id="usdc-price">$0.00</td>
               <td data-label="24h Change">
-                <div class="price-change">
+                <div class="price-change" id="usdc-change">
                   <span>0.0%</span>
                 </div>
               </td>
-              <td data-label="Balance">5,000.00 USDC</td>
-              <td data-label="Value">$5,000.00</td>
+              <td data-label="Balance">0.0000 USDC</td>
+              <td data-label="Value" id="usdc-value">$0.00</td>
               <td data-label="Actions">
                 <div class="asset-actions-table">
-                  <button class="asset-btn-table buy-btn-table">Buy</button>
-                  <button class="asset-btn-table sell-btn-table">Sell</button>
+                  <button class="asset-btn-table buy-btn-table" onclick="window.location.href='trading_view.html'">
+                    <i class="fas fa-arrow-down"></i> Buy
+                  </button>
+                  <button class="asset-btn-table sell-btn-table" onclick="window.location.href='trading_view.html'">
+                    <i class="fas fa-arrow-up"></i> Sell
+                  </button>
                 </div>
               </td>
             </tr>
@@ -1328,21 +1349,21 @@
         <div class="action-card">
           <h3><i class="fas fa-exchange-alt"></i> Quick Swap</h3>
           <p>Instantly exchange one cryptocurrency for another with low fees.</p>
-          <button class="btn btn-secondary">
+          <button class="btn btn-secondary" onclick="window.location.href='trading_view.html'">
             <i class="fas fa-sync-alt"></i> Swap Now
           </button>
         </div>
         <div class="action-card">
           <h3><i class="fas fa-percentage"></i> Earn Interest</h3>
           <p>Start earning daily compound interest on your crypto assets.</p>
-          <button class="btn btn-secondary">
+          <button class="btn btn-secondary" onclick="window.location.href='earn.html'">
             <i class="fas fa-chart-line"></i> Start Earning
           </button>
         </div>
         <div class="action-card">
           <h3><i class="fas fa-download"></i> Withdraw</h3>
           <p>Withdraw your funds to an external wallet or bank account.</p>
-          <button class="btn btn-secondary">
+          <button class="btn btn-secondary" id="quickWithdrawBtn">
             <i class="fas fa-arrow-up"></i> Withdraw
           </button>
         </div>
@@ -1353,7 +1374,7 @@
   <!-- Deposit Modal -->
   <div class="modal" id="depositModal">
     <div class="modal-content">
-      <button class="close-modal" id="closeModal">&times;</button>
+      <button class="close-modal" id="closeDepositModal">&times;</button>
       <h2 class="modal-title">Deposit Funds</h2>
       <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Add funds to your BitNest account to start earning interest and trading.</p>
       
@@ -1361,15 +1382,15 @@
         <label>Select Currency</label>
         <div class="currency-select">
           <div class="currency-option active">
-            <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC">
+            <img src="crypto-logos/bitcoin.svg" alt="BTC" style="width:24px;height:24px;">
             <div>BTC</div>
           </div>
           <div class="currency-option">
-            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH">
+            <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH" style="width:24px;height:24px;">
             <div>ETH</div>
           </div>
           <div class="currency-option">
-            <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC">
+            <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC" style="width:24px;height:24px;">
             <div>USDC</div>
           </div>
         </div>
@@ -1396,8 +1417,99 @@
       
       <div class="modal-footer">
         <button class="btn btn-secondary">Cancel</button>
-        <button class="btn">
+        <button class="btn" onclick="window.location.href='deposit.html'">
           <i class="fas fa-arrow-down"></i> Deposit Funds
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Withdrawal Modal -->
+  <div class="modal" id="withdrawModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeWithdrawModal">&times;</button>
+      <h2 class="modal-title">Withdraw Funds</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Transfer your funds to an external wallet or bank account.</p>
+      
+      <div class="form-group">
+        <label>Select Currency</label>
+        <div class="currency-select">
+          <div class="currency-option active">
+            <img src="crypto-logos/bitcoin.svg" alt="BTC">
+            <div>BTC</div>
+          </div>
+          <div class="currency-option">
+            <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH">
+            <div>ETH</div>
+          </div>
+          <div class="currency-option">
+            <img src="crypto-logos/bnb-bnb-logo.svg" alt="BNB">
+            <div>BNB</div>
+          </div>
+          <div class="currency-option">
+            <img src="crypto-logos/solana-sol-logo.svg" alt="SOL">
+            <div>SOL</div>
+          </div>
+          <div class="currency-option">
+            <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT">
+            <div>USDT</div>
+          </div>
+          <div class="currency-option">
+            <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC">
+            <div>USDC</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="withdrawAmount">Amount</label>
+        <input type="text" id="withdrawAmount" class="form-control" placeholder="0.00">
+      </div>
+      
+      <div class="form-group">
+        <label>Withdrawal Method</label>
+        <div class="withdraw-options">
+          <div class="withdraw-option active">
+            <div class="option-header">
+              <div class="option-icon">
+                <i class="fas fa-link"></i>
+              </div>
+              <div class="option-name">Crypto Network</div>
+            </div>
+            <div class="option-details">Transfer to any external crypto wallet (Recommended)</div>
+          </div>
+          <div class="withdraw-option">
+            <div class="option-header">
+              <div class="option-icon">
+                <i class="fas fa-credit-card"></i>
+              </div>
+              <div class="option-name">Credit Card</div>
+              <div class="option-badge">New</div>
+            </div>
+            <div class="option-details">Withdraw to your linked credit card (1-3 business days)</div>
+          </div>
+          <div class="withdraw-option">
+            <div class="option-header">
+              <div class="option-icon">
+                <i class="fas fa-university"></i>
+              </div>
+              <div class="option-name">Bank Transfer</div>
+              <div class="option-badge">New</div>
+            </div>
+            <div class="option-details">Transfer to your bank account (1-3 business days)</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="min-amount-notice">
+        <h4>Minimum Withdrawal Amount</h4>
+        <p>The minimum withdrawal amount is $5.00 or equivalent in crypto.</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary">Cancel</button>
+        <button class="btn" id="proceedWithdrawBtn">
+          <i class="fas fa-arrow-up"></i> Proceed Withdrawal
         </button>
       </div>
     </div>
@@ -1422,10 +1534,9 @@
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
       projectId: "bitnest-c7452",
-      storageBucket: "bitnest-c7452.firebasestorage.app",
+      storageBucket: "bitnest-c7452.appspot.com",
       messagingSenderId: "583165336540",
-      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
-      measurementId: "G-PGJNHTL03J"
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
     };
 
     // Initialize Firebase
@@ -1439,6 +1550,152 @@
     const totalPortfolioValueElement = document.getElementById('totalPortfolioValue');
     const portfolioChange24hElement = document.getElementById('portfolioChange24h');
     const userProfileElement = document.getElementById('userProfile');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavMenu = document.getElementById('mobileNavMenu');
+    const depositBtn = document.getElementById('depositBtn');
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    const quickWithdrawBtn = document.getElementById('quickWithdrawBtn');
+    const depositModal = document.getElementById('depositModal');
+    const withdrawModal = document.getElementById('withdrawModal');
+    const closeDepositModal = document.getElementById('closeDepositModal');
+    const closeWithdrawModal = document.getElementById('closeWithdrawModal');
+    const proceedWithdrawBtn = document.getElementById('proceedWithdrawBtn');
+
+    // Initialize all values to 0
+    const initializeZeroValues = () => {
+      totalPortfolioValueElement.textContent = '$0.00';
+      portfolioChange24hElement.textContent = '0.0%';
+      
+      // Set all prices to $0.00
+      document.getElementById('btc-price').textContent = '$0.00';
+      document.getElementById('eth-price').textContent = '$0.00';
+      document.getElementById('bnb-price').textContent = '$0.00';
+      document.getElementById('sol-price').textContent = '$0.00';
+      document.getElementById('usdc-price').textContent = '$0.00';
+      
+      // Set all changes to 0.0%
+      document.getElementById('btc-change').textContent = '0.0%';
+      document.getElementById('eth-change').textContent = '0.0%';
+      document.getElementById('bnb-change').textContent = '0.0%';
+      document.getElementById('sol-change').textContent = '0.0%';
+      document.getElementById('usdc-change').textContent = '0.0%';
+      
+      // Set all values to $0.00
+      document.getElementById('btc-value').textContent = '$0.00';
+      document.getElementById('eth-value').textContent = '$0.00';
+      document.getElementById('bnb-value').textContent = '$0.00';
+      document.getElementById('sol-value').textContent = '$0.00';
+      document.getElementById('usdc-value').textContent = '$0.00';
+    };
+
+    // Toggle user menu
+    userProfileElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.classList.toggle('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Toggle mobile nav menu
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileNavMenu.classList.toggle('active');
+      userMenu.classList.remove('active');
+    });
+
+    // Close menus when clicking outside
+    document.addEventListener('click', () => {
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        console.error('Sign out error:', error);
+      });
+    });
+
+    // Deposit button
+    depositBtn.addEventListener('click', () => {
+      window.location.href = 'deposit.html';
+    });
+
+    // Withdraw button
+    withdrawBtn.addEventListener('click', () => {
+      withdrawModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Quick withdraw button
+    quickWithdrawBtn.addEventListener('click', () => {
+      withdrawModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Proceed with withdrawal
+    proceedWithdrawBtn.addEventListener('click', () => {
+      alert("Your balance is $0.00. Please make a deposit first to withdraw funds.");
+      withdrawModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+      depositModal.style.display = 'flex';
+    });
+
+    // Close deposit modal
+    closeDepositModal.addEventListener('click', () => {
+      depositModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    // Close withdraw modal
+    closeWithdrawModal.addEventListener('click', () => {
+      withdrawModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    // Close modals when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === depositModal) {
+        depositModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+      if (e.target === withdrawModal) {
+        withdrawModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    // Currency selection
+    const currencyOptions = document.querySelectorAll('.currency-option');
+    currencyOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        currencyOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+      });
+    });
+
+    // Withdrawal option selection
+    const withdrawOptions = document.querySelectorAll('.withdraw-option');
+    withdrawOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        withdrawOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+      });
+    });
+
+    // Notification bell animation
+    const notificationBell = document.querySelector('.notification-bell');
+    notificationBell.addEventListener('click', () => {
+      notificationBell.style.animation = 'bellRing 0.5s ease';
+      setTimeout(() => {
+        notificationBell.style.animation = '';
+      }, 500);
+      alert("You have 3 new notifications!");
+    });
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
@@ -1456,45 +1713,17 @@
           
           // Update UI with user data
           const displayName = userData.name || user.displayName || "User";
-          userNameElement.textContent = displayName;
-          
-          // Format balance with 2 decimal places
-          const userBalance = userData.balance || 0;
-          const formattedBalance = userBalance.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          });
-          
-          // Update portfolio values
-          totalPortfolioValueElement.textContent = `$${formattedBalance}`;
-          
-          // Calculate random growth for demo purposes
-          const growthPercent = (Math.random() * 15).toFixed(1);
-          portfolioChange24hElement.textContent = `+${growthPercent}%`;
+          // Show only first name if available
+          const firstName = displayName.split(' ')[0];
+          userNameElement.textContent = firstName;
           
           // Update profile picture if available
           if (user.photoURL) {
             userProfilePicElement.src = user.photoURL;
           }
-          
-          // Simulate real-time price updates
-          simulatePriceUpdates();
         } else {
           console.log("No user data found in Firestore");
-          // Set default values if no user data
-          totalPortfolioValueElement.textContent = '$0.00';
         }
-        
-        // Add logout functionality
-        userProfileElement.addEventListener('click', () => {
-          if (confirm('Are you sure you want to sign out?')) {
-            signOut(auth).then(() => {
-              window.location.href = 'login.html';
-            }).catch((error) => {
-              console.error('Sign out error:', error);
-            });
-          }
-        });
         
       } else {
         // User is signed out
@@ -1503,133 +1732,56 @@
       }
     });
 
-    // Function to simulate real-time price updates
-    function simulatePriceUpdates() {
-      const cryptoPrices = {
-        BTC: 42156.78,
-        ETH: 2345.67,
-        BNB: 305.89,
-        SOL: 98.76,
-        USDC: 1.00
-      };
-      
-      const assetRows = document.querySelectorAll('.asset-table tbody tr');
-      
-      // Update prices every 5 seconds
-      setInterval(() => {
-        // Update each crypto price with small random fluctuations
-        for (const crypto in cryptoPrices) {
-          if (crypto !== 'USDC') { // USDC is stablecoin
-            const changePercent = (Math.random() * 2 - 1); // -1% to +1%
-            cryptoPrices[crypto] = cryptoPrices[crypto] * (1 + changePercent/100);
+    // Fetch live crypto prices from CoinGecko API
+    async function fetchCryptoPrices() {
+      try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,usd-coin&vs_currencies=usd&include_24hr_change=true');
+        const data = await response.json();
+        
+        // Update prices in the table
+        document.getElementById('btc-price').textContent = `$${data.bitcoin.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('eth-price').textContent = `$${data.ethereum.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('bnb-price').textContent = `$${data.binancecoin.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('sol-price').textContent = `$${data.solana.usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('usdc-price').textContent = `$${data['usd-coin'].usd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        
+        // Update 24h changes
+        document.getElementById('btc-change').textContent = `${data.bitcoin.usd_24h_change >= 0 ? '+' : ''}${data.bitcoin.usd_24h_change.toFixed(2)}%`;
+        document.getElementById('eth-change').textContent = `${data.ethereum.usd_24h_change >= 0 ? '+' : ''}${data.ethereum.usd_24h_change.toFixed(2)}%`;
+        document.getElementById('bnb-change').textContent = `${data.binancecoin.usd_24h_change >= 0 ? '+' : ''}${data.binancecoin.usd_24h_change.toFixed(2)}%`;
+        document.getElementById('sol-change').textContent = `${data.solana.usd_24h_change >= 0 ? '+' : ''}${data.solana.usd_24h_change.toFixed(2)}%`;
+        document.getElementById('usdc-change').textContent = `${data['usd-coin'].usd_24h_change >= 0 ? '+' : ''}${data['usd-coin'].usd_24h_change.toFixed(2)}%`;
+        
+        // Update change colors
+        const updateChangeColor = (elementId, change) => {
+          const element = document.getElementById(elementId);
+          if (change >= 0) {
+            element.classList.add('positive');
+            element.classList.remove('negative');
+          } else {
+            element.classList.add('negative');
+            element.classList.remove('positive');
           }
-        }
+        };
         
-        // Update the table with new prices
-        assetRows.forEach(row => {
-          const symbol = row.querySelector('.asset-symbol').textContent;
-          const priceCell = row.querySelector('.asset-price');
-          const changeCell = row.querySelector('.price-change');
-          const changeValue = row.querySelector('.price-change span');
-          const changeIcon = row.querySelector('.price-change i');
-          
-          if (symbol && priceCell) {
-            // Format price to 2 decimal places
-            const formattedPrice = cryptoPrices[symbol].toLocaleString('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            });
-            
-            // Calculate 24h change (for demo, just random)
-            const changePercent = (Math.random() * 10 - 2).toFixed(2); // -2% to +8%
-            const isPositive = parseFloat(changePercent) >= 0;
-            
-            // Update price cell
-            priceCell.textContent = `$${formattedPrice}`;
-            
-            // Update change cell
-            changeValue.textContent = `${isPositive ? '+' : ''}${changePercent}%`;
-            
-            // Update change styling
-            if (isPositive) {
-              changeCell.classList.remove('negative');
-              changeCell.classList.add('positive');
-              changeIcon.className = 'fas fa-arrow-up';
-            } else {
-              changeCell.classList.remove('positive');
-              changeCell.classList.add('negative');
-              changeIcon.className = 'fas fa-arrow-down';
-            }
-            
-            // Update value column based on balance and new price
-            const balanceText = row.querySelector('td:nth-child(4)').textContent;
-            const balance = parseFloat(balanceText.split(' ')[0]);
-            const value = balance * cryptoPrices[symbol];
-            
-            row.querySelector('td:nth-child(5)').textContent = `$${value.toLocaleString('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })}`;
-          }
-        });
+        updateChangeColor('btc-change', data.bitcoin.usd_24h_change);
+        updateChangeColor('eth-change', data.ethereum.usd_24h_change);
+        updateChangeColor('bnb-change', data.binancecoin.usd_24h_change);
+        updateChangeColor('sol-change', data.solana.usd_24h_change);
+        updateChangeColor('usdc-change', data['usd-coin'].usd_24h_change);
         
-        // Update total portfolio value
-        let totalValue = 0;
-        assetRows.forEach(row => {
-          const valueText = row.querySelector('td:nth-child(5)').textContent;
-          totalValue += parseFloat(valueText.replace(/[^0-9.]/g, ''));
-        });
-        
-        totalPortfolioValueElement.textContent = `$${totalValue.toLocaleString('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })}`;
-        
-      }, 5000); // Update every 5 seconds
+      } catch (error) {
+        console.error('Error fetching crypto prices:', error);
+      }
     }
 
-    // Modal and UI Interactions
-    const depositBtn = document.getElementById('depositBtn');
-    const depositModal = document.getElementById('depositModal');
-    const closeModal = document.getElementById('closeModal');
-    const currencyOptions = document.querySelectorAll('.currency-option');
-    
-    // Show deposit modal
-    depositBtn.addEventListener('click', () => {
-      depositModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    });
-    
-    // Close modal
-    closeModal.addEventListener('click', () => {
-      depositModal.style.display = 'none';
-      document.body.style.overflow = 'auto';
-    });
-    
-    // Close modal when clicking outside
-    window.addEventListener('click', (e) => {
-      if (e.target === depositModal) {
-        depositModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-      }
-    });
-    
-    // Currency selection
-    currencyOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        currencyOptions.forEach(opt => opt.classList.remove('active'));
-        option.classList.add('active');
-      });
-    });
-    
-    // Notification bell animation
-    const notificationBell = document.querySelector('.notification-bell');
-    notificationBell.addEventListener('click', () => {
-      notificationBell.style.animation = 'bellRing 0.5s ease';
-      setTimeout(() => {
-        notificationBell.style.animation = '';
-      }, 500);
-      alert("You have 3 new notifications!");
+    // Initialize all values to 0 when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeZeroValues();
+      fetchCryptoPrices();
+      
+      // Refresh prices every 60 seconds
+      setInterval(fetchCryptoPrices, 60000);
     });
   </script>
 </body>

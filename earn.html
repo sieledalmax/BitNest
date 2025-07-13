@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>BitNest | Earn Crypto</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +21,6 @@
       --accent-orange: #ff7b25;
       --border-radius: 16px;
       --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       --glass-effect: rgba(16, 18, 22, 0.7);
       --success: #00e676;
       --warning: #ffab00;
@@ -43,56 +42,10 @@
       overflow-x: hidden;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--card-bg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 4px;
-    }
-
-    /* Floating Animations */
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Notification Bell Animation */
-    @keyframes bellRing {
-      0% { transform: rotate(0deg); }
-      10% { transform: rotate(15deg); }
-      20% { transform: rotate(-15deg); }
-      30% { transform: rotate(10deg); }
-      40% { transform: rotate(-10deg); }
-      50% { transform: rotate(5deg); }
-      60% { transform: rotate(-5deg); }
-      100% { transform: rotate(0deg); }
-    }
-
-    /* Navbar Styles */
+    /* Navbar - Centered with Animations */
     .navbar {
       background-color: var(--glass-effect);
-      padding: 1rem 3rem;
+      padding: 1rem 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -101,28 +54,37 @@
       z-index: 1000;
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .navbar:hover {
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
     }
 
     .navbar .left {
       display: flex;
       align-items: center;
-      gap: 2.5rem;
+      justify-content: flex-start;
+      gap: 2rem;
+      flex: 1;
     }
 
     .navbar .logo {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
 
-    .logo-icon {
-      animation: float 4s ease-in-out infinite;
+    .navbar .logo:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
     }
 
     .nav-links {
@@ -133,15 +95,31 @@
     .navbar a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: var(--transition);
       position: relative;
       padding: 0.5rem 0;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .navbar a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
     }
 
     .navbar a:hover {
       color: var(--text-primary);
+    }
+
+    .navbar a:hover::after {
+      width: 100%;
     }
 
     .navbar a.active {
@@ -149,30 +127,31 @@
     }
 
     .navbar a.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
       width: 100%;
-      height: 2px;
-      background: var(--primary);
-      border-radius: 2px;
     }
 
     .navbar .right {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 1.5rem;
+      flex: 1;
     }
 
     .notification-bell {
       position: relative;
       cursor: pointer;
-      transition: var(--transition);
+      transition: transform 0.2s ease;
     }
 
     .notification-bell:hover {
-      animation: bellRing 0.5s ease;
+      transform: translateY(-2px);
+      animation: bellShake 0.5s ease infinite alternate;
+    }
+
+    @keyframes bellShake {
+      0% { transform: rotate(-5deg); }
+      100% { transform: rotate(5deg); }
     }
 
     .notification-badge {
@@ -189,13 +168,26 @@
       justify-content: center;
       font-size: 0.7rem;
       font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     .user-profile {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
       cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .user-profile:hover {
+      transform: translateX(5px);
     }
 
     .profile-pic {
@@ -204,59 +196,147 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--primary);
+      transition: all 0.3s ease;
     }
 
-    .btn {
-      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
-      border: none;
-      padding: 0.75rem 1.75rem;
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: var(--transition);
-      display: inline-flex;
+    .user-profile:hover .profile-pic {
+      box-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
+      transform: scale(1.1);
+    }
+
+    .user-name {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Enhanced Dropdown Menus */
+    .user-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 240px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .user-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .user-menu-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
       font-size: 0.95rem;
-      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      white-space: nowrap;
+      transition: all 0.2s ease;
       position: relative;
       overflow: hidden;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(30, 211, 198, 0.4);
+    .user-menu-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(30, 211, 198, 0.1), transparent);
+      transition: all 0.5s ease;
     }
 
-    .btn span {
+    .user-menu-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    .user-menu-item:hover::before {
+      left: 100%;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.5rem;
       transition: transform 0.3s ease;
     }
 
-    .btn:hover span {
-      transform: translateX(3px);
+    .mobile-menu-btn:hover {
+      transform: rotate(90deg);
     }
 
-    .btn-secondary {
-      background: transparent;
-      color: var(--text-primary);
+    .mobile-nav-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 5%;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      width: 90%;
+      max-width: 280px;
+      z-index: 1001;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: none;
+    .mobile-nav-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    /* Main Container */
+    .mobile-nav-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    /* Enhanced Main Content */
     .container {
-      padding: 2rem 3rem;
+      padding: 2rem 1.5rem;
       max-width: 1800px;
       margin: 0 auto;
+      animation: fadeIn 0.5s ease;
     }
 
-    /* Dashboard Grid */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
@@ -267,39 +347,29 @@
     .welcome-banner {
       grid-column: span 12;
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
-      padding: 2.5rem;
+      padding: 1.75rem;
       border-radius: var(--border-radius);
-      margin-bottom: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
-    .welcome-banner::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 40%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(30, 211, 198, 0.08), rgba(58, 134, 255, 0.05));
-      clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
-      z-index: 0;
+    .welcome-banner:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
     }
 
     .welcome-content {
       position: relative;
       z-index: 1;
-      max-width: 60%;
     }
 
     .welcome-content h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
@@ -311,46 +381,43 @@
     .welcome-content p {
       color: var(--text-secondary);
       margin-bottom: 1.5rem;
-      font-size: 1.05rem;
+      font-size: 1rem;
       line-height: 1.6;
     }
 
     .welcome-stats {
-      display: flex;
-      gap: 2rem;
-      margin-top: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
     }
 
     .stat-item {
-      display: flex;
-      flex-direction: column;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-3px);
     }
 
     .stat-value {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 0.25rem;
     }
 
     .stat-label {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
-    }
-
-    .welcome-image {
-      position: relative;
-      z-index: 1;
-      animation: float 6s ease-in-out infinite;
-    }
-
-    .welcome-image img {
-      width: 300px;
-      height: auto;
     }
 
     /* Section Header */
     .section-header {
+      grid-column: span 12;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -373,36 +440,78 @@
       height: 20px;
       background: linear-gradient(var(--primary), var(--accent-blue));
       border-radius: 3px;
+      animation: pulse 2s infinite;
     }
 
-    /* Earn Grid */
-    .earn-grid {
-      grid-column: span 12;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 1.5rem;
+    /* Filter Buttons */
+    .time-filters {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .time-filters button {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .time-filters button.active {
+      background: rgba(30, 211, 198, 0.1);
+      border: 1px solid var(--primary);
+      color: var(--primary);
     }
 
     /* Lock Period Cards */
+    .earn-grid {
+      grid-column: span 12;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
     .lock-period-card {
       background-color: var(--card-bg);
-      padding: 2rem;
+      padding: 1.75rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      transition: var(--transition);
+      transition: all 0.3s ease;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
+    }
+
+    .lock-period-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
     }
 
     .lock-period-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .lock-period-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .lock-period-card.selected {
+      border: 1px solid var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
     }
 
     .lock-period-card.featured {
-      border: 2px solid var(--primary);
-      box-shadow: 0 0 0 4px rgba(30, 211, 198, 0.2);
+      border: 1px solid var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
     }
 
     .lock-period-card.featured::after {
@@ -413,45 +522,56 @@
       background: var(--primary);
       color: #000;
       padding: 0.25rem 2rem;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: 600;
       transform: rotate(45deg);
+      z-index: 1;
     }
 
     .lock-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .lock-title {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .lock-period-card:hover .lock-title {
+      transform: translateX(5px);
     }
 
     .lock-duration {
       color: var(--text-secondary);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .lock-rate {
-      font-size: 3rem;
+      font-size: 2.5rem;
       font-weight: 700;
-      margin: 1.5rem 0;
+      margin: 1rem 0;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      transition: all 0.3s ease;
+    }
+
+    .lock-period-card:hover .lock-rate {
+      transform: scale(1.05);
     }
 
     .lock-rate span {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 500;
     }
 
     .lock-features {
-      margin: 1.5rem 0;
+      margin: 1rem 0;
     }
 
     .feature-item {
@@ -460,6 +580,7 @@
       gap: 0.75rem;
       margin-bottom: 0.75rem;
       color: var(--text-secondary);
+      font-size: 0.9rem;
     }
 
     .feature-item i {
@@ -467,11 +588,11 @@
     }
 
     .lock-form {
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
 
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .form-group label {
@@ -489,74 +610,47 @@
       border-radius: 8px;
       color: var(--text-primary);
       font-size: 1rem;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .form-control:focus {
-      outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
-    }
-
-    .currency-select {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .currency-option {
-      flex: 1;
-      padding: 0.75rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .currency-option:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .currency-option.active {
-      background: rgba(30, 211, 198, 0.1);
-      border-color: var(--primary);
-    }
-
-    .currency-option img {
-      width: 24px;
-      height: 24px;
-      margin-bottom: 0.5rem;
     }
 
     /* Calculator Section */
     .calculator-section {
       grid-column: span 12;
       background-color: var(--card-bg);
-      padding: 2rem;
+      padding: 1.75rem;
       border-radius: var(--border-radius);
-      margin-top: 1.5rem;
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
+      margin-top: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .calculator-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
     }
 
     .calculator-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
+      gap: 1.5rem;
     }
 
     .calculator-form {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1rem;
     }
 
     .calculator-result {
       background: rgba(30, 211, 198, 0.05);
       border-radius: var(--border-radius);
-      padding: 2rem;
+      padding: 1.5rem;
       border: 1px solid var(--primary);
       display: flex;
       flex-direction: column;
@@ -566,19 +660,21 @@
     .result-item {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
 
     .result-label {
       color: var(--text-secondary);
+      font-size: 0.95rem;
     }
 
     .result-value {
       font-weight: 600;
+      font-size: 0.95rem;
     }
 
     .total-earnings {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 700;
       margin-top: 1rem;
       color: var(--primary);
@@ -594,6 +690,9 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      overflow: hidden;
     }
 
     .locks-table th {
@@ -631,6 +730,149 @@
       color: var(--warning);
     }
 
+    /* Enhanced Buttons */
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.75rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.5s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(30, 211, 198, 0.4);
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Deposit Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--box-shadow);
+      position: relative;
+      transform: scale(0.95);
+      opacity: 0;
+      animation: modalAppear 0.3s ease forwards;
+      overflow-y: auto;
+      margin: auto;
+    }
+
+    @keyframes modalAppear {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .close-modal:hover {
+      color: var(--primary);
+      transform: rotate(90deg);
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    .bonus-notice {
+      background: rgba(30, 211, 198, 0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--primary);
+    }
+
+    .bonus-notice h4 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .bonus-notice p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
     /* Responsive Styles */
     @media (max-width: 1200px) {
       .earn-grid {
@@ -643,36 +885,18 @@
         padding: 1.5rem;
       }
       
-      .welcome-banner {
-        flex-direction: column;
-        text-align: center;
-      }
-      
-      .welcome-content {
-        max-width: 100%;
-        margin-bottom: 1.5rem;
-      }
-      
       .welcome-stats {
-        justify-content: center;
-      }
-      
-      .welcome-image img {
-        width: 200px;
+        grid-template-columns: 1fr;
       }
     }
 
     @media (max-width: 768px) {
-      .navbar {
-        padding: 1rem;
-        flex-direction: column;
-        gap: 1rem;
+      .nav-links {
+        display: none;
       }
       
-      .nav-links {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
+      .mobile-menu-btn {
+        display: block;
       }
       
       .section-header {
@@ -684,27 +908,76 @@
       .locks-table {
         display: block;
         overflow-x: auto;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .welcome-banner {
-        padding: 1.5rem;
-      }
-      
-      .welcome-content h1 {
-        font-size: 1.8rem;
-      }
-      
-      .welcome-stats {
-        flex-direction: column;
-        gap: 1rem;
+        white-space: nowrap;
       }
       
       .lock-period-card.featured::after {
         top: 10px;
         right: -35px;
         font-size: 0.7rem;
+        padding: 0.25rem 1.5rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .navbar {
+        padding: 1rem;
+      }
+      
+      .welcome-content h1 {
+        font-size: 1.5rem;
+      }
+      
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        padding: 1.5rem;
+      }
+      
+      .locks-table {
+        display: block;
+      }
+      
+      .locks-table th, 
+      .locks-table td {
+        display: block;
+        width: 100%;
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+      }
+      
+      .locks-table th::before,
+      .locks-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        width: calc(50% - 1rem);
+        text-align: left;
+        font-weight: 500;
+      }
+      
+      .locks-table th {
+        display: none;
+      }
+      
+      .locks-table tr {
+        margin-bottom: 1rem;
+        display: block;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        background: var(--card-bg);
+        box-shadow: var(--box-shadow);
+      }
+      
+      .locks-table td {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      
+      .locks-table td:last-child {
+        border-bottom: none;
       }
     }
   </style>
@@ -714,8 +987,7 @@
   <!-- Navbar -->
   <div class="navbar">
     <div class="left">
-      <div class="logo">
-        <i class="fas fa-coins logo-icon"></i>
+      <div class="logo" onclick="window.location.href='dashboard.html'">
         <span>BitNest</span>
       </div>
       <div class="nav-links">
@@ -733,10 +1005,47 @@
         <i class="fas fa-bell"></i>
         <div class="notification-badge">3</div>
       </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
       <div class="user-profile" id="userProfile">
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
-        <span id="userName">Loading...</span>
+        <span class="user-name" id="userName">Loading...</span>
+        <div class="user-menu" id="userMenu">
+          <a href="#" class="user-menu-item">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="#" class="user-menu-item">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="#" class="user-menu-item" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
       </div>
+    </div>
+    <div class="mobile-nav-menu" id="mobileNavMenu">
+      <a href="dashboard.html" class="mobile-nav-item">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <a href="assets.html" class="mobile-nav-item">
+        <i class="fas fa-wallet"></i> Assets
+      </a>
+      <a href="#" class="mobile-nav-item active">
+        <i class="fas fa-percentage"></i> Earn
+      </a>
+      <a href="trading_view.html" class="mobile-nav-item">
+        <i class="fas fa-exchange-alt"></i> Trade
+      </a>
+      <a href="P2P.html" class="mobile-nav-item">
+        <i class="fas fa-users"></i> P2P
+      </a>
+      <a href="deposit.html" class="mobile-nav-item">
+        <i class="fas fa-plus-circle"></i> Deposit
+      </a>
+      <a href="cards.html" class="mobile-nav-item">
+        <i class="fas fa-credit-card"></i> Cards
+      </a>
     </div>
   </div>
 
@@ -762,9 +1071,6 @@
               <div class="stat-label">Available Balance</div>
             </div>
           </div>
-        </div>
-        <div class="welcome-image">
-          <img src="https://cryptologos.cc/logos/versions/bitcoin-btc-logo.svg" alt="Crypto">
         </div>
       </div>
 
@@ -805,9 +1111,9 @@
           <div class="lock-form">
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00">
+              <input type="text" class="form-control" placeholder="0.00" id="amount-14days">
             </div>
-            <button class="btn" style="width: 100%;">
+            <button class="btn" style="width: 100%;" onclick="handleLockClick('14 days', '5.2%', 'amount-14days')">
               <i class="fas fa-lock"></i> Lock for 14 Days
             </button>
           </div>
@@ -840,9 +1146,9 @@
           <div class="lock-form">
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00">
+              <input type="text" class="form-control" placeholder="0.00" id="amount-1month">
             </div>
-            <button class="btn" style="width: 100%;">
+            <button class="btn" style="width: 100%;" onclick="handleLockClick('1 month', '7.5%', 'amount-1month')">
               <i class="fas fa-lock"></i> Lock for 1 Month
             </button>
           </div>
@@ -875,9 +1181,9 @@
           <div class="lock-form">
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00">
+              <input type="text" class="form-control" placeholder="0.00" id="amount-3months">
             </div>
-            <button class="btn" style="width: 100%;">
+            <button class="btn" style="width: 100%;" onclick="handleLockClick('3 months', '9.8%', 'amount-3months')">
               <i class="fas fa-lock"></i> Lock for 3 Months
             </button>
           </div>
@@ -910,9 +1216,9 @@
           <div class="lock-form">
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00">
+              <input type="text" class="form-control" placeholder="0.00" id="amount-6months">
             </div>
-            <button class="btn" style="width: 100%;">
+            <button class="btn" style="width: 100%;" onclick="handleLockClick('6 months', '12.5%', 'amount-6months')">
               <i class="fas fa-lock"></i> Lock for 6 Months
             </button>
           </div>
@@ -945,9 +1251,9 @@
           <div class="lock-form">
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00">
+              <input type="text" class="form-control" placeholder="0.00" id="amount-12months">
             </div>
-            <button class="btn" style="width: 100%;">
+            <button class="btn" style="width: 100%;" onclick="handleLockClick('12 months', '15.0%', 'amount-12months')">
               <i class="fas fa-lock"></i> Lock for 12 Months
             </button>
           </div>
@@ -980,7 +1286,7 @@
           <div class="lock-form">
             <div class="form-group">
               <label>Lock Duration</label>
-              <select class="form-control">
+              <select class="form-control" id="custom-duration">
                 <option>2 weeks (5.2% APR)</option>
                 <option>1 month (7.5% APR)</option>
                 <option>3 months (9.8% APR)</option>
@@ -991,9 +1297,9 @@
             </div>
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00">
+              <input type="text" class="form-control" placeholder="0.00" id="amount-custom">
             </div>
-            <button class="btn" style="width: 100%;">
+            <button class="btn" style="width: 100%;" onclick="handleCustomLockClick()">
               <i class="fas fa-lock"></i> Lock Custom Amount
             </button>
           </div>
@@ -1080,68 +1386,39 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Empty state -->
             <tr>
-              <td>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC" style="width: 24px; height: 24px;">
-                  <span>USDC</span>
-                </div>
+              <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                <i class="fas fa-lock-open" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                <p>You don't have any active locks yet</p>
+                <button class="btn" style="margin-top: 1rem;" onclick="showDepositPrompt()">
+                  <i class="fas fa-plus-circle"></i> Make Your First Deposit
+                </button>
               </td>
-              <td>$1,500.00</td>
-              <td>1 month</td>
-              <td>7.5%</td>
-              <td>Jun 15, 2023</td>
-              <td>Jul 15, 2023</td>
-              <td>$9.38</td>
-              <td><span class="lock-status status-active">Active</span></td>
-            </tr>
-            <tr>
-              <td>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" style="width: 24px; height: 24px;">
-                  <span>ETH</span>
-                </div>
-              </td>
-              <td>2.5 ETH</td>
-              <td>3 months</td>
-              <td>9.8%</td>
-              <td>May 20, 2023</td>
-              <td>Aug 20, 2023</td>
-              <td>0.061 ETH</td>
-              <td><span class="lock-status status-active">Active</span></td>
-            </tr>
-            <tr>
-              <td>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC" style="width: 24px; height: 24px;">
-                  <span>BTC</span>
-                </div>
-              </td>
-              <td>0.25 BTC</td>
-              <td>6 months</td>
-              <td>12.5%</td>
-              <td>Apr 10, 2023</td>
-              <td>Oct 10, 2023</td>
-              <td>0.0156 BTC</td>
-              <td><span class="lock-status status-active">Active</span></td>
-            </tr>
-            <tr>
-              <td>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" alt="BNB" style="width: 24px; height: 24px;">
-                  <span>BNB</span>
-                </div>
-              </td>
-              <td>10 BNB</td>
-              <td>12 months</td>
-              <td>15.0%</td>
-              <td>Jan 5, 2023</td>
-              <td>Jan 5, 2024</td>
-              <td>1.25 BNB</td>
-              <td><span class="lock-status status-active">Active</span></td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deposit Modal -->
+  <div class="modal" id="depositModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeDepositModal">&times;</button>
+      <h2 class="modal-title">Insufficient Balance</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">You don't have enough funds to complete this lock. Please deposit funds to continue.</p>
+      
+      <div class="bonus-notice">
+        <h4>Special Bonus Offer!</h4>
+        <p>Make your first deposit and receive a $100 bonus in BTC when you deposit $1000 or more.</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeDepositModal()">Cancel</button>
+        <button class="btn" onclick="window.location.href='deposit.html'">
+          <i class="fas fa-arrow-down"></i> Deposit Now
+        </button>
       </div>
     </div>
   </div>
@@ -1165,10 +1442,9 @@
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
       projectId: "bitnest-c7452",
-      storageBucket: "bitnest-c7452.firebasestorage.app",
+      storageBucket: "bitnest-c7452.appspot.com",
       messagingSenderId: "583165336540",
-      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
-      measurementId: "G-PGJNHTL03J"
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
     };
 
     // Initialize Firebase
@@ -1184,6 +1460,150 @@
     const activeLocksElement = document.getElementById('activeLocks');
     const availableBalanceElement = document.getElementById('availableBalance');
     const userProfileElement = document.getElementById('userProfile');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavMenu = document.getElementById('mobileNavMenu');
+    const depositModal = document.getElementById('depositModal');
+    const closeDepositModal = document.getElementById('closeDepositModal');
+    const lockCards = document.querySelectorAll('.lock-period-card');
+
+    // Initialize all values to 0
+    const initializeZeroValues = () => {
+      totalEarningsElement.textContent = '$0.00';
+      activeLocksElement.textContent = '0';
+      availableBalanceElement.textContent = '$0.00';
+    };
+
+    // Show deposit prompt
+    function showDepositPrompt() {
+      depositModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close deposit modal
+    function closeDepositModal() {
+      depositModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // Handle lock button click
+    function handleLockClick(duration, rate, amountFieldId) {
+      const amountInput = document.getElementById(amountFieldId);
+      const amount = parseFloat(amountInput.value) || 0;
+      
+      if (amount <= 0) {
+        alert("Please enter a valid amount");
+        return;
+      }
+      
+      // For demo purposes, we'll always show insufficient balance
+      showDepositPrompt();
+      
+      // In a real app, you would check the user's balance here
+      // const userBalance = parseFloat(availableBalanceElement.textContent.replace('$', '')) || 0;
+      // if (amount > userBalance) {
+      //   showDepositPrompt();
+      // } else {
+      //   // Process the lock
+      //   alert(`Success! You've locked $${amount.toFixed(2)} for ${duration} at ${rate} APR`);
+      // }
+    }
+
+    // Handle custom lock button click
+    function handleCustomLockClick() {
+      const durationSelect = document.getElementById('custom-duration');
+      const durationText = durationSelect.options[durationSelect.selectedIndex].text;
+      const amountInput = document.getElementById('amount-custom');
+      const amount = parseFloat(amountInput.value) || 0;
+      
+      if (amount <= 0) {
+        alert("Please enter a valid amount");
+        return;
+      }
+      
+      // Extract duration and rate from the selected option
+      const duration = durationText.split(' (')[0];
+      const rateMatch = durationText.match(/\((\d+\.?\d*)% APR\)/);
+      const rate = rateMatch ? rateMatch[1] + '%' : '7.5%';
+      
+      // For demo purposes, we'll always show insufficient balance
+      showDepositPrompt();
+      
+      // In a real app, you would check the user's balance here
+      // const userBalance = parseFloat(availableBalanceElement.textContent.replace('$', '')) || 0;
+      // if (amount > userBalance) {
+      //   showDepositPrompt();
+      // } else {
+      //   // Process the lock
+      //   alert(`Success! You've locked $${amount.toFixed(2)} for ${duration} at ${rate} APR`);
+      // }
+    }
+
+    // Toggle user menu
+    userProfileElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.classList.toggle('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Toggle mobile nav menu
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileNavMenu.classList.toggle('active');
+      userMenu.classList.remove('active');
+    });
+
+    // Close menus when clicking outside
+    document.addEventListener('click', () => {
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        console.error('Sign out error:', error);
+      });
+    });
+
+    // Close deposit modal
+    closeDepositModal.addEventListener('click', closeDepositModal);
+
+    // Close modals when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === depositModal) {
+        closeDepositModal();
+      }
+    });
+
+    // Lock period card selection
+    lockCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        // Don't select if clicking on input or button
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+          return;
+        }
+        
+        // Remove selected class from all cards
+        lockCards.forEach(c => c.classList.remove('selected'));
+        // Add selected class to clicked card
+        card.classList.add('selected');
+      });
+    });
+
+    // Notification bell animation
+    const notificationBell = document.querySelector('.notification-bell');
+    notificationBell.addEventListener('click', () => {
+      notificationBell.style.animation = 'bellRing 0.5s ease';
+      setTimeout(() => {
+        notificationBell.style.animation = '';
+      }, 500);
+      alert("You have 3 new notifications!");
+    });
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
@@ -1201,25 +1621,9 @@
           
           // Update UI with user data
           const displayName = userData.name || user.displayName || "User";
-          userNameElement.textContent = displayName;
-          
-          // Format balance with 2 decimal places
-          const userBalance = userData.balance || 0;
-          const formattedBalance = userBalance.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          });
-          
-          // Update earnings values
-          availableBalanceElement.textContent = `$${formattedBalance}`;
-          
-          // Calculate random earnings for demo purposes
-          const totalEarnings = (Math.random() * 2500).toFixed(2);
-          totalEarningsElement.textContent = `$${totalEarnings}`;
-          
-          // Random active locks count (1-5)
-          const activeLocksCount = Math.floor(Math.random() * 5) + 1;
-          activeLocksElement.textContent = activeLocksCount;
+          // Show only first name if available and truncate if too long
+          const firstName = displayName.split(' ')[0];
+          userNameElement.textContent = firstName.length > 12 ? firstName.substring(0, 9) + '...' : firstName;
           
           // Update profile picture if available
           if (user.photoURL) {
@@ -1227,22 +1631,10 @@
           }
         } else {
           console.log("No user data found in Firestore");
-          // Set default values if no user data
-          availableBalanceElement.textContent = '$0.00';
-          totalEarningsElement.textContent = '$0.00';
-          activeLocksElement.textContent = '0';
         }
         
-        // Add logout functionality
-        userProfileElement.addEventListener('click', () => {
-          if (confirm('Are you sure you want to sign out?')) {
-            signOut(auth).then(() => {
-              window.location.href = 'login.html';
-            }).catch((error) => {
-              console.error('Sign out error:', error);
-            });
-          }
-        });
+        // Initialize all values to 0
+        initializeZeroValues();
         
       } else {
         // User is signed out
@@ -1251,12 +1643,13 @@
       }
     });
 
-    // Calculator functionality
+    // Initialize calculator
     const calculatorForm = document.querySelector('.calculator-form');
     const calculatorResult = document.querySelector('.calculator-result');
     
     if (calculatorForm) {
       calculatorForm.addEventListener('input', updateCalculatorResults);
+      updateCalculatorResults();
     }
     
     function updateCalculatorResults() {
@@ -1298,36 +1691,10 @@
       calculatorResult.querySelector('.total-earnings').textContent = 
         `Total After ${durationText.split(' (')[0]}: $${totalAmount.toFixed(2)}`;
     }
-    
-    // Initialize calculator
-    if (calculatorForm) {
-      updateCalculatorResults();
-    }
-    
-    // Notification bell animation
-    const notificationBell = document.querySelector('.notification-bell');
-    if (notificationBell) {
-      notificationBell.addEventListener('click', () => {
-        notificationBell.style.animation = 'bellRing 0.5s ease';
-        setTimeout(() => {
-          notificationBell.style.animation = '';
-        }, 500);
-        alert("You have 3 new notifications!");
-      });
-    }
-    
-    // Lock period card hover effects
-    const lockCards = document.querySelectorAll('.lock-period-card');
-    lockCards.forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-5px)';
-        card.style.boxShadow = '0 16px 40px rgba(0, 0, 0, 0.4)';
-      });
-      
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateY(0)';
-        card.style.boxShadow = 'var(--box-shadow)';
-      });
+
+    // Initialize all values to 0 when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeZeroValues();
     });
   </script>
 </body>

@@ -42,10 +42,10 @@ body {
   overflow-x: hidden;
 }
 
-/* Navbar */
+/* Navbar - Centered with Animations */
 .navbar {
   background-color: var(--glass-effect);
-  padding: 1rem;
+  padding: 1rem 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -54,12 +54,20 @@ body {
   z-index: 1000;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.navbar:hover {
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .navbar .left {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  justify-content: flex-start;
+  gap: 2rem;
+  flex: 1;
 }
 
 .navbar .logo {
@@ -69,15 +77,18 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  display: flex;
-  align-items: center;
-  gap: 10px;
   white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.navbar .logo:hover {
+  transform: scale(1.05);
+  text-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
 }
 
 .nav-links {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .navbar a {
@@ -88,25 +99,58 @@ body {
   position: relative;
   padding: 0.5rem 0;
   white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.navbar a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s ease;
 }
 
 .navbar a:hover {
   color: var(--text-primary);
 }
 
+.navbar a:hover::after {
+  width: 100%;
+}
+
 .navbar a.active {
   color: var(--primary);
+}
+
+.navbar a.active::after {
+  width: 100%;
 }
 
 .navbar .right {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  flex: 1;
 }
 
 .notification-bell {
   position: relative;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.notification-bell:hover {
+  transform: translateY(-2px);
+  animation: bellShake 0.5s ease infinite alternate;
+}
+
+@keyframes bellShake {
+  0% { transform: rotate(-5deg); }
+  100% { transform: rotate(5deg); }
 }
 
 .notification-badge {
@@ -123,6 +167,13 @@ body {
   justify-content: center;
   font-size: 0.7rem;
   font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 .user-profile {
@@ -131,6 +182,11 @@ body {
   gap: 0.5rem;
   cursor: pointer;
   position: relative;
+  transition: all 0.3s ease;
+}
+
+.user-profile:hover {
+  transform: translateX(5px);
 }
 
 .profile-pic {
@@ -139,6 +195,12 @@ body {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--primary);
+  transition: all 0.3s ease;
+}
+
+.user-profile:hover .profile-pic {
+  box-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
+  transform: scale(1.1);
 }
 
 .user-name {
@@ -148,37 +210,62 @@ body {
   white-space: nowrap;
 }
 
-/* Dropdown Menus */
+/* Enhanced Dropdown Menus */
 .user-menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 5px);
   right: 0;
   background: var(--card-bg);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  padding: 1rem 0;
-  min-width: 220px;
+  padding: 0.5rem 0;
+  min-width: 240px;
   z-index: 1001;
   display: none;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
 }
 
 .user-menu.active {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .user-menu-item {
-  padding: 0.9rem 1.75rem;
+  padding: 0.85rem 1.75rem;
   color: var(--text-primary);
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 1rem;
   font-size: 0.95rem;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.user-menu-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(30, 211, 198, 0.1), transparent);
+  transition: all 0.5s ease;
 }
 
 .user-menu-item:hover {
   background: var(--card-hover);
+  padding-left: 2rem;
+}
+
+.user-menu-item:hover::before {
+  left: 100%;
 }
 
 .mobile-menu-btn {
@@ -189,45 +276,64 @@ body {
   font-size: 1.25rem;
   cursor: pointer;
   padding: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+  transform: rotate(90deg);
 }
 
 .mobile-nav-menu {
   display: none;
   position: absolute;
-  top: 100%;
-  right: 1rem;
+  top: calc(100% + 5px);
+  right: 5%;
   background: var(--card-bg);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  padding: 1rem 0;
-  min-width: 240px;
+  padding: 0.5rem 0;
+  width: 90%;
+  max-width: 280px;
   z-index: 1001;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
 }
 
 .mobile-nav-menu.active {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .mobile-nav-item {
-  padding: 0.9rem 1.75rem;
+  padding: 0.85rem 1.75rem;
   color: var(--text-primary);
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 1rem;
   font-size: 0.95rem;
+  transition: all 0.2s ease;
 }
 
 .mobile-nav-item:hover {
   background: var(--card-hover);
+  padding-left: 2rem;
 }
 
-/* Main Content */
+/* Enhanced Main Content */
 .container {
   padding: 2rem 1.5rem;
   max-width: 1800px;
   margin: 0 auto;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .dashboard-grid {
@@ -236,7 +342,7 @@ body {
   gap: 1.5rem;
 }
 
-/* Welcome Banner */
+/* Enhanced Welcome Banner */
 .welcome-banner {
   grid-column: span 12;
   background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
@@ -248,10 +354,38 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    transparent,
+    transparent,
+    transparent,
+    rgba(30, 211, 198, 0.05),
+    transparent
+  );
+  transform: rotate(30deg);
+  animation: shine 6s infinite linear;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) rotate(30deg); }
+  100% { transform: translateX(100%) rotate(30deg); }
 }
 
 .welcome-content {
   max-width: 60%;
+  position: relative;
+  z-index: 1;
 }
 
 .welcome-content h1 {
@@ -262,6 +396,12 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: textGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+  0% { text-shadow: 0 0 10px rgba(30, 211, 198, 0.3); }
+  100% { text-shadow: 0 0 20px rgba(30, 211, 198, 0.6); }
 }
 
 .welcome-content p {
@@ -286,6 +426,12 @@ body {
   font-weight: 700;
   color: var(--primary);
   margin-bottom: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+.stat-value:hover {
+  transform: translateY(-3px);
+  text-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
 }
 
 .stat-label {
@@ -299,14 +445,22 @@ body {
   gap: 1rem;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .welcome-image .crypto-icon {
   width: 50px;
   height: 50px;
+  transition: all 0.3s ease;
 }
 
-/* Portfolio Summary */
+.welcome-image .crypto-icon:hover {
+  transform: translateY(-5px) scale(1.1);
+  filter: drop-shadow(0 5px 15px rgba(30, 211, 198, 0.4));
+}
+
+/* Enhanced Portfolio Summary */
 .portfolio-summary {
   grid-column: span 8;
   background-color: var(--card-bg);
@@ -314,6 +468,12 @@ body {
   border-radius: var(--border-radius);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+}
+
+.portfolio-summary:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
 
 .section-header {
@@ -339,12 +499,18 @@ body {
   height: 20px;
   background: linear-gradient(var(--primary), var(--accent-blue));
   border-radius: 3px;
+  animation: pulse 2s infinite;
 }
 
 .portfolio-value {
   font-size: 2.5rem;
   font-weight: 700;
   margin: 1rem 0;
+  transition: all 0.3s ease;
+}
+
+.portfolio-value:hover {
+  transform: scale(1.02);
 }
 
 .portfolio-change {
@@ -373,9 +539,15 @@ body {
   background: linear-gradient(to top, var(--primary), var(--accent-blue));
   border-radius: 4px 4px 0 0;
   height: 50%;
+  transition: height 0.5s ease, transform 0.3s ease;
 }
 
-/* Quick Actions */
+.chart-bar:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
+}
+
+/* Enhanced Quick Actions */
 .quick-actions {
   grid-column: span 4;
   display: grid;
@@ -389,6 +561,30 @@ body {
   border-radius: var(--border-radius);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(30, 211, 198, 0.05), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.action-card:hover::before {
+  opacity: 1;
 }
 
 .action-card h3 {
@@ -398,6 +594,11 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.action-card:hover h3 {
+  transform: translateX(5px);
 }
 
 .action-card p {
@@ -407,7 +608,7 @@ body {
   line-height: 1.5;
 }
 
-/* Assets Grid */
+/* Enhanced Assets Grid */
 .assets-grid {
   grid-column: span 12;
   display: grid;
@@ -422,6 +623,31 @@ body {
   border-radius: var(--border-radius);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.asset-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.asset-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.asset-card:hover::after {
+  transform: scaleX(1);
 }
 
 .asset-header {
@@ -445,11 +671,22 @@ body {
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.asset-card:hover .asset-icon {
+  transform: rotate(15deg) scale(1.1);
+  box-shadow: 0 0 15px rgba(30, 211, 198, 0.3);
 }
 
 .asset-icon img {
   width: 24px;
   height: 24px;
+  transition: all 0.3s ease;
+}
+
+.asset-card:hover .asset-icon img {
+  transform: scale(1.1);
 }
 
 .asset-name {
@@ -465,6 +702,11 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0.5rem 0;
+  transition: all 0.3s ease;
+}
+
+.asset-card:hover .asset-price {
+  transform: translateX(5px);
 }
 
 .asset-change {
@@ -473,6 +715,11 @@ body {
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.asset-card:hover .asset-change {
+  transform: scale(1.05);
 }
 
 .asset-actions {
@@ -493,6 +740,12 @@ body {
   justify-content: center;
   gap: 0.5rem;
   font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.asset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .buy-btn {
@@ -500,12 +753,20 @@ body {
   color: #000;
 }
 
+.buy-btn:hover {
+  background: #00d66b;
+}
+
 .sell-btn {
   background: var(--danger);
   color: white;
 }
 
-/* Promo Section */
+.sell-btn:hover {
+  background: #ff3d3d;
+}
+
+/* Enhanced Promo Section */
 .promo-section {
   grid-column: span 12;
   margin-top: 1.5rem;
@@ -526,6 +787,39 @@ body {
   display: flex;
   gap: 1.5rem;
   align-items: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.promo-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    transparent,
+    transparent,
+    transparent,
+    rgba(30, 211, 198, 0.05),
+    transparent
+  );
+  transform: rotate(30deg);
+  transition: all 0.5s ease;
+  opacity: 0;
+}
+
+.promo-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.promo-card:hover::before {
+  animation: shine 3s infinite linear;
+  opacity: 1;
 }
 
 .promo-icon {
@@ -537,6 +831,12 @@ body {
   justify-content: center;
   background: linear-gradient(135deg, var(--primary), var(--accent-blue));
   flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.promo-card:hover .promo-icon {
+  transform: rotate(15deg) scale(1.1);
+  box-shadow: 0 0 20px rgba(30, 211, 198, 0.5);
 }
 
 .promo-content {
@@ -547,6 +847,11 @@ body {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
   font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.promo-card:hover h3 {
+  transform: translateX(5px);
 }
 
 .promo-card p {
@@ -565,9 +870,16 @@ body {
   font-size: 0.8rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
+  animation: float 3s ease-in-out infinite;
 }
 
-/* Modal */
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+
+/* Enhanced Modal */
 .modal {
   display: none;
   position: fixed;
@@ -579,6 +891,7 @@ body {
   z-index: 2000;
   align-items: center;
   justify-content: center;
+  animation: fadeIn 0.3s ease;
 }
 
 .modal-content {
@@ -589,6 +902,16 @@ body {
   padding: 2rem;
   box-shadow: var(--box-shadow);
   position: relative;
+  transform: scale(0.95);
+  opacity: 0;
+  animation: modalAppear 0.3s ease forwards;
+}
+
+@keyframes modalAppear {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .close-modal {
@@ -600,6 +923,12 @@ body {
   color: var(--text-secondary);
   font-size: 1.5rem;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-modal:hover {
+  color: var(--primary);
+  transform: rotate(90deg);
 }
 
 .modal-title {
@@ -627,6 +956,12 @@ body {
   border-radius: 8px;
   color: var(--text-primary);
   font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
 }
 
 .currency-select {
@@ -643,17 +978,29 @@ body {
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.currency-option:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .currency-option.active {
   background: rgba(30, 211, 198, 0.1);
   border-color: var(--primary);
+  transform: translateY(-3px);
 }
 
 .currency-option img {
   width: 24px;
   height: 24px;
   margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.currency-option:hover img {
+  transform: scale(1.1);
 }
 
 .modal-footer {
@@ -663,7 +1010,7 @@ body {
   margin-top: 2rem;
 }
 
-/* Buttons */
+/* Enhanced Buttons */
 .btn {
   background: linear-gradient(90deg, var(--primary), var(--accent-blue));
   border: none;
@@ -677,12 +1024,43 @@ body {
   gap: 0.5rem;
   font-size: 0.95rem;
   box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(30, 211, 198, 0.4);
+}
+
+.btn:hover::before {
+  left: 100%;
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--text-primary);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive Styles */
@@ -694,7 +1072,6 @@ body {
   .quick-actions {
     grid-column: span 12;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto;
   }
 }
 
@@ -792,7 +1169,8 @@ body {
   }
   
   .mobile-nav-menu {
-    min-width: 160px;
+    width: 90%;
+    right: 5%;
   }
   
   .modal-content {
@@ -811,7 +1189,6 @@ body {
   <div class="navbar">
     <div class="left">
       <div class="logo">
-        <i class="fas fa-coins logo-icon"></i>
         <span>BitNest</span>
       </div>
       <div class="nav-links">
@@ -836,38 +1213,38 @@ body {
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
         <span class="user-name" id="userName">Loading...</span>
         <div class="user-menu" id="userMenu">
-          <a href="#" class="user-menu-item">
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
             <i class="fas fa-user"></i> Profile
           </a>
-          <a href="#" class="user-menu-item">
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
             <i class="fas fa-cog"></i> Settings
           </a>
-          <a href="#" class="user-menu-item" id="logoutBtn">
+          <a href="#" class="user-menu-item" id="logoutBtn" style="padding-left: 20px;">
             <i class="fas fa-sign-out-alt"></i> Logout
           </a>
         </div>
       </div>
     </div>
     <div class="mobile-nav-menu" id="mobileNavMenu">
-      <a href="#" class="mobile-nav-item active">
+      <a href="#" class="mobile-nav-item active" style="padding-left: 20px;">
         <i class="fas fa-tachometer-alt"></i> Dashboard
       </a>
-      <a href="assets.html" class="mobile-nav-item">
+      <a href="assets.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-wallet"></i> Assets
       </a>
-      <a href="earn.html" class="mobile-nav-item">
+      <a href="earn.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-percentage"></i> Earn
       </a>
-      <a href="trading_view.html" class="mobile-nav-item">
+      <a href="trading_view.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-exchange-alt"></i> Trade
       </a>
-      <a href="P2P.html" class="mobile-nav-item">
+      <a href="P2P.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-users"></i> P2P
       </a>
-      <a href="deposit.html" class="mobile-nav-item">
+      <a href="deposit.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-plus-circle"></i> Deposit
       </a>
-      <a href="cards.html" class="mobile-nav-item">
+      <a href="cards.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-credit-card"></i> Cards
       </a>
     </div>
