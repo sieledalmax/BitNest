@@ -343,81 +343,126 @@
       gap: 1.5rem;
     }
 
-    /* Welcome Banner */
+    /* Enhanced Welcome Banner */
     .welcome-banner {
       grid-column: span 12;
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
-      padding: 1.75rem;
+      padding: 2.5rem;
       border-radius: var(--border-radius);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: var(--box-shadow);
       margin-bottom: 1.5rem;
-      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--box-shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       position: relative;
       overflow: hidden;
     }
 
-    .welcome-banner:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent,
+        transparent,
+        transparent,
+        rgba(30, 211, 198, 0.05),
+        transparent
+      );
+      transform: rotate(30deg);
+      animation: shine 6s infinite linear;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      100% { transform: translateX(100%) rotate(30deg); }
     }
 
     .welcome-content {
+      max-width: 60%;
       position: relative;
       z-index: 1;
     }
 
     .welcome-content h1 {
-      font-size: 1.8rem;
-      margin-bottom: 0.75rem;
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      width: fit-content;
+      animation: textGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes textGlow {
+      0% { text-shadow: 0 0 10px rgba(30, 211, 198, 0.3); }
+      100% { text-shadow: 0 0 20px rgba(30, 211, 198, 0.6); }
     }
 
     .welcome-content p {
       color: var(--text-secondary);
       margin-bottom: 1.5rem;
-      font-size: 1rem;
-      line-height: 1.6;
+      font-size: 1.05rem;
     }
 
     .welcome-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.5rem;
     }
 
     .stat-item {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 1rem;
-      border-radius: var(--border-radius);
-      transition: all 0.3s ease;
-    }
-
-    .stat-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-3px);
+      display: flex;
+      flex-direction: column;
     }
 
     .stat-value {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .stat-value:hover {
+      transform: translateY(-3px);
+      text-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
     }
 
     .stat-label {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: var(--text-secondary);
+    }
+
+    .welcome-image {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-image .crypto-icon {
+      width: 50px;
+      height: 50px;
+      transition: all 0.3s ease;
+    }
+
+    .welcome-image .crypto-icon:hover {
+      transform: translateY(-5px) scale(1.1);
+      filter: drop-shadow(0 5px 15px rgba(30, 211, 198, 0.4));
     }
 
     /* Section Header */
     .section-header {
-      grid-column: span 12;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -431,6 +476,7 @@
       align-items: center;
       gap: 0.75rem;
       color: var(--text-primary);
+      position: relative;
     }
 
     .section-title::before {
@@ -443,34 +489,15 @@
       animation: pulse 2s infinite;
     }
 
-    /* Filter Buttons */
-    .time-filters {
-      display: flex;
-      gap: 0.75rem;
-    }
-
-    .time-filters button {
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .time-filters button.active {
-      background: rgba(30, 211, 198, 0.1);
-      border: 1px solid var(--primary);
-      color: var(--primary);
-    }
-
-    /* Lock Period Cards */
+    /* Earn Grid */
     .earn-grid {
       grid-column: span 12;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
     }
 
+    /* Lock Period Cards */
     .lock-period-card {
       background-color: var(--card-bg);
       padding: 1.75rem;
@@ -479,20 +506,7 @@
       box-shadow: var(--box-shadow);
       transition: all 0.3s ease;
       position: relative;
-      overflow: visible;
-    }
-
-    .lock-period-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
+      overflow: hidden;
     }
 
     .lock-period-card:hover {
@@ -500,32 +514,21 @@
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
     }
 
-    .lock-period-card:hover::after {
-      transform: scaleX(1);
-    }
-
     .lock-period-card.selected {
-      border: 1px solid var(--primary);
-      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 0 4px rgba(30, 211, 198, 0.2);
     }
 
-    .lock-period-card.featured {
-      border: 1px solid var(--primary);
-      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
-    }
-
-    .lock-period-card.featured::after {
-      content: 'Most Popular';
+    .popular-badge {
       position: absolute;
       top: 15px;
       right: -30px;
       background: var(--primary);
       color: #000;
       padding: 0.25rem 2rem;
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       font-weight: 600;
       transform: rotate(45deg);
-      z-index: 1;
     }
 
     .lock-header {
@@ -538,11 +541,6 @@
     .lock-title {
       font-size: 1.2rem;
       font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .lock-period-card:hover .lock-title {
-      transform: translateX(5px);
     }
 
     .lock-duration {
@@ -558,11 +556,6 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      transition: all 0.3s ease;
-    }
-
-    .lock-period-card:hover .lock-rate {
-      transform: scale(1.05);
     }
 
     .lock-rate span {
@@ -571,7 +564,7 @@
     }
 
     .lock-features {
-      margin: 1rem 0;
+      margin: 1.5rem 0;
     }
 
     .feature-item {
@@ -592,7 +585,8 @@
     }
 
     .form-group {
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
+      position: relative;
     }
 
     .form-group label {
@@ -600,11 +594,12 @@
       margin-bottom: 0.5rem;
       font-weight: 500;
       color: var(--text-secondary);
+      font-size: 0.9rem;
     }
 
     .form-control {
       width: 100%;
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
@@ -618,21 +613,61 @@
       box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
     }
 
+    .input-prefix {
+      position: absolute;
+      left: 1rem;
+      top: 2.6rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .error-message {
+      color: var(--danger);
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .asset-selector {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .asset-option {
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .asset-option img {
+      width: 16px;
+      height: 16px;
+    }
+
+    .asset-option.active {
+      background: rgba(30, 211, 198, 0.1);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
     /* Calculator Section */
     .calculator-section {
       grid-column: span 12;
       background-color: var(--card-bg);
       padding: 1.75rem;
       border-radius: var(--border-radius);
+      margin-top: 1.5rem;
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      margin-top: 1.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .calculator-section:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
     }
 
     .calculator-grid {
@@ -644,7 +679,7 @@
     .calculator-form {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.25rem;
     }
 
     .calculator-result {
@@ -665,7 +700,7 @@
 
     .result-label {
       color: var(--text-secondary);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .result-value {
@@ -684,15 +719,17 @@
     .active-locks {
       grid-column: span 12;
       margin-top: 1.5rem;
+      background-color: var(--card-bg);
+      padding: 1.75rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
     }
 
     .locks-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
-      background-color: var(--card-bg);
-      border-radius: var(--border-radius);
-      overflow: hidden;
     }
 
     .locks-table th {
@@ -701,11 +738,13 @@
       background: rgba(255, 255, 255, 0.05);
       color: var(--text-secondary);
       font-weight: 500;
+      font-size: 0.9rem;
     }
 
     .locks-table td {
       padding: 1rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.9rem;
     }
 
     .locks-table tr:last-child td {
@@ -783,7 +822,7 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
-    /* Deposit Modal */
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -796,25 +835,20 @@
       align-items: center;
       justify-content: center;
       animation: fadeIn 0.3s ease;
-      padding: 20px;
-      box-sizing: border-box;
-      overflow-y: auto;
     }
 
     .modal-content {
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
-      width: 100%;
-      max-width: 500px;
-      max-height: 90vh;
+      width: 90%;
+      max-width: 400px;
       border-radius: var(--border-radius);
-      padding: 2rem;
+      padding: 1.75rem;
       box-shadow: var(--box-shadow);
       position: relative;
       transform: scale(0.95);
       opacity: 0;
       animation: modalAppear 0.3s ease forwards;
-      overflow-y: auto;
-      margin: auto;
+      border: 2px solid var(--danger);
     }
 
     @keyframes modalAppear {
@@ -837,46 +871,38 @@
     }
 
     .close-modal:hover {
-      color: var(--primary);
+      color: var(--danger);
       transform: rotate(90deg);
     }
 
     .modal-title {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
       font-weight: 600;
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
-    .bonus-notice {
-      background: rgba(30, 211, 198, 0.1);
-      padding: 1rem;
-      border-radius: 8px;
-      margin: 1.5rem 0;
-      border-left: 3px solid var(--primary);
-    }
-
-    .bonus-notice h4 {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-      color: var(--primary);
-    }
-
-    .bonus-notice p {
-      font-size: 0.9rem;
+    .modal-message {
       color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+      padding: 0 0.5rem;
     }
 
     .modal-footer {
       display: flex;
       justify-content: flex-end;
       gap: 1rem;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
 
     /* Responsive Styles */
     @media (max-width: 1200px) {
       .earn-grid {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
@@ -885,8 +911,18 @@
         padding: 1.5rem;
       }
       
+      .welcome-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .welcome-content {
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+      }
+      
       .welcome-stats {
-        grid-template-columns: 1fr;
+        justify-content: center;
       }
     }
 
@@ -899,6 +935,10 @@
         display: block;
       }
       
+      .earn-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
       .section-header {
         flex-direction: column;
         align-items: flex-start;
@@ -908,76 +948,58 @@
       .locks-table {
         display: block;
         overflow-x: auto;
-        white-space: nowrap;
       }
-      
-      .lock-period-card.featured::after {
+
+      .welcome-content h1 {
+        font-size: 1.8rem;
+      }
+
+      .stat-value {
+        font-size: 1.3rem;
+      }
+
+      .popular-badge {
         top: 10px;
         right: -35px;
         font-size: 0.7rem;
-        padding: 0.25rem 1.5rem;
       }
     }
 
     @media (max-width: 576px) {
-      .navbar {
-        padding: 1rem;
-      }
-      
-      .welcome-content h1 {
-        font-size: 1.5rem;
-      }
-      
-      .calculator-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .modal-content {
+      .welcome-banner {
         padding: 1.5rem;
       }
       
-      .locks-table {
-        display: block;
+      .welcome-stats {
+        flex-direction: column;
+        gap: 1rem;
       }
       
-      .locks-table th, 
-      .locks-table td {
-        display: block;
-        width: 100%;
-        text-align: right;
-        padding-left: 50%;
-        position: relative;
+      .earn-grid {
+        grid-template-columns: 1fr;
       }
-      
-      .locks-table th::before,
-      .locks-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 1rem;
-        width: calc(50% - 1rem);
-        text-align: left;
-        font-weight: 500;
+
+      .user-name {
+        display: none;
       }
-      
-      .locks-table th {
+
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .welcome-image {
         display: none;
       }
       
-      .locks-table tr {
-        margin-bottom: 1rem;
-        display: block;
-        border-radius: var(--border-radius);
-        overflow: hidden;
-        background: var(--card-bg);
-        box-shadow: var(--box-shadow);
+      .mobile-nav-menu {
+        width: 90%;
+        right: 5%;
       }
       
-      .locks-table td {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      }
-      
-      .locks-table td:last-child {
-        border-bottom: none;
+      .modal-content {
+        padding: 1.25rem;
       }
     }
   </style>
@@ -1012,38 +1034,38 @@
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
         <span class="user-name" id="userName">Loading...</span>
         <div class="user-menu" id="userMenu">
-          <a href="#" class="user-menu-item">
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
             <i class="fas fa-user"></i> Profile
           </a>
-          <a href="#" class="user-menu-item">
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
             <i class="fas fa-cog"></i> Settings
           </a>
-          <a href="#" class="user-menu-item" id="logoutBtn">
+          <a href="#" class="user-menu-item" id="logoutBtn" style="padding-left: 20px;">
             <i class="fas fa-sign-out-alt"></i> Logout
           </a>
         </div>
       </div>
     </div>
     <div class="mobile-nav-menu" id="mobileNavMenu">
-      <a href="dashboard.html" class="mobile-nav-item">
+      <a href="dashboard.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-tachometer-alt"></i> Dashboard
       </a>
-      <a href="assets.html" class="mobile-nav-item">
+      <a href="assets.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-wallet"></i> Assets
       </a>
-      <a href="#" class="mobile-nav-item active">
+      <a href="#" class="mobile-nav-item active" style="padding-left: 20px;">
         <i class="fas fa-percentage"></i> Earn
       </a>
-      <a href="trading_view.html" class="mobile-nav-item">
+      <a href="trading_view.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-exchange-alt"></i> Trade
       </a>
-      <a href="P2P.html" class="mobile-nav-item">
+      <a href="P2P.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-users"></i> P2P
       </a>
-      <a href="deposit.html" class="mobile-nav-item">
+      <a href="deposit.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-plus-circle"></i> Deposit
       </a>
-      <a href="cards.html" class="mobile-nav-item">
+      <a href="cards.html" class="mobile-nav-item" style="padding-left: 20px;">
         <i class="fas fa-credit-card"></i> Cards
       </a>
     </div>
@@ -1072,17 +1094,19 @@
             </div>
           </div>
         </div>
+        <div class="welcome-image">
+          <img src="crypto-logos/bitcoin.svg" alt="Bitcoin" class="crypto-icon">
+          <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum" class="crypto-icon">
+          <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC" class="crypto-icon">
+          <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" class="crypto-icon">
+        </div>
       </div>
 
       <!-- Lock Period Options -->
       <div class="section-header">
-        <h2 class="section-title">Choose Lock Period</h2>
-        <div class="time-filters">
-          <button class="btn-secondary">Crypto</button>
-          <button class="btn-secondary">Stablecoins</button>
-          <button class="btn-secondary active">All Assets</button>
-        </div>
+        <h2 class="section-title">Lock & Earn</h2>
       </div>
+      
       <div class="earn-grid">
         <!-- 2 Weeks -->
         <div class="lock-period-card">
@@ -1093,7 +1117,7 @@
             </div>
             <i class="fas fa-clock" style="font-size: 1.5rem; color: var(--accent-blue);"></i>
           </div>
-          <div class="lock-rate">5.2% <span>APR</span></div>
+          <div class="lock-rate">10.5% <span>APR</span></div>
           <div class="lock-features">
             <div class="feature-item">
               <i class="fas fa-check-circle"></i>
@@ -1109,18 +1133,35 @@
             </div>
           </div>
           <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00" id="amount-14days">
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
             </div>
-            <button class="btn" style="width: 100%;" onclick="handleLockClick('14 days', '5.2%', 'amount-14days')">
+            <button class="btn lock-btn" style="width: 100%;" data-duration="14 days" data-apr="10.5%">
               <i class="fas fa-lock"></i> Lock for 14 Days
             </button>
           </div>
         </div>
 
-        <!-- 1 Month (Featured) -->
-        <div class="lock-period-card featured">
+        <!-- 1 Month (Selected by default) -->
+        <div class="lock-period-card selected">
+          <div class="popular-badge">Most Popular</div>
           <div class="lock-header">
             <div>
               <div class="lock-title">Starter</div>
@@ -1128,7 +1169,7 @@
             </div>
             <i class="fas fa-star" style="font-size: 1.5rem; color: var(--primary);"></i>
           </div>
-          <div class="lock-rate">7.5% <span>APR</span></div>
+          <div class="lock-rate">15% <span>APR</span></div>
           <div class="lock-features">
             <div class="feature-item">
               <i class="fas fa-check-circle"></i>
@@ -1144,11 +1185,27 @@
             </div>
           </div>
           <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00" id="amount-1month">
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
             </div>
-            <button class="btn" style="width: 100%;" onclick="handleLockClick('1 month', '7.5%', 'amount-1month')">
+            <button class="btn lock-btn" style="width: 100%;" data-duration="1 month" data-apr="15%">
               <i class="fas fa-lock"></i> Lock for 1 Month
             </button>
           </div>
@@ -1163,7 +1220,7 @@
             </div>
             <i class="fas fa-calendar-alt" style="font-size: 1.5rem; color: var(--accent-purple);"></i>
           </div>
-          <div class="lock-rate">9.8% <span>APR</span></div>
+          <div class="lock-rate">29% <span>APR</span></div>
           <div class="lock-features">
             <div class="feature-item">
               <i class="fas fa-check-circle"></i>
@@ -1179,11 +1236,27 @@
             </div>
           </div>
           <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00" id="amount-3months">
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
             </div>
-            <button class="btn" style="width: 100%;" onclick="handleLockClick('3 months', '9.8%', 'amount-3months')">
+            <button class="btn lock-btn" style="width: 100%;" data-duration="3 months" data-apr="29%">
               <i class="fas fa-lock"></i> Lock for 3 Months
             </button>
           </div>
@@ -1198,7 +1271,7 @@
             </div>
             <i class="fas fa-calendar-check" style="font-size: 1.5rem; color: var(--success);"></i>
           </div>
-          <div class="lock-rate">12.5% <span>APR</span></div>
+          <div class="lock-rate">43% <span>APR</span></div>
           <div class="lock-features">
             <div class="feature-item">
               <i class="fas fa-check-circle"></i>
@@ -1214,11 +1287,27 @@
             </div>
           </div>
           <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00" id="amount-6months">
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
             </div>
-            <button class="btn" style="width: 100%;" onclick="handleLockClick('6 months', '12.5%', 'amount-6months')">
+            <button class="btn lock-btn" style="width: 100%;" data-duration="6 months" data-apr="43%">
               <i class="fas fa-lock"></i> Lock for 6 Months
             </button>
           </div>
@@ -1233,7 +1322,7 @@
             </div>
             <i class="fas fa-gem" style="font-size: 1.5rem; color: var(--accent-orange);"></i>
           </div>
-          <div class="lock-rate">15.0% <span>APR</span></div>
+          <div class="lock-rate">67% <span>APR</span></div>
           <div class="lock-features">
             <div class="feature-item">
               <i class="fas fa-check-circle"></i>
@@ -1249,11 +1338,27 @@
             </div>
           </div>
           <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00" id="amount-12months">
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
             </div>
-            <button class="btn" style="width: 100%;" onclick="handleLockClick('12 months', '15.0%', 'amount-12months')">
+            <button class="btn lock-btn" style="width: 100%;" data-duration="12 months" data-apr="67%">
               <i class="fas fa-lock"></i> Lock for 12 Months
             </button>
           </div>
@@ -1268,7 +1373,7 @@
             </div>
             <i class="fas fa-sliders-h" style="font-size: 1.5rem; color: var(--text-secondary);"></i>
           </div>
-          <div class="lock-rate">Up to 15.0% <span>APR</span></div>
+          <div class="lock-rate">Up to 67% <span>APR</span></div>
           <div class="lock-features">
             <div class="feature-item">
               <i class="fas fa-check-circle"></i>
@@ -1284,22 +1389,38 @@
             </div>
           </div>
           <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
             <div class="form-group">
               <label>Lock Duration</label>
-              <select class="form-control" id="custom-duration">
-                <option>2 weeks (5.2% APR)</option>
-                <option>1 month (7.5% APR)</option>
-                <option>3 months (9.8% APR)</option>
-                <option>6 months (12.5% APR)</option>
-                <option>12 months (15.0% APR)</option>
-                <option>24 months (15.0% APR)</option>
+              <select class="form-control">
+                <option>2 weeks (10.5% APR)</option>
+                <option selected>1 month (15% APR)</option>
+                <option>3 months (29% APR)</option>
+                <option>6 months (43% APR)</option>
+                <option>12 months (67% APR)</option>
+                <option>24 months (67% APR)</option>
               </select>
             </div>
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="0.00" id="amount-custom">
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
             </div>
-            <button class="btn" style="width: 100%;" onclick="handleCustomLockClick()">
+            <button class="btn lock-btn" style="width: 100%;" data-duration="Custom" data-apr="Up to 67%">
               <i class="fas fa-lock"></i> Lock Custom Amount
             </button>
           </div>
@@ -1313,7 +1434,7 @@
           <div class="calculator-form">
             <div class="form-group">
               <label>Select Asset</label>
-              <select class="form-control">
+              <select class="form-control" id="calcAsset">
                 <option>Bitcoin (BTC)</option>
                 <option>Ethereum (ETH)</option>
                 <option>USDC</option>
@@ -1324,42 +1445,43 @@
             </div>
             <div class="form-group">
               <label>Lock Duration</label>
-              <select class="form-control">
-                <option>2 weeks (5.2% APR)</option>
-                <option selected>1 month (7.5% APR)</option>
-                <option>3 months (9.8% APR)</option>
-                <option>6 months (12.5% APR)</option>
-                <option>12 months (15.0% APR)</option>
-                <option>24 months (15.0% APR)</option>
+              <select class="form-control" id="calcDuration">
+                <option value="0.105">2 weeks (10.5% APR)</option>
+                <option value="0.15" selected>1 month (15% APR)</option>
+                <option value="0.29">3 months (29% APR)</option>
+                <option value="0.43">6 months (43% APR)</option>
+                <option value="0.67">12 months (67% APR)</option>
+                <option value="0.67">24 months (67% APR)</option>
               </select>
             </div>
             <div class="form-group">
               <label>Amount to Lock</label>
-              <input type="text" class="form-control" placeholder="1000.00" value="1000.00">
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control" id="calcAmount" placeholder="0.00" value="1000.00">
             </div>
           </div>
           <div class="calculator-result">
             <div class="result-item">
               <span class="result-label">Duration</span>
-              <span class="result-value">1 month</span>
+              <span class="result-value" id="calcDurationDisplay">1 month</span>
             </div>
             <div class="result-item">
               <span class="result-label">Interest Rate</span>
-              <span class="result-value">7.5% APR</span>
+              <span class="result-value" id="calcRate">15% APR</span>
             </div>
             <div class="result-item">
               <span class="result-label">Daily Earnings</span>
-              <span class="result-value">$0.21</span>
+              <span class="result-value" id="calcDaily">$0.41</span>
             </div>
             <div class="result-item">
               <span class="result-label">Monthly Earnings</span>
-              <span class="result-value">$6.25</span>
+              <span class="result-value" id="calcMonthly">$12.50</span>
             </div>
             <div class="result-item">
               <span class="result-label">Yearly Earnings</span>
-              <span class="result-value">$75.00</span>
+              <span class="result-value" id="calcYearly">$150.00</span>
             </div>
-            <div class="total-earnings">Total After 1 Month: $1,006.25</div>
+            <div class="total-earnings" id="calcTotal">Total After 1 Month: $1,012.50</div>
           </div>
         </div>
       </div>
@@ -1386,14 +1508,9 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Empty state -->
             <tr>
               <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-                <i class="fas fa-lock-open" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
-                <p>You don't have any active locks yet</p>
-                <button class="btn" style="margin-top: 1rem;" onclick="showDepositPrompt()">
-                  <i class="fas fa-plus-circle"></i> Make Your First Deposit
-                </button>
+                No active locks found. Lock your assets to start earning.
               </td>
             </tr>
           </tbody>
@@ -1402,21 +1519,16 @@
     </div>
   </div>
 
-  <!-- Deposit Modal -->
+  <!-- Deposit Required Modal -->
   <div class="modal" id="depositModal">
     <div class="modal-content">
-      <button class="close-modal" id="closeDepositModal">&times;</button>
-      <h2 class="modal-title">Insufficient Balance</h2>
-      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">You don't have enough funds to complete this lock. Please deposit funds to continue.</p>
-      
-      <div class="bonus-notice">
-        <h4>Special Bonus Offer!</h4>
-        <p>Make your first deposit and receive a $100 bonus in BTC when you deposit $1000 or more.</p>
-      </div>
-      
+      <button class="close-modal" id="closeModal">&times;</button>
+      <h2 class="modal-title"><i class="fas fa-exclamation-circle"></i> Insufficient Balance</h2>
+      <p class="modal-message">You need at least $30 in your available balance to lock funds. Your current available balance is $0.00.</p>
+      <p class="modal-message">Would you like to make a deposit now?</p>
       <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeDepositModal()">Cancel</button>
-        <button class="btn" onclick="window.location.href='deposit.html'">
+        <button class="btn btn-secondary" id="cancelDeposit">Cancel</button>
+        <button class="btn" id="goToDeposit">
           <i class="fas fa-arrow-down"></i> Deposit Now
         </button>
       </div>
@@ -1465,8 +1577,20 @@
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileNavMenu = document.getElementById('mobileNavMenu');
     const depositModal = document.getElementById('depositModal');
-    const closeDepositModal = document.getElementById('closeDepositModal');
+    const closeModal = document.getElementById('closeModal');
+    const cancelDeposit = document.getElementById('cancelDeposit');
+    const goToDeposit = document.getElementById('goToDeposit');
     const lockCards = document.querySelectorAll('.lock-period-card');
+    const lockBtns = document.querySelectorAll('.lock-btn');
+    const assetOptions = document.querySelectorAll('.asset-option');
+    const calcAmount = document.getElementById('calcAmount');
+    const calcDuration = document.getElementById('calcDuration');
+    const calcDurationDisplay = document.getElementById('calcDurationDisplay');
+    const calcRate = document.getElementById('calcRate');
+    const calcDaily = document.getElementById('calcDaily');
+    const calcMonthly = document.getElementById('calcMonthly');
+    const calcYearly = document.getElementById('calcYearly');
+    const calcTotal = document.getElementById('calcTotal');
 
     // Initialize all values to 0
     const initializeZeroValues = () => {
@@ -1474,71 +1598,6 @@
       activeLocksElement.textContent = '0';
       availableBalanceElement.textContent = '$0.00';
     };
-
-    // Show deposit prompt
-    function showDepositPrompt() {
-      depositModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
-
-    // Close deposit modal
-    function closeDepositModal() {
-      depositModal.style.display = 'none';
-      document.body.style.overflow = 'auto';
-    }
-
-    // Handle lock button click
-    function handleLockClick(duration, rate, amountFieldId) {
-      const amountInput = document.getElementById(amountFieldId);
-      const amount = parseFloat(amountInput.value) || 0;
-      
-      if (amount <= 0) {
-        alert("Please enter a valid amount");
-        return;
-      }
-      
-      // For demo purposes, we'll always show insufficient balance
-      showDepositPrompt();
-      
-      // In a real app, you would check the user's balance here
-      // const userBalance = parseFloat(availableBalanceElement.textContent.replace('$', '')) || 0;
-      // if (amount > userBalance) {
-      //   showDepositPrompt();
-      // } else {
-      //   // Process the lock
-      //   alert(`Success! You've locked $${amount.toFixed(2)} for ${duration} at ${rate} APR`);
-      // }
-    }
-
-    // Handle custom lock button click
-    function handleCustomLockClick() {
-      const durationSelect = document.getElementById('custom-duration');
-      const durationText = durationSelect.options[durationSelect.selectedIndex].text;
-      const amountInput = document.getElementById('amount-custom');
-      const amount = parseFloat(amountInput.value) || 0;
-      
-      if (amount <= 0) {
-        alert("Please enter a valid amount");
-        return;
-      }
-      
-      // Extract duration and rate from the selected option
-      const duration = durationText.split(' (')[0];
-      const rateMatch = durationText.match(/\((\d+\.?\d*)% APR\)/);
-      const rate = rateMatch ? rateMatch[1] + '%' : '7.5%';
-      
-      // For demo purposes, we'll always show insufficient balance
-      showDepositPrompt();
-      
-      // In a real app, you would check the user's balance here
-      // const userBalance = parseFloat(availableBalanceElement.textContent.replace('$', '')) || 0;
-      // if (amount > userBalance) {
-      //   showDepositPrompt();
-      // } else {
-      //   // Process the lock
-      //   alert(`Success! You've locked $${amount.toFixed(2)} for ${duration} at ${rate} APR`);
-      // }
-    }
 
     // Toggle user menu
     userProfileElement.addEventListener('click', (e) => {
@@ -1570,40 +1629,122 @@
       });
     });
 
-    // Close deposit modal
-    closeDepositModal.addEventListener('click', closeDepositModal);
-
-    // Close modals when clicking outside
-    window.addEventListener('click', (e) => {
-      if (e.target === depositModal) {
-        closeDepositModal();
-      }
-    });
-
-    // Lock period card selection
+    // Lock card selection
     lockCards.forEach(card => {
       card.addEventListener('click', (e) => {
-        // Don't select if clicking on input or button
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+        // Don't select if clicking on form elements
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT' || e.target.closest('.asset-option')) {
           return;
         }
         
-        // Remove selected class from all cards
         lockCards.forEach(c => c.classList.remove('selected'));
-        // Add selected class to clicked card
         card.classList.add('selected');
       });
     });
 
-    // Notification bell animation
-    const notificationBell = document.querySelector('.notification-bell');
-    notificationBell.addEventListener('click', () => {
-      notificationBell.style.animation = 'bellRing 0.5s ease';
-      setTimeout(() => {
-        notificationBell.style.animation = '';
-      }, 500);
-      alert("You have 3 new notifications!");
+    // Asset selection
+    assetOptions.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const parent = option.closest('.asset-selector');
+        parent.querySelectorAll('.asset-option').forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+      });
     });
+
+    // Lock button functionality
+    lockBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const amountInput = btn.closest('.lock-form').querySelector('.lock-amount');
+        const errorMessage = btn.closest('.lock-form').querySelector('.error-message');
+        const amount = parseFloat(amountInput.value) || 0;
+        
+        // Validate amount is at least $30
+        if (amount < 30) {
+          amountInput.focus();
+          amountInput.style.borderColor = 'var(--danger)';
+          amountInput.style.boxShadow = '0 0 0 2px rgba(255, 82, 82, 0.2)';
+          errorMessage.style.display = 'block';
+          setTimeout(() => {
+            amountInput.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            amountInput.style.boxShadow = 'none';
+            errorMessage.style.display = 'none';
+          }, 3000);
+          return;
+        }
+        
+        // Check if user has sufficient balance
+        const balance = parseFloat(availableBalanceElement.textContent.replace('$', '')) || 0;
+        if (balance < 30) {
+          depositModal.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        } else {
+          alert(`Success! You've locked $${amount.toFixed(2)} for ${btn.dataset.duration} at ${btn.dataset.apr} APR.`);
+        }
+      });
+    });
+
+    // Deposit modal handling
+    closeModal.addEventListener('click', () => {
+      depositModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    cancelDeposit.addEventListener('click', () => {
+      depositModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    goToDeposit.addEventListener('click', () => {
+      window.location.href = 'deposit.html';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === depositModal) {
+        depositModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    // Calculator functionality
+    function updateCalculator() {
+      const amount = parseFloat(calcAmount.value) || 0;
+      const apr = parseFloat(calcDuration.value);
+      const durationText = calcDuration.options[calcDuration.selectedIndex].text.split(' (')[0];
+      
+      // Calculate earnings
+      const dailyEarnings = (amount * apr) / 365;
+      const monthlyEarnings = (amount * apr) / 12;
+      const yearlyEarnings = amount * apr;
+      
+      // Update results
+      calcDurationDisplay.textContent = durationText;
+      calcRate.textContent = `${(apr * 100).toFixed(0)}% APR`;
+      calcDaily.textContent = `$${dailyEarnings.toFixed(2)}`;
+      calcMonthly.textContent = `$${monthlyEarnings.toFixed(2)}`;
+      calcYearly.textContent = `$${yearlyEarnings.toFixed(2)}`;
+      
+      // Update total based on duration
+      let totalAmount = amount;
+      if (durationText.includes('month')) {
+        totalAmount += monthlyEarnings;
+      } else if (durationText.includes('year') || durationText.includes('24 months')) {
+        totalAmount += yearlyEarnings;
+      } else {
+        // For weeks, calculate proportion
+        const weeks = parseInt(durationText) || 2;
+        totalAmount += (yearlyEarnings * weeks) / 52;
+      }
+      
+      calcTotal.textContent = `Total After ${durationText}: $${totalAmount.toFixed(2)}`;
+    }
+
+    // Initialize calculator
+    calcAmount.addEventListener('input', updateCalculator);
+    calcDuration.addEventListener('change', updateCalculator);
+    updateCalculator();
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
@@ -1621,9 +1762,10 @@
           
           // Update UI with user data
           const displayName = userData.name || user.displayName || "User";
-          // Show only first name if available and truncate if too long
+          // Show only first name if available
           const firstName = displayName.split(' ')[0];
-          userNameElement.textContent = firstName.length > 12 ? firstName.substring(0, 9) + '...' : firstName;
+          userNameElement.textContent = firstName;
+          welcomeTitleElement.textContent = `Earn Crypto Rewards, ${firstName}!`;
           
           // Update profile picture if available
           if (user.photoURL) {
@@ -1633,9 +1775,6 @@
           console.log("No user data found in Firestore");
         }
         
-        // Initialize all values to 0
-        initializeZeroValues();
-        
       } else {
         // User is signed out
         console.log("User is signed out");
@@ -1643,59 +1782,8 @@
       }
     });
 
-    // Initialize calculator
-    const calculatorForm = document.querySelector('.calculator-form');
-    const calculatorResult = document.querySelector('.calculator-result');
-    
-    if (calculatorForm) {
-      calculatorForm.addEventListener('input', updateCalculatorResults);
-      updateCalculatorResults();
-    }
-    
-    function updateCalculatorResults() {
-      const amountInput = calculatorForm.querySelector('input[type="text"]');
-      const durationSelect = calculatorForm.querySelector('select');
-      
-      const amount = parseFloat(amountInput.value) || 0;
-      const durationText = durationSelect.options[durationSelect.selectedIndex].text;
-      
-      // Extract APR from the option text
-      const aprMatch = durationText.match(/\((\d+\.?\d*)% APR\)/);
-      const apr = aprMatch ? parseFloat(aprMatch[1]) : 7.5; // Default to 7.5% if not found
-      
-      // Calculate earnings
-      const dailyEarnings = (amount * (apr / 100)) / 365;
-      const monthlyEarnings = (amount * (apr / 100)) / 12;
-      const yearlyEarnings = amount * (apr / 100);
-      
-      // Update results
-      const resultItems = calculatorResult.querySelectorAll('.result-item');
-      resultItems[0].querySelector('.result-value').textContent = durationText.split(' (')[0];
-      resultItems[1].querySelector('.result-value').textContent = `${apr}% APR`;
-      resultItems[2].querySelector('.result-value').textContent = `$${dailyEarnings.toFixed(2)}`;
-      resultItems[3].querySelector('.result-value').textContent = `$${monthlyEarnings.toFixed(2)}`;
-      resultItems[4].querySelector('.result-value').textContent = `$${yearlyEarnings.toFixed(2)}`;
-      
-      // Update total
-      let totalAmount = amount;
-      if (durationText.includes('month')) {
-        totalAmount += monthlyEarnings;
-      } else if (durationText.includes('year') || durationText.includes('24 months')) {
-        totalAmount += yearlyEarnings;
-      } else {
-        // For weeks, calculate proportion
-        const weeks = parseInt(durationText) || 2;
-        totalAmount += (yearlyEarnings * weeks) / 52;
-      }
-      
-      calculatorResult.querySelector('.total-earnings').textContent = 
-        `Total After ${durationText.split(' (')[0]}: $${totalAmount.toFixed(2)}`;
-    }
-
     // Initialize all values to 0 when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeZeroValues();
-    });
+    document.addEventListener('DOMContentLoaded', initializeZeroValues);
   </script>
 </body>
 </html>

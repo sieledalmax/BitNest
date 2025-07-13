@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>BitNest | Deposit Crypto</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +21,6 @@
       --accent-orange: #ff7b25;
       --border-radius: 16px;
       --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       --glass-effect: rgba(16, 18, 22, 0.7);
       --success: #00e676;
       --warning: #ffab00;
@@ -43,56 +42,10 @@
       overflow-x: hidden;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--card-bg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 4px;
-    }
-
-    /* Floating Animations */
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Notification Bell Animation */
-    @keyframes bellRing {
-      0% { transform: rotate(0deg); }
-      10% { transform: rotate(15deg); }
-      20% { transform: rotate(-15deg); }
-      30% { transform: rotate(10deg); }
-      40% { transform: rotate(-10deg); }
-      50% { transform: rotate(5deg); }
-      60% { transform: rotate(-5deg); }
-      100% { transform: rotate(0deg); }
-    }
-
-    /* Navbar Styles */
+    /* Navbar - Centered with Animations */
     .navbar {
       background-color: var(--glass-effect);
-      padding: 1rem 3rem;
+      padding: 1rem 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -101,28 +54,37 @@
       z-index: 1000;
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .navbar:hover {
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
     }
 
     .navbar .left {
       display: flex;
       align-items: center;
-      gap: 2.5rem;
+      justify-content: flex-start;
+      gap: 2rem;
+      flex: 1;
     }
 
     .navbar .logo {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
 
-    .logo-icon {
-      animation: float 4s ease-in-out infinite;
+    .navbar .logo:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
     }
 
     .nav-links {
@@ -133,15 +95,31 @@
     .navbar a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: var(--transition);
       position: relative;
       padding: 0.5rem 0;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .navbar a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
     }
 
     .navbar a:hover {
       color: var(--text-primary);
+    }
+
+    .navbar a:hover::after {
+      width: 100%;
     }
 
     .navbar a.active {
@@ -149,30 +127,31 @@
     }
 
     .navbar a.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
       width: 100%;
-      height: 2px;
-      background: var(--primary);
-      border-radius: 2px;
     }
 
     .navbar .right {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 1.5rem;
+      flex: 1;
     }
 
     .notification-bell {
       position: relative;
       cursor: pointer;
-      transition: var(--transition);
+      transition: transform 0.2s ease;
     }
 
     .notification-bell:hover {
-      animation: bellRing 0.5s ease;
+      transform: translateY(-2px);
+      animation: bellShake 0.5s ease infinite alternate;
+    }
+
+    @keyframes bellShake {
+      0% { transform: rotate(-5deg); }
+      100% { transform: rotate(5deg); }
     }
 
     .notification-badge {
@@ -189,13 +168,26 @@
       justify-content: center;
       font-size: 0.7rem;
       font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     .user-profile {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
       cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .user-profile:hover {
+      transform: translateX(5px);
     }
 
     .profile-pic {
@@ -204,66 +196,154 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--primary);
+      transition: all 0.3s ease;
     }
 
-    .btn {
-      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
-      border: none;
-      padding: 0.75rem 1.75rem;
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: var(--transition);
-      display: inline-flex;
+    .user-profile:hover .profile-pic {
+      box-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
+      transform: scale(1.1);
+    }
+
+    .user-name {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Enhanced Dropdown Menus */
+    .user-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 240px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .user-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .user-menu-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
       font-size: 0.95rem;
-      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      white-space: nowrap;
+      transition: all 0.2s ease;
       position: relative;
       overflow: hidden;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(30, 211, 198, 0.4);
+    .user-menu-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(30, 211, 198, 0.1), transparent);
+      transition: all 0.5s ease;
     }
 
-    .btn span {
+    .user-menu-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    .user-menu-item:hover::before {
+      left: 100%;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.5rem;
       transition: transform 0.3s ease;
     }
 
-    .btn:hover span {
-      transform: translateX(3px);
+    .mobile-menu-btn:hover {
+      transform: rotate(90deg);
     }
 
-    .btn-secondary {
-      background: transparent;
-      color: var(--text-primary);
+    .mobile-nav-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 5%;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      width: 90%;
+      max-width: 280px;
+      z-index: 1001;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: none;
+    .mobile-nav-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    /* Main Container */
+    .mobile-nav-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    /* Enhanced Main Content */
     .container {
-      padding: 2rem 3rem;
+      padding: 2rem 1.5rem;
       max-width: 1800px;
       margin: 0 auto;
+      animation: fadeIn 0.5s ease;
     }
 
-    /* Dashboard Grid */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 1.5rem;
     }
 
-    /* Welcome Banner */
+    /* Enhanced Welcome Banner */
     .welcome-banner {
       grid-column: span 12;
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
@@ -272,29 +352,41 @@
       margin-bottom: 1.5rem;
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: var(--box-shadow);
-      position: relative;
-      overflow: hidden;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+      overflow: hidden;
     }
 
     .welcome-banner::before {
       content: '';
       position: absolute;
-      top: 0;
-      right: 0;
-      width: 40%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(30, 211, 198, 0.08), rgba(58, 134, 255, 0.05));
-      clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
-      z-index: 0;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent,
+        transparent,
+        transparent,
+        rgba(30, 211, 198, 0.05),
+        transparent
+      );
+      transform: rotate(30deg);
+      animation: shine 6s infinite linear;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      100% { transform: translateX(100%) rotate(30deg); }
     }
 
     .welcome-content {
+      max-width: 60%;
       position: relative;
       z-index: 1;
-      max-width: 60%;
     }
 
     .welcome-content h1 {
@@ -305,14 +397,18 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      width: fit-content;
+      animation: textGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes textGlow {
+      0% { text-shadow: 0 0 10px rgba(30, 211, 198, 0.3); }
+      100% { text-shadow: 0 0 20px rgba(30, 211, 198, 0.6); }
     }
 
     .welcome-content p {
       color: var(--text-secondary);
       margin-bottom: 1.5rem;
       font-size: 1.05rem;
-      line-height: 1.6;
     }
 
     .welcome-stats {
@@ -331,6 +427,12 @@
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .stat-value:hover {
+      transform: translateY(-3px);
+      text-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
     }
 
     .stat-label {
@@ -339,14 +441,24 @@
     }
 
     .welcome-image {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
       position: relative;
       z-index: 1;
-      animation: float 6s ease-in-out infinite;
     }
 
-    .welcome-image img {
-      width: 300px;
-      height: auto;
+    .welcome-image .crypto-icon {
+      width: 50px;
+      height: 50px;
+      transition: all 0.3s ease;
+    }
+
+    .welcome-image .crypto-icon:hover {
+      transform: translateY(-5px) scale(1.1);
+      filter: drop-shadow(0 5px 15px rgba(30, 211, 198, 0.4));
     }
 
     /* Deposit Section */
@@ -369,7 +481,7 @@
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .deposit-form-container:hover {
@@ -400,6 +512,7 @@
       height: 20px;
       background: linear-gradient(var(--primary), var(--accent-blue));
       border-radius: 3px;
+      animation: pulse 2s infinite;
     }
 
     .form-group {
@@ -421,7 +534,7 @@
       border-radius: 8px;
       color: var(--text-primary);
       font-size: 1rem;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .form-control:focus {
@@ -448,22 +561,38 @@
     }
 
     .currency-selector {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
       gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
 
+    @media (max-width: 1200px) {
+      .currency-selector {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .currency-selector {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .currency-selector {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
     .currency-option {
-      flex: 1;
-      min-width: 100px;
       padding: 1rem;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       text-align: center;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -513,7 +642,7 @@
       font-weight: 500;
       color: var(--text-secondary);
       border-bottom: 2px solid transparent;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .method-tab.active {
@@ -588,7 +717,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .copy-btn:hover {
@@ -626,6 +755,31 @@
       color: var(--text-primary);
     }
 
+    .access-restricted {
+      background: rgba(255, 82, 82, 0.1);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      border-left: 3px solid var(--danger);
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+
+    .access-restricted i {
+      font-size: 2rem;
+      color: var(--danger);
+      margin-bottom: 1rem;
+    }
+
+    .access-restricted h4 {
+      color: var(--danger);
+      margin-bottom: 0.5rem;
+    }
+
+    .access-restricted p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
     /* Crypto List */
     .crypto-list-container {
       background-color: var(--card-bg);
@@ -633,7 +787,7 @@
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      transition: var(--transition);
+      transition: all 0.3s ease;
       height: 100%;
     }
 
@@ -671,7 +825,7 @@
       padding: 1rem;
       border-radius: 8px;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
       margin-bottom: 0.5rem;
     }
 
@@ -747,52 +901,73 @@
       margin-top: 1.5rem;
     }
 
-    .deposits-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1.5rem;
-    }
-
-    .deposits-table th {
-      text-align: left;
-      padding: 0.75rem 1rem;
+    .no-deposits {
+      text-align: center;
+      padding: 2rem;
       color: var(--text-secondary);
-      font-weight: 500;
-      font-size: 0.9rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .deposits-table td {
-      padding: 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 0.95rem;
+    .no-deposits i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
     }
 
-    .deposits-table tr:last-child td {
-      border-bottom: none;
+    .no-deposits p {
+      margin-top: 0.5rem;
     }
 
-    .deposit-status {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
+    /* Enhanced Buttons */
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.75rem;
+      color: #000;
       font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    .status-completed {
-      background: rgba(0, 230, 118, 0.1);
-      color: var(--success);
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.5s ease;
     }
 
-    .status-pending {
-      background: rgba(255, 171, 0, 0.1);
-      color: var(--warning);
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(30, 211, 198, 0.4);
     }
 
-    .status-failed {
-      background: rgba(255, 82, 82, 0.1);
-      color: var(--danger);
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     /* Responsive Styles */
@@ -817,22 +992,20 @@
         justify-content: center;
       }
       
-      .welcome-image img {
-        width: 200px;
+      .welcome-image {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
       }
     }
 
     @media (max-width: 768px) {
-      .navbar {
-        padding: 1rem;
-        flex-direction: column;
-        gap: 1rem;
+      .nav-links {
+        display: none;
       }
       
-      .nav-links {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
+      .mobile-menu-btn {
+        display: block;
       }
       
       .section-header {
@@ -841,9 +1014,8 @@
         gap: 1rem;
       }
       
-      .deposits-table {
-        display: block;
-        overflow-x: auto;
+      .currency-selector {
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
@@ -861,12 +1033,20 @@
         gap: 1rem;
       }
       
-      .currency-selector {
-        grid-template-columns: 1fr 1fr;
+      .user-name {
+        display: none;
       }
       
-      .currency-option {
-        min-width: auto;
+      .currency-selector {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .method-tabs {
+        flex-direction: column;
+      }
+      
+      .method-tab {
+        text-align: center;
       }
     }
   </style>
@@ -876,8 +1056,7 @@
   <!-- Navbar -->
   <div class="navbar">
     <div class="left">
-      <div class="logo">
-        <i class="fas fa-coins logo-icon"></i>
+      <div class="logo" onclick="window.location.href='dashboard.html'">
         <span>BitNest</span>
       </div>
       <div class="nav-links">
@@ -895,10 +1074,47 @@
         <i class="fas fa-bell"></i>
         <div class="notification-badge">3</div>
       </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
       <div class="user-profile" id="userProfile">
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
-        <span id="userName">John Doe</span>
+        <span class="user-name" id="userName">Loading...</span>
+        <div class="user-menu" id="userMenu">
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="#" class="user-menu-item" id="logoutBtn" style="padding-left: 20px;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
       </div>
+    </div>
+    <div class="mobile-nav-menu" id="mobileNavMenu">
+      <a href="dashboard.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <a href="assets.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-wallet"></i> Assets
+      </a>
+      <a href="earn.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-percentage"></i> Earn
+      </a>
+      <a href="trading_view.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-exchange-alt"></i> Trade
+      </a>
+      <a href="P2P.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-users"></i> P2P
+      </a>
+      <a href="#" class="mobile-nav-item active" style="padding-left: 20px;">
+        <i class="fas fa-plus-circle"></i> Deposit
+      </a>
+      <a href="cards.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-credit-card"></i> Cards
+      </a>
     </div>
   </div>
 
@@ -908,7 +1124,7 @@
       <!-- Welcome Banner -->
       <div class="welcome-banner">
         <div class="welcome-content">
-          <h1>Deposit Crypto</h1>
+          <h1 id="welcomeTitle">Deposit Crypto</h1>
           <p>Add cryptocurrencies to your BitNest account to start earning interest, trading, and accessing exclusive benefits. Minimum deposit is $10 worth of any supported cryptocurrency.</p>
           <div class="welcome-stats">
             <div class="stat-item">
@@ -926,7 +1142,11 @@
           </div>
         </div>
         <div class="welcome-image">
-          <img src="https://cryptologos.cc/logos/versions/bitcoin-btc-logo.svg" alt="Crypto">
+          <img src="crypto-logos/bitcoin.svg" alt="Bitcoin" class="crypto-icon">
+          <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum" class="crypto-icon">
+          <img src="crypto-logos/solana-sol-logo.svg" alt="Solana" class="crypto-icon">
+          <img src="crypto-logos/cardano-ada-logo.svg" alt="Cardano" class="crypto-icon">
+          <img src="crypto-logos/polkadot-new-dot-logo.svg" alt="Polkadot" class="crypto-icon">
         </div>
       </div>
 
@@ -942,44 +1162,54 @@
             <label>Select Cryptocurrency</label>
             <div class="currency-selector">
               <div class="currency-option active" data-currency="BTC">
-                <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Bitcoin">
+                <img src="crypto-logos/bitcoin.svg" alt="Bitcoin">
                 <div class="currency-name">Bitcoin</div>
-                <div class="currency-price" id="btc-price">$42,156.78</div>
+                <div class="currency-price" id="btc-price">$0.00</div>
               </div>
               <div class="currency-option" data-currency="ETH">
-                <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="Ethereum">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum">
                 <div class="currency-name">Ethereum</div>
-                <div class="currency-price" id="eth-price">$2,345.67</div>
-              </div>
-              <div class="currency-option" data-currency="USDC">
-                <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC">
-                <div class="currency-name">USDC</div>
-                <div class="currency-price" id="usdc-price">$1.00</div>
-              </div>
-              <div class="currency-option" data-currency="USDT">
-                <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT">
-                <div class="currency-name">USDT</div>
-                <div class="currency-price" id="usdt-price">$1.00</div>
-              </div>
-              <div class="currency-option" data-currency="LTC">
-                <img src="https://cryptologos.cc/logos/litecoin-ltc-logo.png" alt="Litecoin">
-                <div class="currency-name">Litecoin</div>
-                <div class="currency-price" id="ltc-price">$78.90</div>
-              </div>
-              <div class="currency-option" data-currency="ADA">
-                <img src="https://cryptologos.cc/logos/cardano-ada-logo.png" alt="Cardano">
-                <div class="currency-name">Cardano</div>
-                <div class="currency-price" id="ada-price">$0.45</div>
+                <div class="currency-price" id="eth-price">$0.00</div>
               </div>
               <div class="currency-option" data-currency="SOL">
-                <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="Solana">
+                <img src="crypto-logos/solana-sol-logo.svg" alt="Solana">
                 <div class="currency-name">Solana</div>
-                <div class="currency-price" id="sol-price">$98.76</div>
+                <div class="currency-price" id="sol-price">$0.00</div>
+              </div>
+              <div class="currency-option" data-currency="USDC">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC">
+                <div class="currency-name">USDC</div>
+                <div class="currency-price" id="usdc-price">$0.00</div>
+              </div>
+              <div class="currency-option" data-currency="USDT">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT">
+                <div class="currency-name">USDT</div>
+                <div class="currency-price" id="usdt-price">$0.00</div>
+              </div>
+              <div class="currency-option" data-currency="LTC">
+                <img src="crypto-logos/litecoin-ltc-logo.svg" alt="Litecoin">
+                <div class="currency-name">Litecoin</div>
+                <div class="currency-price" id="ltc-price">$0.00</div>
+              </div>
+              <div class="currency-option" data-currency="BNB">
+                <img src="crypto-logos/bnb-bnb-logo.svg" alt="BNB">
+                <div class="currency-name">BNB</div>
+                <div class="currency-price" id="bnb-price">$0.00</div>
+              </div>
+              <div class="currency-option" data-currency="ADA">
+                <img src="crypto-logos/cardano-ada-logo.svg" alt="Cardano">
+                <div class="currency-name">Cardano</div>
+                <div class="currency-price" id="ada-price">$0.00</div>
               </div>
               <div class="currency-option" data-currency="DAI">
-                <img src="https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png" alt="DAI">
+                <img src="crypto-logos/multi-collateral-dai-dai-logo.svg" alt="DAI">
                 <div class="currency-name">DAI</div>
-                <div class="currency-price" id="dai-price">$1.00</div>
+                <div class="currency-price" id="dai-price">$0.00</div>
+              </div>
+              <div class="currency-option" data-currency="XRP">
+                <img src="crypto-logos/xrp-xrp-logo.svg" alt="XRP">
+                <div class="currency-name">XRP</div>
+                <div class="currency-price" id="xrp-price">$0.00</div>
               </div>
             </div>
           </div>
@@ -1013,10 +1243,10 @@
             <div class="method-content active" id="wallet-method">
               <div class="qr-code-container">
                 <div class="qr-code">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=bitcoin:1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" alt="QR Code">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=bc1qfdzl6da2ah3fqvsd7ekwcf02lr208cvd9t36zs" alt="QR Code">
                 </div>
                 <div class="wallet-address" id="wallet-address">
-                  1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+                  bc1qfdzl6da2ah3fqvsd7ekwcf02lr208cvd9t36zs
                   <button class="copy-btn" id="copy-address">
                     <i class="far fa-copy"></i>
                   </button>
@@ -1038,62 +1268,24 @@
             </div>
             
             <div class="method-content" id="card-method">
-              <div class="form-group">
-                <label for="cardNumber">Card Number</label>
-                <input type="text" id="cardNumber" class="form-control" placeholder="1234 5678 9012 3456">
-              </div>
-              
-              <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div>
-                  <label for="cardExpiry">Expiry Date</label>
-                  <input type="text" id="cardExpiry" class="form-control" placeholder="MM/YY">
-                </div>
-                <div>
-                  <label for="cardCvv">CVV</label>
-                  <input type="text" id="cardCvv" class="form-control" placeholder="123">
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label for="cardName">Cardholder Name</label>
-                <input type="text" id="cardName" class="form-control" placeholder="John Doe">
-              </div>
-              
-              <div class="deposit-info">
-                <h4>Card Deposit Information</h4>
-                <p>
-                  • Instant processing with 2.5% fee<br>
-                  • Daily limit: <strong>$5,000</strong><br>
-                  • Monthly limit: <strong>$20,000</strong><br>
-                  • We accept Visa, Mastercard, and American Express
-                </p>
+              <div class="access-restricted">
+                <i class="fas fa-lock"></i>
+                <h4>Deposit Restricted</h4>
+                <p>Please make your first crypto deposit to unlock card deposits. This helps us verify your account and provide better security.</p>
+                <button class="btn-secondary" style="margin-top: 1rem;" onclick="document.querySelector('.method-tab[data-method=\"wallet\"]').click()">
+                  <i class="fas fa-arrow-right"></i> Make Crypto Deposit
+                </button>
               </div>
             </div>
             
             <div class="method-content" id="bank-method">
-              <div class="form-group">
-                <label for="bankAccount">Bank Account Number</label>
-                <input type="text" id="bankAccount" class="form-control" placeholder="1234567890">
-              </div>
-              
-              <div class="form-group">
-                <label for="bankRouting">Routing Number</label>
-                <input type="text" id="bankRouting" class="form-control" placeholder="021000021">
-              </div>
-              
-              <div class="form-group">
-                <label for="bankName">Bank Name</label>
-                <input type="text" id="bankName" class="form-control" placeholder="Chase Bank">
-              </div>
-              
-              <div class="deposit-info">
-                <h4>Bank Transfer Information</h4>
-                <p>
-                  • Processing time: <strong>1-3 business days</strong><br>
-                  • No fees for deposits over $100<br>
-                  • Daily limit: <strong>$50,000</strong><br>
-                  • ACH transfers only (US banks)
-                </p>
+              <div class="access-restricted">
+                <i class="fas fa-lock"></i>
+                <h4>Deposit Restricted</h4>
+                <p>Please make your first crypto deposit to unlock bank transfers. This helps us verify your account and provide better security.</p>
+                <button class="btn-secondary" style="margin-top: 1rem;" onclick="document.querySelector('.method-tab[data-method=\"wallet\"]').click()">
+                  <i class="fas fa-arrow-right"></i> Make Crypto Deposit
+                </button>
               </div>
             </div>
           </div>
@@ -1117,141 +1309,141 @@
           <div class="crypto-list">
             <div class="crypto-item active" data-currency="BTC">
               <div class="crypto-icon">
-                <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Bitcoin">
+                <img src="crypto-logos/bitcoin.svg" alt="Bitcoin">
               </div>
               <div class="crypto-info">
                 <div class="crypto-name">
                   <span>Bitcoin</span>
-                  <span class="crypto-price">$42,156.78</span>
+                  <span class="crypto-price" id="btc-list-price">$0.00</span>
                 </div>
                 <div class="crypto-symbol">BTC</div>
-                <div class="crypto-change positive">+5.2% (24h)</div>
+                <div class="crypto-change" id="btc-change">0.0% (24h)</div>
               </div>
             </div>
             
             <div class="crypto-item" data-currency="ETH">
               <div class="crypto-icon">
-                <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="Ethereum">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum">
               </div>
               <div class="crypto-info">
                 <div class="crypto-name">
                   <span>Ethereum</span>
-                  <span class="crypto-price">$2,345.67</span>
+                  <span class="crypto-price" id="eth-list-price">$0.00</span>
                 </div>
                 <div class="crypto-symbol">ETH</div>
-                <div class="crypto-change positive">+8.7% (24h)</div>
-              </div>
-            </div>
-            
-            <div class="crypto-item" data-currency="USDC">
-              <div class="crypto-icon">
-                <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC">
-              </div>
-              <div class="crypto-info">
-                <div class="crypto-name">
-                  <span>USD Coin</span>
-                  <span class="crypto-price">$1.00</span>
-                </div>
-                <div class="crypto-symbol">USDC</div>
-                <div class="crypto-change">0.0% (24h)</div>
-              </div>
-            </div>
-            
-            <div class="crypto-item" data-currency="USDT">
-              <div class="crypto-icon">
-                <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT">
-              </div>
-              <div class="crypto-info">
-                <div class="crypto-name">
-                  <span>Tether</span>
-                  <span class="crypto-price">$1.00</span>
-                </div>
-                <div class="crypto-symbol">USDT</div>
-                <div class="crypto-change">0.0% (24h)</div>
-              </div>
-            </div>
-            
-            <div class="crypto-item" data-currency="LTC">
-              <div class="crypto-icon">
-                <img src="https://cryptologos.cc/logos/litecoin-ltc-logo.png" alt="Litecoin">
-              </div>
-              <div class="crypto-info">
-                <div class="crypto-name">
-                  <span>Litecoin</span>
-                  <span class="crypto-price">$78.90</span>
-                </div>
-                <div class="crypto-symbol">LTC</div>
-                <div class="crypto-change negative">-1.2% (24h)</div>
-              </div>
-            </div>
-            
-            <div class="crypto-item" data-currency="ADA">
-              <div class="crypto-icon">
-                <img src="https://cryptologos.cc/logos/cardano-ada-logo.png" alt="Cardano">
-              </div>
-              <div class="crypto-info">
-                <div class="crypto-name">
-                  <span>Cardano</span>
-                  <span class="crypto-price">$0.45</span>
-                </div>
-                <div class="crypto-symbol">ADA</div>
-                <div class="crypto-change positive">+3.5% (24h)</div>
+                <div class="crypto-change" id="eth-change">0.0% (24h)</div>
               </div>
             </div>
             
             <div class="crypto-item" data-currency="SOL">
               <div class="crypto-icon">
-                <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="Solana">
+                <img src="crypto-logos/solana-sol-logo.svg" alt="Solana">
               </div>
               <div class="crypto-info">
                 <div class="crypto-name">
                   <span>Solana</span>
-                  <span class="crypto-price">$98.76</span>
+                  <span class="crypto-price" id="sol-list-price">$0.00</span>
                 </div>
                 <div class="crypto-symbol">SOL</div>
-                <div class="crypto-change positive">+15.3% (24h)</div>
+                <div class="crypto-change" id="sol-change">0.0% (24h)</div>
+              </div>
+            </div>
+            
+            <div class="crypto-item" data-currency="USDC">
+              <div class="crypto-icon">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC">
+              </div>
+              <div class="crypto-info">
+                <div class="crypto-name">
+                  <span>USD Coin</span>
+                  <span class="crypto-price" id="usdc-list-price">$0.00</span>
+                </div>
+                <div class="crypto-symbol">USDC</div>
+                <div class="crypto-change" id="usdc-change">0.0% (24h)</div>
+              </div>
+            </div>
+            
+            <div class="crypto-item" data-currency="USDT">
+              <div class="crypto-icon">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT">
+              </div>
+              <div class="crypto-info">
+                <div class="crypto-name">
+                  <span>Tether</span>
+                  <span class="crypto-price" id="usdt-list-price">$0.00</span>
+                </div>
+                <div class="crypto-symbol">USDT</div>
+                <div class="crypto-change" id="usdt-change">0.0% (24h)</div>
+              </div>
+            </div>
+            
+            <div class="crypto-item" data-currency="LTC">
+              <div class="crypto-icon">
+                <img src="crypto-logos/litecoin-ltc-logo.svg" alt="Litecoin">
+              </div>
+              <div class="crypto-info">
+                <div class="crypto-name">
+                  <span>Litecoin</span>
+                  <span class="crypto-price" id="ltc-list-price">$0.00</span>
+                </div>
+                <div class="crypto-symbol">LTC</div>
+                <div class="crypto-change" id="ltc-change">0.0% (24h)</div>
+              </div>
+            </div>
+            
+            <div class="crypto-item" data-currency="BNB">
+              <div class="crypto-icon">
+                <img src="crypto-logos/bnb-bnb-logo.svg" alt="BNB">
+              </div>
+              <div class="crypto-info">
+                <div class="crypto-name">
+                  <span>BNB</span>
+                  <span class="crypto-price" id="bnb-list-price">$0.00</span>
+                </div>
+                <div class="crypto-symbol">BNB</div>
+                <div class="crypto-change" id="bnb-change">0.0% (24h)</div>
+              </div>
+            </div>
+            
+            <div class="crypto-item" data-currency="ADA">
+              <div class="crypto-icon">
+                <img src="crypto-logos/cardano-ada-logo.svg" alt="Cardano">
+              </div>
+              <div class="crypto-info">
+                <div class="crypto-name">
+                  <span>Cardano</span>
+                  <span class="crypto-price" id="ada-list-price">$0.00</span>
+                </div>
+                <div class="crypto-symbol">ADA</div>
+                <div class="crypto-change" id="ada-change">0.0% (24h)</div>
               </div>
             </div>
             
             <div class="crypto-item" data-currency="DAI">
               <div class="crypto-icon">
-                <img src="https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png" alt="DAI">
+                <img src="crypto-logos/multi-collateral-dai-dai-logo.svg" alt="DAI">
               </div>
               <div class="crypto-info">
                 <div class="crypto-name">
                   <span>Dai</span>
-                  <span class="crypto-price">$1.00</span>
+                  <span class="crypto-price" id="dai-list-price">$0.00</span>
                 </div>
                 <div class="crypto-symbol">DAI</div>
-                <div class="crypto-change">0.0% (24h)</div>
-              </div>
-            </div>
-            
-            <div class="crypto-item" data-currency="BUSD">
-              <div class="crypto-icon">
-                <img src="https://cryptologos.cc/logos/binance-usd-busd-logo.png" alt="BUSD">
-              </div>
-              <div class="crypto-info">
-                <div class="crypto-name">
-                  <span>Binance USD</span>
-                  <span class="crypto-price">$1.00</span>
-                </div>
-                <div class="crypto-symbol">BUSD</div>
-                <div class="crypto-change">0.0% (24h)</div>
+                <div class="crypto-change" id="dai-change">0.0% (24h)</div>
               </div>
             </div>
             
             <div class="crypto-item" data-currency="XRP">
               <div class="crypto-icon">
-                <img src="https://cryptologos.cc/logos/xrp-xrp-logo.png" alt="XRP">
+                <img src="crypto-logos/xrp-xrp-logo.svg" alt="XRP">
               </div>
               <div class="crypto-info">
                 <div class="crypto-name">
                   <span>XRP</span>
-                  <span class="crypto-price">$0.62</span>
+                  <span class="crypto-price" id="xrp-list-price">$0.00</span>
                 </div>
                 <div class="crypto-symbol">XRP</div>
-                <div class="crypto-change positive">+2.1% (24h)</div>
+                <div class="crypto-change" id="xrp-change">0.0% (24h)</div>
               </div>
             </div>
           </div>
@@ -1267,85 +1459,127 @@
           </button>
         </div>
         
-        <table class="deposits-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Currency</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Transaction ID</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Today, 10:45 AM</td>
-              <td>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                  <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC" width="20">
-                  <span>BTC</span>
-                </div>
-              </td>
-              <td>0.025 BTC ($1,053.92)</td>
-              <td><span class="deposit-status status-completed">Completed</span></td>
-              <td>3a4b5c6d7e8f9g</td>
-            </tr>
-            <tr>
-              <td>Yesterday, 3:22 PM</td>
-              <td>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                  <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" width="20">
-                  <span>ETH</span>
-                </div>
-              </td>
-              <td>1.5 ETH ($3,518.51)</td>
-              <td><span class="deposit-status status-completed">Completed</span></td>
-              <td>9h8g7f6e5d4c3b</td>
-            </tr>
-            <tr>
-              <td>Mar 15, 9:10 AM</td>
-              <td>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                  <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC" width="20">
-                  <span>USDC</span>
-                </div>
-              </td>
-              <td>5,000 USDC ($5,000.00)</td>
-              <td><span class="deposit-status status-completed">Completed</span></td>
-              <td>2b3c4d5e6f7g8h</td>
-            </tr>
-            <tr>
-              <td>Mar 14, 5:30 PM</td>
-              <td>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                  <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="SOL" width="20">
-                  <span>SOL</span>
-                </div>
-              </td>
-              <td>50 SOL ($4,938.00)</td>
-              <td><span class="deposit-status status-pending">Pending (2/3)</span></td>
-              <td>1a2b3c4d5e6f7g</td>
-            </tr>
-            <tr>
-              <td>Mar 12, 11:15 AM</td>
-              <td>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                  <img src="https://cryptologos.cc/logos/cardano-ada-logo.png" alt="ADA" width="20">
-                  <span>ADA</span>
-                </div>
-              </td>
-              <td>1,000 ADA ($450.00)</td>
-              <td><span class="deposit-status status-failed">Failed</span></td>
-              <td>8h7g6f5e4d3c2b</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="no-deposits">
+          <i class="fas fa-wallet"></i>
+          <h4>No Recent Deposits</h4>
+          <p>Your deposit history will appear here once you make your first deposit.</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <script>
+  <!-- Firebase and App Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged,
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.appspot.com",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
     // DOM Elements
+    const userNameElement = document.getElementById('userName');
+    const userProfilePicElement = document.getElementById('userProfilePic');
+    const welcomeTitleElement = document.getElementById('welcomeTitle');
+    const userProfileElement = document.getElementById('userProfile');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavMenu = document.getElementById('mobileNavMenu');
+    const logoElement = document.querySelector('.navbar .logo');
+
+    // Make logo clickable
+    logoElement.addEventListener('click', () => {
+      window.location.href = 'dashboard.html';
+    });
+
+    // Toggle user menu
+    userProfileElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.classList.toggle('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Toggle mobile nav menu
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileNavMenu.classList.toggle('active');
+      userMenu.classList.remove('active');
+    });
+
+    // Close menus when clicking outside
+    document.addEventListener('click', () => {
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        console.error('Sign out error:', error);
+      });
+    });
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is signed in:", user);
+        
+        // Get user data from Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          console.log("User data:", userData);
+          
+          // Update UI with user data
+          const displayName = userData.name || user.displayName || "User";
+          // Show only first name if available
+          const firstName = displayName.split(' ')[0];
+          userNameElement.textContent = firstName;
+          welcomeTitleElement.textContent = `Welcome back, ${firstName}!`;
+          
+          // Update profile picture if available
+          if (user.photoURL) {
+            userProfilePicElement.src = user.photoURL;
+          }
+        } else {
+          console.log("No user data found in Firestore");
+        }
+        
+      } else {
+        // User is signed out
+        console.log("User is signed out");
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Deposit Form Functionality
     const currencyOptions = document.querySelectorAll('.currency-option');
     const cryptoItems = document.querySelectorAll('.crypto-item');
     const depositAmount = document.getElementById('depositAmount');
@@ -1357,50 +1591,137 @@
     const walletAddress = document.getElementById('wallet-address');
     const networkInfo = document.getElementById('network-info');
     
-    // Crypto price data (in a real app, this would come from an API)
-    const cryptoPrices = {
-      BTC: 42156.78,
-      ETH: 2345.67,
-      USDC: 1.00,
-      USDT: 1.00,
-      LTC: 78.90,
-      ADA: 0.45,
-      SOL: 98.76,
-      DAI: 1.00,
-      BUSD: 1.00,
-      XRP: 0.62
-    };
-    
-    // Wallet addresses for each crypto (in a real app, these would be generated per user)
+    // Wallet addresses for each crypto
     const walletAddresses = {
-      BTC: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
-      ETH: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-      USDC: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-      USDT: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-      LTC: 'LbTjMGN7gzw6vC1QmYq6q9kND7E2Zz2XZ7',
-      ADA: 'addr1q9d0h0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0hxr0',
-      SOL: '7vMKyXJ5XgKz1Lk7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7Q1q7',
-      DAI: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-      BUSD: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-      XRP: 'rP24VnD9Y9Y9Y9Y9Y9Y9Y9Y9Y9Y9Y9Y9Y9'
+      BTC: 'bc1qfdzl6da2ah3fqvsd7ekwcf02lr208cvd9t36zs',
+      ETH: '0xf310aa1d368a47565e9fca3c57fae0329ab24440',
+      SOL: 'AX3BzxeM7jMkNe5XsCsYEShtdwCABeVgbPgu5qFpqb59',
+      USDC: '0xf310aa1d368a47565e9fca3c57fae0329ab24440',
+      USDT: '0xf310aa1d368a47565e9fca3c57fae0329ab24440',
+      LTC: 'ltc1qurle3nn0y0n2zswj0pqzd7azcqkspkmn7g0fk2',
+      BNB: '0xf310aa1d368a47565e9fca3c57fae0329ab24440',
+      ADA: 'addr1qx0ffuw67qvewlce8nywdmz6ka0x3l9p69aj3mhqnmfm3ew4vhfhxtdh6xrnfkzx25ppvk62cw349sfg4le3ju6qkzfsptwghp',
+      DAI: '0xf310aa1d368a47565e9fca3c57fae0329ab24440',
+      XRP: 'rMBXCFZZj9AMrbqtHPvofDLQUC9cZPSGvN'
     };
     
     // Network names for each crypto
     const networkNames = {
       BTC: 'Bitcoin (BTC)',
       ETH: 'Ethereum (ERC20)',
+      SOL: 'Solana (SOL)',
       USDC: 'Ethereum (ERC20)',
       USDT: 'Tron (TRC20)',
       LTC: 'Litecoin (LTC)',
+      BNB: 'Binance Smart Chain (BEP20)',
       ADA: 'Cardano (ADA)',
-      SOL: 'Solana (SOL)',
       DAI: 'Ethereum (ERC20)',
-      BUSD: 'Binance Smart Chain (BEP20)',
       XRP: 'Ripple (XRP)'
     };
     
     // Currently selected currency (default to BTC)
     let selectedCurrency = 'BTC';
+    
+    // Crypto price data (will be fetched from CoinGecko)
+    let cryptoPrices = {
+      BTC: 0,
+      ETH: 0,
+      SOL: 0,
+      USDC: 1.00,
+      USDT: 1.00,
+      LTC: 0,
+      BNB: 0,
+      ADA: 0,
+      DAI: 1.00,
+      XRP: 0
+    };
+    
+    // Fetch prices from CoinGecko API
+    async function fetchPrices() {
+      try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,usd-coin,tether,litecoin,bnb,cardano,dai,ripple&vs_currencies=usd&include_24hr_change=true');
+        const data = await response.json();
+        
+        // Update prices
+        cryptoPrices.BTC = data.bitcoin.usd;
+        cryptoPrices.ETH = data.ethereum.usd;
+        cryptoPrices.SOL = data.solana.usd;
+        cryptoPrices.USDC = data['usd-coin'].usd;
+        cryptoPrices.USDT = data.tether.usd;
+        cryptoPrices.LTC = data.litecoin.usd;
+        cryptoPrices.BNB = data.bnb.usd;
+        cryptoPrices.ADA = data.cardano.usd;
+        cryptoPrices.DAI = data.dai.usd;
+        cryptoPrices.XRP = data.ripple.usd;
+        
+        // Update price displays
+        updatePriceDisplays();
+        
+        // Update 24h change displays
+        document.getElementById('btc-change').textContent = `${data.bitcoin.usd_24h_change.toFixed(2)}% (24h)`;
+        document.getElementById('eth-change').textContent = `${data.ethereum.usd_24h_change.toFixed(2)}% (24h)`;
+        document.getElementById('sol-change').textContent = `${data.solana.usd_24h_change.toFixed(2)}% (24h)`;
+        document.getElementById('usdc-change').textContent = `${data['usd-coin'].usd_24h_change.toFixed(2)}% (24h)`;
+        document.getElementById('usdt-change').textContent = `${data.tether.usd_24h_change.toFixed(2)}% (24h)`;
+        document.getElementById('ltc-change').textContent = `${data.litecoin.usd_24h_change.toFixed(2)}% (24h)`;
+        document.getElementById('bnb-change').textContent = `${data.bnb.usd_24h_change.toFixed(2)}% (24h)`;
+        document.getElementById('ada-change').textContent = `${data.cardano.usd_24h_change.toFixed(2)}% (24h)`;
+        document.getElementById('dai-change').textContent = `${data.dai.usd_24h_change.toFixed(2)}% (24h)`;
+        document.getElementById('xrp-change').textContent = `${data.ripple.usd_24h_change.toFixed(2)}% (24h)`;
+        
+        // Set color based on change
+        setChangeColor('btc-change', data.bitcoin.usd_24h_change);
+        setChangeColor('eth-change', data.ethereum.usd_24h_change);
+        setChangeColor('sol-change', data.solana.usd_24h_change);
+        setChangeColor('usdc-change', data['usd-coin'].usd_24h_change);
+        setChangeColor('usdt-change', data.tether.usd_24h_change);
+        setChangeColor('ltc-change', data.litecoin.usd_24h_change);
+        setChangeColor('bnb-change', data.bnb.usd_24h_change);
+        setChangeColor('ada-change', data.cardano.usd_24h_change);
+        setChangeColor('dai-change', data.dai.usd_24h_change);
+        setChangeColor('xrp-change', data.ripple.usd_24h_change);
+        
+      } catch (error) {
+        console.error('Error fetching prices:', error);
+      }
+    }
+    
+    function setChangeColor(elementId, change) {
+      const element = document.getElementById(elementId);
+      if (change > 0) {
+        element.className = 'crypto-change positive';
+      } else if (change < 0) {
+        element.className = 'crypto-change negative';
+      } else {
+        element.className = 'crypto-change';
+      }
+    }
+    
+    function updatePriceDisplays() {
+      // Update currency selector prices
+      document.getElementById('btc-price').textContent = `$${cryptoPrices.BTC.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('eth-price').textContent = `$${cryptoPrices.ETH.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('sol-price').textContent = `$${cryptoPrices.SOL.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('usdc-price').textContent = `$${cryptoPrices.USDC.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('usdt-price').textContent = `$${cryptoPrices.USDT.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('ltc-price').textContent = `$${cryptoPrices.LTC.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('bnb-price').textContent = `$${cryptoPrices.BNB.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('ada-price').textContent = `$${cryptoPrices.ADA.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('dai-price').textContent = `$${cryptoPrices.DAI.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('xrp-price').textContent = `$${cryptoPrices.XRP.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      
+      // Update crypto list prices
+      document.getElementById('btc-list-price').textContent = `$${cryptoPrices.BTC.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('eth-list-price').textContent = `$${cryptoPrices.ETH.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('sol-list-price').textContent = `$${cryptoPrices.SOL.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('usdc-list-price').textContent = `$${cryptoPrices.USDC.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('usdt-list-price').textContent = `$${cryptoPrices.USDT.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('ltc-list-price').textContent = `$${cryptoPrices.LTC.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('bnb-list-price').textContent = `$${cryptoPrices.BNB.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('ada-list-price').textContent = `$${cryptoPrices.ADA.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('dai-list-price').textContent = `$${cryptoPrices.DAI.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('xrp-list-price').textContent = `$${cryptoPrices.XRP.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
     
     // Update crypto equivalent amount when USD amount changes
     depositAmount.addEventListener('input', updateCryptoAmount);
@@ -1486,59 +1807,13 @@
       });
     });
     
-    // Simulate real-time price updates
-    setInterval(() => {
-      // Random price changes for demo purposes
-      for (const [symbol, price] of Object.entries(cryptoPrices)) {
-        if (symbol === 'USDC' || symbol === 'USDT' || symbol === 'DAI' || symbol === 'BUSD') {
-          // Stablecoins stay at $1.00
-          continue;
-        }
-        
-        // Random price change between -2% and +2%
-        const changePercent = (Math.random() * 4) - 2;
-        const newPrice = price * (1 + (changePercent / 100));
-        
-        // Update price data
-        cryptoPrices[symbol] = newPrice;
-        
-        // Update displayed prices
-        const priceElement = document.getElementById(`${symbol.toLowerCase()}-price`);
-        if (priceElement) {
-          priceElement.textContent = `$${newPrice.toFixed(2)}`;
-        }
-        
-        // Update crypto list prices
-        const cryptoItem = document.querySelector(`.crypto-item[data-currency="${symbol}"] .crypto-price`);
-        if (cryptoItem) {
-          cryptoItem.textContent = `$${newPrice.toFixed(2)}`;
-        }
-        
-        // Update 24h change indicators
-        const changeElement = document.querySelector(`.crypto-item[data-currency="${symbol}"] .crypto-change`);
-        if (changeElement) {
-          if (changePercent > 0) {
-            changeElement.className = 'crypto-change positive';
-            changeElement.textContent = `+${changePercent.toFixed(1)}% (24h)`;
-          } else if (changePercent < 0) {
-            changeElement.className = 'crypto-change negative';
-            changeElement.textContent = `${changePercent.toFixed(1)}% (24h)`;
-          } else {
-            changeElement.className = 'crypto-change';
-            changeElement.textContent = '0.0% (24h)';
-          }
-        }
-      }
-      
-      // Update crypto amount if USD amount is entered
-      if (depositAmount.value) {
-        updateCryptoAmount();
-      }
-    }, 5000); // Update every 5 seconds
-    
     // Initialize with BTC selected
     document.querySelector('.currency-option[data-currency="BTC"]').click();
     document.querySelector('.crypto-item[data-currency="BTC"]').classList.add('active');
+    
+    // Fetch prices initially and then every 60 seconds
+    fetchPrices();
+    setInterval(fetchPrices, 60000);
   </script>
 </body>
 </html>

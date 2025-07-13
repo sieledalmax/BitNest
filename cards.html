@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>BitNest | Crypto Cards</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +21,6 @@
       --accent-orange: #ff7b25;
       --border-radius: 16px;
       --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       --glass-effect: rgba(16, 18, 22, 0.7);
       --success: #00e676;
       --warning: #ffab00;
@@ -43,62 +42,10 @@
       overflow-x: hidden;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--card-bg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 4px;
-    }
-
-    /* Floating Animations */
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Notification Bell Animation */
-    @keyframes bellRing {
-      0% { transform: rotate(0deg); }
-      10% { transform: rotate(15deg); }
-      20% { transform: rotate(-15deg); }
-      30% { transform: rotate(10deg); }
-      40% { transform: rotate(-10deg); }
-      50% { transform: rotate(5deg); }
-      60% { transform: rotate(-5deg); }
-      100% { transform: rotate(0deg); }
-    }
-
-    /* Crypto Chart Animation */
-    @keyframes chartGrow {
-      from { transform: scaleY(0); }
-      to { transform: scaleY(1); }
-    }
-
-    /* Navbar Styles */
+    /* Navbar - Centered with Animations */
     .navbar {
       background-color: var(--glass-effect);
-      padding: 1rem 3rem;
+      padding: 1rem 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -107,28 +54,37 @@
       z-index: 1000;
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .navbar:hover {
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
     }
 
     .navbar .left {
       display: flex;
       align-items: center;
-      gap: 2.5rem;
+      justify-content: flex-start;
+      gap: 2rem;
+      flex: 1;
     }
 
     .navbar .logo {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
 
-    .logo-icon {
-      animation: float 4s ease-in-out infinite;
+    .navbar .logo:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
     }
 
     .nav-links {
@@ -139,15 +95,31 @@
     .navbar a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: var(--transition);
       position: relative;
       padding: 0.5rem 0;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .navbar a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
     }
 
     .navbar a:hover {
       color: var(--text-primary);
+    }
+
+    .navbar a:hover::after {
+      width: 100%;
     }
 
     .navbar a.active {
@@ -155,30 +127,31 @@
     }
 
     .navbar a.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
       width: 100%;
-      height: 2px;
-      background: var(--primary);
-      border-radius: 2px;
     }
 
     .navbar .right {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 1.5rem;
+      flex: 1;
     }
 
     .notification-bell {
       position: relative;
       cursor: pointer;
-      transition: var(--transition);
+      transition: transform 0.2s ease;
     }
 
     .notification-bell:hover {
-      animation: bellRing 0.5s ease;
+      transform: translateY(-2px);
+      animation: bellShake 0.5s ease infinite alternate;
+    }
+
+    @keyframes bellShake {
+      0% { transform: rotate(-5deg); }
+      100% { transform: rotate(5deg); }
     }
 
     .notification-badge {
@@ -195,13 +168,26 @@
       justify-content: center;
       font-size: 0.7rem;
       font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     .user-profile {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
       cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .user-profile:hover {
+      transform: translateX(5px);
     }
 
     .profile-pic {
@@ -210,66 +196,154 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--primary);
+      transition: all 0.3s ease;
     }
 
-    .btn {
-      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
-      border: none;
-      padding: 0.75rem 1.75rem;
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: var(--transition);
-      display: inline-flex;
+    .user-profile:hover .profile-pic {
+      box-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
+      transform: scale(1.1);
+    }
+
+    .user-name {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Enhanced Dropdown Menus */
+    .user-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 240px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .user-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .user-menu-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
       font-size: 0.95rem;
-      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      white-space: nowrap;
+      transition: all 0.2s ease;
       position: relative;
       overflow: hidden;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(30, 211, 198, 0.4);
+    .user-menu-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(30, 211, 198, 0.1), transparent);
+      transition: all 0.5s ease;
     }
 
-    .btn span {
+    .user-menu-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    .user-menu-item:hover::before {
+      left: 100%;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.5rem;
       transition: transform 0.3s ease;
     }
 
-    .btn:hover span {
-      transform: translateX(3px);
+    .mobile-menu-btn:hover {
+      transform: rotate(90deg);
     }
 
-    .btn-secondary {
-      background: transparent;
-      color: var(--text-primary);
+    .mobile-nav-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 5%;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      width: 90%;
+      max-width: 280px;
+      z-index: 1001;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: none;
+    .mobile-nav-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    /* Main Container */
+    .mobile-nav-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    /* Enhanced Main Content */
     .container {
-      padding: 2rem 3rem;
+      padding: 2rem 1.5rem;
       max-width: 1800px;
       margin: 0 auto;
+      animation: fadeIn 0.5s ease;
     }
 
-    /* Dashboard Grid */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 1.5rem;
     }
 
-    /* Welcome Banner */
+    /* Enhanced Welcome Banner */
     .welcome-banner {
       grid-column: span 12;
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
@@ -278,29 +352,41 @@
       margin-bottom: 1.5rem;
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: var(--box-shadow);
-      position: relative;
-      overflow: hidden;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+      overflow: hidden;
     }
 
     .welcome-banner::before {
       content: '';
       position: absolute;
-      top: 0;
-      right: 0;
-      width: 40%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(30, 211, 198, 0.08), rgba(58, 134, 255, 0.05));
-      clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
-      z-index: 0;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent,
+        transparent,
+        transparent,
+        rgba(30, 211, 198, 0.05),
+        transparent
+      );
+      transform: rotate(30deg);
+      animation: shine 6s infinite linear;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      100% { transform: translateX(100%) rotate(30deg); }
     }
 
     .welcome-content {
+      max-width: 60%;
       position: relative;
       z-index: 1;
-      max-width: 60%;
     }
 
     .welcome-content h1 {
@@ -311,14 +397,18 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      width: fit-content;
+      animation: textGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes textGlow {
+      0% { text-shadow: 0 0 10px rgba(30, 211, 198, 0.3); }
+      100% { text-shadow: 0 0 20px rgba(30, 211, 198, 0.6); }
     }
 
     .welcome-content p {
       color: var(--text-secondary);
       margin-bottom: 1.5rem;
       font-size: 1.05rem;
-      line-height: 1.6;
     }
 
     .welcome-stats {
@@ -337,6 +427,12 @@
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .stat-value:hover {
+      transform: translateY(-3px);
+      text-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
     }
 
     .stat-label {
@@ -345,14 +441,24 @@
     }
 
     .welcome-image {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
       position: relative;
       z-index: 1;
-      animation: float 6s ease-in-out infinite;
     }
 
-    .welcome-image img {
-      width: 300px;
-      height: auto;
+    .welcome-image .crypto-icon {
+      width: 50px;
+      height: 50px;
+      transition: all 0.3s ease;
+    }
+
+    .welcome-image .crypto-icon:hover {
+      transform: translateY(-5px) scale(1.1);
+      filter: drop-shadow(0 5px 15px rgba(30, 211, 198, 0.4));
     }
 
     /* Section Header */
@@ -379,6 +485,7 @@
       height: 20px;
       background: linear-gradient(var(--primary), var(--accent-blue));
       border-radius: 3px;
+      animation: pulse 2s infinite;
     }
 
     /* Card Customization Section */
@@ -396,7 +503,7 @@
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      transition: var(--transition);
+      transition: all 0.3s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -424,7 +531,7 @@
       overflow: hidden;
       background: linear-gradient(135deg, #3a86ff, #8338ec);
       box-shadow: 0 10px 30px rgba(58, 134, 255, 0.3);
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .virtual-card.purple {
@@ -446,10 +553,13 @@
     .card-logo {
       display: flex;
       justify-content: flex-end;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .card-logo img {
-      height: 30px;
+      height: 24px;
+      width: auto;
     }
 
     .card-number {
@@ -501,7 +611,7 @@
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .card-customization-options:hover {
@@ -531,7 +641,7 @@
       border-radius: 8px;
       cursor: pointer;
       border: 2px solid transparent;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .color-option:hover {
@@ -582,56 +692,13 @@
       border-radius: 8px;
       color: var(--text-primary);
       font-size: 1rem;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .form-control:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
-    }
-
-    /* Card Benefits Section */
-    .card-benefits {
-      grid-column: span 12;
-      margin-top: 1.5rem;
-    }
-
-    .benefits-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .benefit-card {
-      background-color: var(--card-bg);
-      padding: 1.75rem;
-      border-radius: var(--border-radius);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: var(--box-shadow);
-      transition: var(--transition);
-    }
-
-    .benefit-card:hover {
-      transform: translateY(-5px);
-      background-color: var(--card-hover);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    .benefit-card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.75rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      color: var(--text-primary);
-    }
-
-    .benefit-card p {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      line-height: 1.5;
     }
 
     /* Order Summary */
@@ -680,6 +747,102 @@
       margin-top: 2rem;
     }
 
+    /* Card Benefits Section */
+    .card-benefits {
+      grid-column: span 12;
+      margin-top: 1.5rem;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .benefit-card {
+      background-color: var(--card-bg);
+      padding: 1.75rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      transition: all 0.3s ease;
+    }
+
+    .benefit-card:hover {
+      transform: translateY(-5px);
+      background-color: var(--card-hover);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .benefit-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .benefit-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Enhanced Buttons */
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.75rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.5s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(30, 211, 198, 0.4);
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
     /* Deposit Modal */
     .modal {
       display: none;
@@ -689,16 +852,10 @@
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(5px);
       z-index: 2000;
       align-items: center;
       justify-content: center;
-      animation: fadeIn 0.3s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      animation: fadeIn 0.3s ease;
     }
 
     .modal-content {
@@ -709,12 +866,16 @@
       padding: 2rem;
       box-shadow: var(--box-shadow);
       position: relative;
-      animation: slideUp 0.4s ease-out;
+      transform: scale(0.95);
+      opacity: 0;
+      animation: modalAppear 0.3s ease forwards;
     }
 
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    @keyframes modalAppear {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .close-modal {
@@ -726,11 +887,11 @@
       color: var(--text-secondary);
       font-size: 1.5rem;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.2s ease;
     }
 
     .close-modal:hover {
-      color: var(--text-primary);
+      color: var(--primary);
       transform: rotate(90deg);
     }
 
@@ -738,7 +899,6 @@
       font-size: 1.5rem;
       margin-bottom: 1.5rem;
       font-weight: 600;
-      color: var(--text-primary);
     }
 
     .modal-footer {
@@ -767,21 +927,37 @@
       .container {
         padding: 1.5rem;
       }
+      
+      .welcome-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .welcome-content {
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+      }
+      
+      .welcome-stats {
+        justify-content: center;
+      }
     }
 
     @media (max-width: 768px) {
-      .navbar {
-        padding: 1rem;
+      .nav-links {
+        display: none;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .section-header {
         flex-direction: column;
+        align-items: flex-start;
         gap: 1rem;
       }
-      
-      .nav-links {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
-      }
-      
+
       .order-details {
         flex-direction: column;
         align-items: flex-start;
@@ -791,16 +967,60 @@
       .order-actions {
         justify-content: center;
       }
-    }
 
-    @media (max-width: 576px) {
+      .welcome-content h1 {
+        font-size: 1.8rem;
+      }
+
+      .stat-value {
+        font-size: 1.3rem;
+      }
+
       .color-options {
         flex-wrap: wrap;
       }
+
+      .card-logo img {
+        height: 20px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .welcome-banner {
+        padding: 1.5rem;
+      }
       
+      .welcome-stats {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .user-name {
+        display: none;
+      }
+
       .color-option {
         width: 40px;
         height: 40px;
+      }
+
+      .mobile-nav-menu {
+        width: 90%;
+        right: 5%;
+      }
+      
+      .modal-content {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .welcome-image {
+        display: none;
+      }
+      
+      .order-features {
+        flex-direction: column;
       }
     }
   </style>
@@ -810,8 +1030,7 @@
   <!-- Navbar -->
   <div class="navbar">
     <div class="left">
-      <div class="logo">
-        <i class="fas fa-coins logo-icon"></i>
+      <div class="logo" onclick="window.location.href='dashboard.html'">
         <span>BitNest</span>
       </div>
       <div class="nav-links">
@@ -829,10 +1048,47 @@
         <i class="fas fa-bell"></i>
         <div class="notification-badge">3</div>
       </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
       <div class="user-profile" id="userProfile">
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
-        <span id="userName">Loading...</span>
+        <span class="user-name" id="userName">Loading...</span>
+        <div class="user-menu" id="userMenu">
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="#" class="user-menu-item" id="logoutBtn" style="padding-left: 20px;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
       </div>
+    </div>
+    <div class="mobile-nav-menu" id="mobileNavMenu">
+      <a href="dashboard.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <a href="assets.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-wallet"></i> Assets
+      </a>
+      <a href="earn.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-percentage"></i> Earn
+      </a>
+      <a href="trading_view.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-exchange-alt"></i> Trade
+      </a>
+      <a href="P2P.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-users"></i> P2P
+      </a>
+      <a href="deposit.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-plus-circle"></i> Deposit
+      </a>
+      <a href="#" class="mobile-nav-item active" style="padding-left: 20px;">
+        <i class="fas fa-credit-card"></i> Cards
+      </a>
     </div>
   </div>
 
@@ -858,9 +1114,16 @@
               <div class="stat-label">Acceptance</div>
             </div>
           </div>
+          <button class="btn" id="orderCardBtn">
+            <i class="fas fa-credit-card"></i> Order Your Card Now
+          </button>
         </div>
         <div class="welcome-image">
-          <img src="https://cryptologos.cc/logos/versions/bitcoin-btc-logo.svg" alt="Crypto">
+          <img src="crypto-logos/bitcoin.svg" alt="Bitcoin" class="crypto-icon">
+          <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum" class="crypto-icon">
+          <img src="crypto-logos/solana-sol-logo.svg" alt="Solana" class="crypto-icon">
+          <img src="crypto-logos/cardano-ada-logo.svg" alt="Cardano" class="crypto-icon">
+          <img src="crypto-logos/polkadot-new-dot-logo.svg" alt="Polkadot" class="crypto-icon">
         </div>
       </div>
 
@@ -872,12 +1135,16 @@
               <i class="fas fa-microchip"></i>
             </div>
             <div class="card-logo">
-              <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg" alt="BitNest">
+              <img src="crypto-logos/bitcoin.svg" alt="Bitcoin">
+              <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum">
+              <img src="crypto-logos/solana-sol-logo.svg" alt="Solana">
+              <img src="crypto-logos/cardano-ada-logo.svg" alt="Cardano">
+              <img src="crypto-logos/polkadot-new-dot-logo.svg" alt="Polkadot">
             </div>
-            <div class="card-number">•••• •••• •••• 4242</div>
+            <div class="card-number">•••• •••• •••• ••••</div>
             <div class="card-details">
               <div class="card-name" id="cardNamePreview">JOHN DOE</div>
-              <div class="card-expiry">12/25</div>
+              <div class="card-expiry">••/••</div>
             </div>
           </div>
         </div>
@@ -926,38 +1193,7 @@
           </div>
         </div>
       </div>
-      
-      <!-- Card Benefits -->
-      <div class="card-benefits">
-        <h2 class="section-title">Card Benefits</h2>
-        <div class="benefits-grid">
-          <div class="benefit-card">
-            <h3><i class="fas fa-globe"></i> Global Acceptance</h3>
-            <p>Use your BitNest Card anywhere Visa is accepted worldwide, online and offline.</p>
-          </div>
-          <div class="benefit-card">
-            <h3><i class="fas fa-exchange-alt"></i> Instant Conversion</h3>
-            <p>Automatically convert your crypto to fiat at the point of sale with competitive rates.</p>
-          </div>
-          <div class="benefit-card">
-            <h3><i class="fas fa-percentage"></i> Low Fees</h3>
-            <p>Enjoy 0% foreign transaction fees and minimal conversion fees compared to competitors.</p>
-          </div>
-          <div class="benefit-card">
-            <h3><i class="fas fa-shield-alt"></i> Enhanced Security</h3>
-            <p>Freeze/unfreeze your card instantly, set spending limits, and enable 2FA protection.</p>
-          </div>
-          <div class="benefit-card">
-            <h3><i class="fas fa-coins"></i> Crypto Rewards</h3>
-            <p>Earn up to 5% back in Bitcoin on all your purchases with our premium card tier.</p>
-          </div>
-          <div class="benefit-card">
-            <h3><i class="fas fa-mobile-alt"></i> Mobile App</h3>
-            <p>Manage your card, track spending, and view transactions all from our mobile app.</p>
-          </div>
-        </div>
-      </div>
-      
+
       <!-- Order Summary -->
       <div class="order-summary">
         <div class="order-details">
@@ -993,15 +1229,46 @@
           </button>
         </div>
       </div>
+      
+      <!-- Card Benefits -->
+      <div class="card-benefits">
+        <h2 class="section-title">Card Benefits</h2>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <h3><i class="fas fa-globe"></i> Global Acceptance</h3>
+            <p>Use your BitNest Card anywhere Visa is accepted worldwide, online and offline.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-exchange-alt"></i> Instant Conversion</h3>
+            <p>Automatically convert your crypto to fiat at the point of sale with competitive rates.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-wallet"></i> Spend Balance Easily</h3>
+            <p>Access and spend your crypto balance anywhere without needing to manually convert.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-percentage"></i> Low Fees</h3>
+            <p>Enjoy 0% foreign transaction fees and minimal conversion fees compared to competitors.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-shield-alt"></i> Enhanced Security</h3>
+            <p>Freeze/unfreeze your card instantly, set spending limits, and enable 2FA protection.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-coins"></i> Crypto Rewards</h3>
+            <p>Earn up to 5% back in Bitcoin on all your purchases with our premium card tier.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Deposit Modal -->
-  <div class="modal" id="depositModal">
+  <!-- Insufficient Balance Modal -->
+  <div class="modal" id="insufficientBalanceModal">
     <div class="modal-content">
-      <button class="close-modal" id="closeModal">&times;</button>
-      <h2 class="modal-title">Deposit Required</h2>
-      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">To order your BitNest Card, you need to have at least $10 in your account balance.</p>
+      <button class="close-modal" id="closeInsufficientModal">&times;</button>
+      <h2 class="modal-title">Insufficient Balance</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">You don't have enough funds to order the card. Please deposit at least $10 to your account.</p>
       
       <div class="bonus-notice" style="background: rgba(30, 211, 198, 0.1); padding: 1rem; border-radius: 8px; margin: 1.5rem 0; border-left: 3px solid var(--primary);">
         <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--primary);">Card Order Fee: $5</h4>
@@ -1009,8 +1276,8 @@
       </div>
       
       <div class="modal-footer">
-        <button class="btn btn-secondary" id="cancelDepositBtn">Cancel</button>
-        <button class="btn" id="proceedDepositBtn">
+        <button class="btn btn-secondary" id="cancelOrderBtn">Cancel</button>
+        <button class="btn" id="proceedToDepositBtn">
           <i class="fas fa-arrow-right"></i> Proceed to Deposit
         </button>
       </div>
@@ -1036,10 +1303,9 @@
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
       projectId: "bitnest-c7452",
-      storageBucket: "bitnest-c7452.firebasestorage.app",
+      storageBucket: "bitnest-c7452.appspot.com",
       messagingSenderId: "583165336540",
-      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
-      measurementId: "G-PGJNHTL03J"
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
     };
 
     // Initialize Firebase
@@ -1053,11 +1319,15 @@
     const welcomeTitleElement = document.getElementById('welcomeTitle');
     const cardNamePreview = document.getElementById('cardNamePreview');
     const userProfileElement = document.getElementById('userProfile');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavMenu = document.getElementById('mobileNavMenu');
     const orderCardBtn = document.getElementById('orderCardBtn');
-    const depositModal = document.getElementById('depositModal');
-    const closeModal = document.getElementById('closeModal');
-    const cancelDepositBtn = document.getElementById('cancelDepositBtn');
-    const proceedDepositBtn = document.getElementById('proceedDepositBtn');
+    const insufficientBalanceModal = document.getElementById('insufficientBalanceModal');
+    const closeInsufficientModal = document.getElementById('closeInsufficientModal');
+    const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+    const proceedToDepositBtn = document.getElementById('proceedToDepositBtn');
 
     // Card color selection
     const colorOptions = document.querySelectorAll('.color-option');
@@ -1093,8 +1363,10 @@
           
           // Update UI with user data
           const displayName = userData.name || user.displayName || "User";
-          userNameElement.textContent = displayName;
-          welcomeTitleElement.textContent = `Your BitNest Card, ${displayName}`;
+          // Show only first name if available
+          const firstName = displayName.split(' ')[0];
+          userNameElement.textContent = firstName;
+          welcomeTitleElement.textContent = `Your BitNest Card, ${firstName}`;
           cardNamePreview.textContent = displayName.toUpperCase();
           
           // Update profile picture if available
@@ -1105,17 +1377,6 @@
           console.log("No user data found in Firestore");
         }
         
-        // Add logout functionality
-        userProfileElement.addEventListener('click', () => {
-          if (confirm('Are you sure you want to sign out?')) {
-            signOut(auth).then(() => {
-              window.location.href = 'login.html';
-            }).catch((error) => {
-              console.error('Sign out error:', error);
-            });
-          }
-        });
-        
       } else {
         // User is signed out
         console.log("User is signed out");
@@ -1123,34 +1384,64 @@
       }
     });
 
-    // Order card button click
+    // Toggle user menu
+    userProfileElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.classList.toggle('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Toggle mobile nav menu
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileNavMenu.classList.toggle('active');
+      userMenu.classList.remove('active');
+    });
+
+    // Close menus when clicking outside
+    document.addEventListener('click', () => {
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        console.error('Sign out error:', error);
+      });
+    });
+
+    // Order card button click - shows insufficient balance modal
     orderCardBtn.addEventListener('click', () => {
-      depositModal.style.display = 'flex';
+      insufficientBalanceModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     });
 
-    // Close modal
-    closeModal.addEventListener('click', () => {
-      depositModal.style.display = 'none';
+    // Close insufficient balance modal
+    closeInsufficientModal.addEventListener('click', () => {
+      insufficientBalanceModal.style.display = 'none';
       document.body.style.overflow = 'auto';
     });
 
     // Close modal when clicking outside
     window.addEventListener('click', (e) => {
-      if (e.target === depositModal) {
-        depositModal.style.display = 'none';
+      if (e.target === insufficientBalanceModal) {
+        insufficientBalanceModal.style.display = 'none';
         document.body.style.overflow = 'auto';
       }
     });
 
-    // Cancel deposit button
-    cancelDepositBtn.addEventListener('click', () => {
-      depositModal.style.display = 'none';
+    // Cancel order button
+    cancelOrderBtn.addEventListener('click', () => {
+      insufficientBalanceModal.style.display = 'none';
       document.body.style.overflow = 'auto';
     });
 
     // Proceed to deposit button
-    proceedDepositBtn.addEventListener('click', () => {
+    proceedToDepositBtn.addEventListener('click', () => {
       window.location.href = 'deposit.html';
     });
 

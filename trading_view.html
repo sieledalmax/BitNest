@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>BitNest | Trading</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +21,6 @@
       --accent-orange: #ff7b25;
       --border-radius: 16px;
       --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       --glass-effect: rgba(16, 18, 22, 0.7);
       --success: #00e676;
       --warning: #ffab00;
@@ -43,62 +42,10 @@
       overflow-x: hidden;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--card-bg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 4px;
-    }
-
-    /* Floating Animations */
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Notification Bell Animation */
-    @keyframes bellRing {
-      0% { transform: rotate(0deg); }
-      10% { transform: rotate(15deg); }
-      20% { transform: rotate(-15deg); }
-      30% { transform: rotate(10deg); }
-      40% { transform: rotate(-10deg); }
-      50% { transform: rotate(5deg); }
-      60% { transform: rotate(-5deg); }
-      100% { transform: rotate(0deg); }
-    }
-
-    /* Crypto Chart Animation */
-    @keyframes chartGrow {
-      from { transform: scaleY(0); }
-      to { transform: scaleY(1); }
-    }
-
-    /* Navbar Styles */
+    /* Navbar - Centered with Animations */
     .navbar {
       background-color: var(--glass-effect);
-      padding: 1rem 3rem;
+      padding: 1rem 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -107,28 +54,37 @@
       z-index: 1000;
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .navbar:hover {
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
     }
 
     .navbar .left {
       display: flex;
       align-items: center;
-      gap: 2.5rem;
+      justify-content: flex-start;
+      gap: 2rem;
+      flex: 1;
     }
 
     .navbar .logo {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
 
-    .logo-icon {
-      animation: float 4s ease-in-out infinite;
+    .navbar .logo:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
     }
 
     .nav-links {
@@ -139,15 +95,31 @@
     .navbar a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: var(--transition);
       position: relative;
       padding: 0.5rem 0;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .navbar a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
     }
 
     .navbar a:hover {
       color: var(--text-primary);
+    }
+
+    .navbar a:hover::after {
+      width: 100%;
     }
 
     .navbar a.active {
@@ -155,30 +127,31 @@
     }
 
     .navbar a.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
       width: 100%;
-      height: 2px;
-      background: var(--primary);
-      border-radius: 2px;
     }
 
     .navbar .right {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 1.5rem;
+      flex: 1;
     }
 
     .notification-bell {
       position: relative;
       cursor: pointer;
-      transition: var(--transition);
+      transition: transform 0.2s ease;
     }
 
     .notification-bell:hover {
-      animation: bellRing 0.5s ease;
+      transform: translateY(-2px);
+      animation: bellShake 0.5s ease infinite alternate;
+    }
+
+    @keyframes bellShake {
+      0% { transform: rotate(-5deg); }
+      100% { transform: rotate(5deg); }
     }
 
     .notification-badge {
@@ -195,13 +168,26 @@
       justify-content: center;
       font-size: 0.7rem;
       font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     .user-profile {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
       cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .user-profile:hover {
+      transform: translateX(5px);
     }
 
     .profile-pic {
@@ -210,27 +196,317 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--primary);
+      transition: all 0.3s ease;
     }
 
-    /* Main Container */
+    .user-profile:hover .profile-pic {
+      box-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
+      transform: scale(1.1);
+    }
+
+    .user-name {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Enhanced Dropdown Menus */
+    .user-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 240px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .user-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .user-menu-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .user-menu-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(30, 211, 198, 0.1), transparent);
+      transition: all 0.5s ease;
+    }
+
+    .user-menu-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    .user-menu-item:hover::before {
+      left: 100%;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    .mobile-menu-btn:hover {
+      transform: rotate(90deg);
+    }
+
+    .mobile-nav-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 5%;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      width: 90%;
+      max-width: 280px;
+      z-index: 1001;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .mobile-nav-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .mobile-nav-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    /* Enhanced Main Content */
     .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
+      padding: 2rem 1.5rem;
+      max-width: 1800px;
+      margin: 0 auto;
+      animation: fadeIn 0.5s ease;
     }
 
-    /* Trading View Specific Styles */
-    .trading-header {
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* Enhanced Welcome Banner */
+    .welcome-banner {
+      grid-column: span 12;
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--box-shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent,
+        transparent,
+        transparent,
+        rgba(30, 211, 198, 0.05),
+        transparent
+      );
+      transform: rotate(30deg);
+      animation: shine 6s infinite linear;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      100% { transform: translateX(100%) rotate(30deg); }
+    }
+
+    .welcome-content {
+      max-width: 60%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-content h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: textGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes textGlow {
+      0% { text-shadow: 0 0 10px rgba(30, 211, 198, 0.3); }
+      100% { text-shadow: 0 0 20px rgba(30, 211, 198, 0.6); }
+    }
+
+    .welcome-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+    }
+
+    .welcome-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .stat-value:hover {
+      transform: translateY(-3px);
+      text-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .welcome-image {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-image .crypto-icon {
+      width: 50px;
+      height: 50px;
+      transition: all 0.3s ease;
+    }
+
+    .welcome-image .crypto-icon:hover {
+      transform: translateY(-5px) scale(1.1);
+      filter: drop-shadow(0 5px 15px rgba(30, 211, 198, 0.4));
+    }
+
+    /* Section Header */
+    .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
     }
 
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-primary);
+      position: relative;
+    }
+
+    .section-title::before {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 20px;
+      background: linear-gradient(var(--primary), var(--accent-blue));
+      border-radius: 3px;
+      animation: pulse 2s infinite;
+    }
+
+    /* Trading View Specific Styles */
+    .trading-header {
+      grid-column: span 12;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+
     .pair-selector {
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      position: relative;
     }
 
     .pair-selector .pair {
@@ -239,11 +515,60 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .pair-selector .pair:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .pair-selector img {
       width: 24px;
       height: 24px;
+    }
+
+    .pair-dropdown {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 240px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .pair-dropdown.active {
+      display: block;
+    }
+
+    .pair-option {
+      padding: 0.75rem 1.5rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .pair-option:hover {
+      background: var(--card-hover);
+    }
+
+    .pair-option img {
+      width: 20px;
+      height: 20px;
     }
 
     .price-info {
@@ -253,14 +578,15 @@
     }
 
     .current-price {
-      font-size: 1.25rem;
-      font-weight: 600;
+      font-size: 1.5rem;
+      font-weight: 700;
     }
 
     .price-change {
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-weight: 500;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 1rem;
     }
 
     .positive {
@@ -274,6 +600,7 @@
     }
 
     .price-overview {
+      grid-column: span 12;
       background: var(--card-bg);
       border-radius: var(--border-radius);
       padding: 1.5rem;
@@ -284,16 +611,35 @@
       gap: 1.5rem;
     }
 
-    @media (max-width: 768px) {
-      .price-overview {
-        grid-template-columns: 1fr;
-      }
-    }
-
     .price-list {
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .price-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .price-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+    }
+
+    .price-list::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 3px;
+    }
+
+    .price-list h3 {
+      position: sticky;
+      top: 0;
+      background: var(--card-bg);
+      padding-bottom: 0.5rem;
+      z-index: 1;
     }
 
     .price-item {
@@ -302,12 +648,14 @@
       justify-content: space-between;
       padding: 0.75rem;
       border-radius: 8px;
-      transition: var(--transition);
+      transition: all 0.3s ease;
       cursor: pointer;
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .price-item:hover {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
     }
 
     .price-item-left {
@@ -343,42 +691,47 @@
     }
 
     .trading-layout {
+      grid-column: span 12;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
     }
 
-    @media (max-width: 768px) {
-      .trading-layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
     .trade-card {
       background: var(--card-bg);
       border-radius: var(--border-radius);
-      padding: 1.5rem;
+      padding: 1.75rem;
       box-shadow: var(--box-shadow);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .trade-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
-      padding-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .card-title {
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: 1.25rem;
     }
 
     .trade-form {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.25rem;
+      flex: 1;
     }
 
     .form-group {
@@ -388,7 +741,7 @@
     }
 
     .form-label {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: var(--text-secondary);
     }
 
@@ -396,15 +749,17 @@
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
-      padding: 0.75rem 1rem;
+      padding: 0.85rem 1rem;
       color: white;
       font-size: 1rem;
       width: 100%;
+      transition: all 0.3s ease;
     }
 
     .form-input:focus {
       outline: none;
       border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
     }
 
     .amount-controls {
@@ -421,77 +776,123 @@
       padding: 0.5rem;
       color: var(--text-primary);
       cursor: pointer;
-      font-size: 0.8rem;
-      transition: var(--transition);
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
     }
 
     .amount-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(30, 211, 198, 0.1);
+      color: var(--primary);
     }
 
-    .trade-btn {
-      width: 100%;
-      padding: 0.75rem;
-      border-radius: 8px;
+    /* Enhanced Buttons */
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       border: none;
+      padding: 0.85rem 1.75rem;
+      color: #000;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
-      margin-top: 0.5rem;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      margin-top: auto;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.5s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(30, 211, 198, 0.4);
+    }
+
+    .btn:hover::before {
+      left: 100%;
     }
 
     .buy-btn {
-      background: var(--success);
-      color: #000;
+      background: linear-gradient(90deg, var(--success), #00c968);
     }
 
     .buy-btn:hover {
-      background: #00c968;
-      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 230, 118, 0.4);
     }
 
     .sell-btn {
-      background: var(--danger);
-      color: #000;
+      background: linear-gradient(90deg, var(--danger), #e64848);
     }
 
     .sell-btn:hover {
-      background: #e64848;
-      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 82, 82, 0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     .asset-balances {
-      grid-column: span 2;
+      grid-column: span 12;
       background: var(--card-bg);
       border-radius: var(--border-radius);
-      padding: 1.5rem;
+      padding: 1.75rem;
       box-shadow: var(--box-shadow);
       margin-top: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .balances-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
-      margin-top: 1rem;
+      margin-top: 1.5rem;
     }
 
     .balance-card {
       background: rgba(255, 255, 255, 0.05);
       border-radius: 8px;
-      padding: 1rem;
-      transition: var(--transition);
+      padding: 1.25rem;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .balance-card:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     .balance-header {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
     }
 
     .balance-header img {
@@ -501,7 +902,7 @@
 
     .balance-amount {
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: 1.25rem;
     }
 
     .balance-value {
@@ -510,18 +911,19 @@
     }
 
     .swap-interface {
-      grid-column: span 2;
+      grid-column: span 12;
       background: var(--card-bg);
       border-radius: var(--border-radius);
-      padding: 1.5rem;
+      padding: 1.75rem;
       box-shadow: var(--box-shadow);
       margin-top: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .swap-container {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.25rem;
       max-width: 500px;
       margin: 0 auto;
     }
@@ -529,7 +931,7 @@
     .swap-row {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
 
     .swap-input-group {
@@ -539,6 +941,12 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .swap-input-group:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
     }
 
     .swap-input {
@@ -558,15 +966,61 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.5rem;
+      padding: 0.5rem 0.75rem;
       border-radius: 6px;
       background: rgba(255, 255, 255, 0.1);
       cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .token-selector:hover {
+      background: rgba(30, 211, 198, 0.1);
     }
 
     .token-selector img {
       width: 24px;
       height: 24px;
+    }
+
+    .token-dropdown {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 240px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .token-dropdown.active {
+      display: block;
+    }
+
+    .token-option {
+      padding: 0.75rem 1.5rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .token-option:hover {
+      background: var(--card-hover);
+    }
+
+    .token-option img {
+      width: 20px;
+      height: 20px;
     }
 
     .swap-btn {
@@ -577,13 +1031,18 @@
       padding: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
       margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
     .swap-btn:hover {
       background: var(--primary-dark);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(30, 211, 198, 0.4);
     }
 
     .swap-arrow {
@@ -596,28 +1055,203 @@
       background: var(--card-bg);
       border: 4px solid var(--dark-bg);
       border-radius: 50%;
-      padding: 0.5rem;
+      padding: 0.75rem;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
     }
 
     .swap-arrow i:hover {
       color: var(--primary);
       transform: rotate(180deg);
+      background: rgba(30, 211, 198, 0.1);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      width: 90%;
+      max-width: 400px;
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      box-shadow: var(--box-shadow);
+      position: relative;
+      transform: scale(0.95);
+      opacity: 0;
+      animation: modalAppear 0.3s ease forwards;
+      border: 2px solid var(--danger);
+    }
+
+    @keyframes modalAppear {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .close-modal:hover {
+      color: var(--danger);
+      transform: rotate(90deg);
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .modal-message {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+      padding: 0 0.5rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
 
     /* Responsive Styles */
+    @media (max-width: 1200px) {
+      .welcome-content {
+        max-width: 50%;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      .welcome-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .welcome-content {
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+      }
+      
+      .welcome-stats {
+        justify-content: center;
+      }
+    }
+
     @media (max-width: 768px) {
-      .navbar {
-        padding: 1rem;
+      .nav-links {
+        display: none;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .trading-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .price-overview {
+        grid-template-columns: 1fr;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .welcome-content h1 {
+        font-size: 1.8rem;
+      }
+
+      .stat-value {
+        font-size: 1.3rem;
+      }
+
+      .balances-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .swap-container {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .welcome-banner {
+        padding: 1.5rem;
+      }
+      
+      .welcome-stats {
         flex-direction: column;
         gap: 1rem;
       }
-      
-      .nav-links {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
+
+      .user-name {
+        display: none;
+      }
+
+      .mobile-nav-menu {
+        width: 90%;
+        right: 5%;
+      }
+
+      .pair-selector .pair {
+        font-size: 1rem;
+        padding: 0.5rem;
+      }
+
+      .current-price {
+        font-size: 1.2rem;
+      }
+
+      .price-change {
+        font-size: 0.9rem;
+        padding: 0.25rem 0.5rem;
+      }
+
+      .balances-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .welcome-image {
+        display: none;
       }
     }
   </style>
@@ -627,15 +1261,14 @@
   <!-- Navbar -->
   <div class="navbar">
     <div class="left">
-      <div class="logo">
-        <i class="fas fa-coins logo-icon"></i>
+      <div class="logo" onclick="window.location.href='dashboard.html'">
         <span>BitNest</span>
       </div>
       <div class="nav-links">
         <a href="dashboard.html">Dashboard</a>
         <a href="assets.html">Assets</a>
         <a href="earn.html">Earn</a>
-        <a href="trading_view.html" class="active">Trade</a>
+        <a href="#" class="active">Trade</a>
         <a href="P2P.html">P2P</a>
         <a href="deposit.html">Deposit</a>
         <a href="cards.html">Cards</a>
@@ -646,446 +1279,221 @@
         <i class="fas fa-bell"></i>
         <div class="notification-badge">3</div>
       </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
       <div class="user-profile" id="userProfile">
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
-        <span id="userName">Loading...</span>
+        <span class="user-name" id="userName">Loading...</span>
+        <div class="user-menu" id="userMenu">
+          <a href="#" class="user-menu-item">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="#" class="user-menu-item">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="#" class="user-menu-item" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
       </div>
+    </div>
+    <div class="mobile-nav-menu" id="mobileNavMenu">
+      <a href="dashboard.html" class="mobile-nav-item">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <a href="assets.html" class="mobile-nav-item">
+        <i class="fas fa-wallet"></i> Assets
+      </a>
+      <a href="earn.html" class="mobile-nav-item">
+        <i class="fas fa-percentage"></i> Earn
+      </a>
+      <a href="#" class="mobile-nav-item active">
+        <i class="fas fa-exchange-alt"></i> Trade
+      </a>
+      <a href="P2P.html" class="mobile-nav-item">
+        <i class="fas fa-users"></i> P2P
+      </a>
+      <a href="deposit.html" class="mobile-nav-item">
+        <i class="fas fa-plus-circle"></i> Deposit
+      </a>
+      <a href="cards.html" class="mobile-nav-item">
+        <i class="fas fa-credit-card"></i> Cards
+      </a>
     </div>
   </div>
 
+  <!-- Main Content -->
   <div class="container">
-    <!-- Trading Header -->
-    <div class="trading-header">
-      <div class="pair-selector">
-        <div class="pair">
-          <img src="crypto-logos/bitcoin.svg" alt="BTC">
-          <span>BTC/USDT</span>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-      </div>
-      <div class="price-info">
-        <div class="current-price">$42,850.75</div>
-        <div class="price-change positive">+2.45%</div>
-      </div>
-    </div>
-
-    <!-- Price Overview -->
-    <div class="price-overview">
-      <div class="price-list">
-        <h3>Top Cryptocurrencies</h3>
-        <!-- Bitcoin -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <img src="crypto-logos/bitcoin.svg" alt="BTC">
-            <div>
-              <div class="price-item-name">Bitcoin</div>
-              <div class="price-item-symbol">BTC</div>
+    <div class="dashboard-grid">
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-content">
+          <h1 id="welcomeTitle">Trade Crypto Assets</h1>
+          <p>Buy, sell and trade cryptocurrencies with low fees and real-time market data. Start trading today!</p>
+          <div class="welcome-stats">
+            <div class="stat-item">
+              <div class="stat-value" id="totalBalance">$0.00</div>
+              <div class="stat-label">Total Balance</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="activeTrades">0</div>
+              <div class="stat-label">Active Trades</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="tradingVolume">$0.00</div>
+              <div class="stat-label">24h Volume</div>
             </div>
           </div>
-          <div class="price-item-right">
-            <div class="price-item-value">$42,850.75</div>
-            <div class="price-item-change positive">+2.45%</div>
-          </div>
         </div>
-        <!-- Ethereum -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH">
-            <div>
-              <div class="price-item-name">Ethereum</div>
-              <div class="price-item-symbol">ETH</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">$2,345.20</div>
-            <div class="price-item-change positive">+1.32%</div>
-          </div>
-        </div>
-        <!-- Solana -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <img src="crypto-logos/solana-sol-logo.svg" alt="SOL">
-            <div>
-              <div class="price-item-name">Solana</div>
-              <div class="price-item-symbol">SOL</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">$120.15</div>
-            <div class="price-item-change negative">-0.85%</div>
-          </div>
-        </div>
-        <!-- Binance Coin -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <img src="crypto-logos/bnb-bnb-logo.svg" alt="BNB">
-            <div>
-              <div class="price-item-name">Binance Coin</div>
-              <div class="price-item-symbol">BNB</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">$315.40</div>
-            <div class="price-item-change positive">+0.75%</div>
-          </div>
-        </div>
-        <!-- Ripple (XRP) -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <img src="crypto-logos/xrp-xrp-logo.svg" alt="XRP">
-            <div>
-              <div class="price-item-name">Ripple</div>
-              <div class="price-item-symbol">XRP</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">$0.62</div>
-            <div class="price-item-change positive">+1.8%</div>
-          </div>
-        </div>
-        <!-- Cardano -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <img src="crypto-logos/cardano-ada-logo.svg" alt="ADA">
-            <div>
-              <div class="price-item-name">Cardano</div>
-              <div class="price-item-symbol">ADA</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">$0.45</div>
-            <div class="price-item-change positive">+0.9%</div>
-          </div>
-        </div>
-        <!-- Dogecoin -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <img src="crypto-logos/dogecoin-doge-logo.svg" alt="DOGE">
-            <div>
-              <div class="price-item-name">Dogecoin</div>
-              <div class="price-item-symbol">DOGE</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">$0.12</div>
-            <div class="price-item-change negative">-1.2%</div>
-          </div>
-        </div>
-        <!-- Polkadot -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <img src="crypto-logos/polkadot-new-dot-logo.svg" alt="DOT">
-            <div>
-              <div class="price-item-name">Polkadot</div>
-              <div class="price-item-symbol">DOT</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">$7.25</div>
-            <div class="price-item-change positive">+2.1%</div>
-          </div>
+        <div class="welcome-image">
+          <img src="crypto-logos/bitcoin.svg" alt="Bitcoin" class="crypto-icon">
+          <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum" class="crypto-icon">
+          <img src="crypto-logos/solana-sol-logo.svg" alt="Solana" class="crypto-icon">
+          <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" class="crypto-icon">
         </div>
       </div>
 
-      <div class="price-list">
-        <h3>Popular Pairs (USDT)</h3>
-        <!-- BTC/USDT -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <img src="crypto-logos/bitcoin.svg" alt="BTC" style="width: 20px; height: 20px;">
-              <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" style="width: 20px; height: 20px;">
-            </div>
-            <div>
-              <div class="price-item-name">BTC/USDT</div>
-              <div class="price-item-symbol">Bitcoin/Tether</div>
-            </div>
+      <!-- Trading Header -->
+      <div class="trading-header">
+        <div class="pair-selector">
+          <div class="pair" id="currentPair">
+            <img src="crypto-logos/bitcoin.svg" alt="BTC" id="pairBaseIcon">
+            <span id="pairName">BTC/USDT</span>
+            <i class="fas fa-chevron-down"></i>
           </div>
-          <div class="price-item-right">
-            <div class="price-item-value">42,850.75</div>
-            <div class="price-item-change positive">+2.45%</div>
+          <div class="pair-dropdown" id="pairDropdown">
+            <!-- Pair options will be populated by JavaScript -->
           </div>
         </div>
-        <!-- ETH/USDT -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH" style="width: 20px; height: 20px;">
-              <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" style="width: 20px; height: 20px;">
-            </div>
-            <div>
-              <div class="price-item-name">ETH/USDT</div>
-              <div class="price-item-symbol">Ethereum/Tether</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">2,345.20</div>
-            <div class="price-item-change positive">+1.32%</div>
-          </div>
-        </div>
-        <!-- SOL/USDT -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <img src="crypto-logos/solana-sol-logo.svg" alt="SOL" style="width: 20px; height: 20px;">
-              <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" style="width: 20px; height: 20px;">
-            </div>
-            <div>
-              <div class="price-item-name">SOL/USDT</div>
-              <div class="price-item-symbol">Solana/Tether</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">120.15</div>
-            <div class="price-item-change negative">-0.85%</div>
-          </div>
-        </div>
-        <!-- XRP/USDT -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <img src="crypto-logos/xrp-xrp-logo.svg" alt="XRP" style="width: 20px; height: 20px;">
-              <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" style="width: 20px; height: 20px;">
-            </div>
-            <div>
-              <div class="price-item-name">XRP/USDT</div>
-              <div class="price-item-symbol">Ripple/Tether</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">0.62</div>
-            <div class="price-item-change positive">+1.8%</div>
-          </div>
-        </div>
-        <!-- ADA/USDT -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <img src="crypto-logos/cardano-ada-logo.svg" alt="ADA" style="width: 20px; height: 20px;">
-              <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" style="width: 20px; height: 20px;">
-            </div>
-            <div>
-              <div class="price-item-name">ADA/USDT</div>
-              <div class="price-item-symbol">Cardano/Tether</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">0.45</div>
-            <div class="price-item-change positive">+0.9%</div>
-          </div>
-        </div>
-        <!-- DOGE/USDT -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <img src="crypto-logos/dogecoin-doge-logo.svg" alt="DOGE" style="width: 20px; height: 20px;">
-              <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" style="width: 20px; height: 20px;">
-            </div>
-            <div>
-              <div class="price-item-name">DOGE/USDT</div>
-              <div class="price-item-symbol">Dogecoin/Tether</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">0.12</div>
-            <div class="price-item-change negative">-1.2%</div>
-          </div>
-        </div>
-        <!-- DOT/USDT -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <img src="crypto-logos/polkadot-new-dot-logo.svg" alt="DOT" style="width: 20px; height: 20px;">
-              <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" style="width: 20px; height: 20px;">
-            </div>
-            <div>
-              <div class="price-item-name">DOT/USDT</div>
-              <div class="price-item-symbol">Polkadot/Tether</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">7.25</div>
-            <div class="price-item-change positive">+2.1%</div>
-          </div>
-        </div>
-        <!-- MATIC/USDT -->
-        <div class="price-item">
-          <div class="price-item-left">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <img src="crypto-logos/polygon-matic-logo.svg" alt="MATIC" style="width: 20px; height: 20px;">
-              <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" style="width: 20px; height: 20px;">
-            </div>
-            <div>
-              <div class="price-item-name">MATIC/USDT</div>
-              <div class="price-item-symbol">Polygon/Tether</div>
-            </div>
-          </div>
-          <div class="price-item-right">
-            <div class="price-item-value">0.85</div>
-            <div class="price-item-change positive">+1.5%</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Trading Layout -->
-    <div class="trading-layout">
-      <!-- Buy Card -->
-      <div class="trade-card">
-        <div class="card-header">
-          <div class="card-title">Buy BTC</div>
-        </div>
-        <form class="trade-form">
-          <div class="form-group">
-            <label class="form-label">Amount (BTC)</label>
-            <input type="number" class="form-input" placeholder="0.00" step="0.000001">
-            <div class="amount-controls">
-              <button type="button" class="amount-btn">25%</button>
-              <button type="button" class="amount-btn">50%</button>
-              <button type="button" class="amount-btn">75%</button>
-              <button type="button" class="amount-btn">100%</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Total (USDT)</label>
-            <input type="number" class="form-input" placeholder="0.00" readonly>
-          </div>
-          <button type="button" class="trade-btn buy-btn">Buy BTC</button>
-        </form>
-      </div>
-
-      <!-- Sell Card -->
-      <div class="trade-card">
-        <div class="card-header">
-          <div class="card-title">Sell BTC</div>
-        </div>
-        <form class="trade-form">
-          <div class="form-group">
-            <label class="form-label">Amount (BTC)</label>
-            <input type="number" class="form-input" placeholder="0.00" step="0.000001">
-            <div class="amount-controls">
-              <button type="button" class="amount-btn">25%</button>
-              <button type="button" class="amount-btn">50%</button>
-              <button type="button" class="amount-btn">75%</button>
-              <button type="button" class="amount-btn">100%</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Total (USDT)</label>
-            <input type="number" class="form-input" placeholder="0.00" readonly>
-          </div>
-          <button type="button" class="trade-btn sell-btn">Sell BTC</button>
-        </form>
-      </div>
-
-      <!-- Asset Balances -->
-      <div class="asset-balances">
-        <div class="card-header">
-          <div class="card-title">Your Assets</div>
-        </div>
-        <div class="balances-grid">
-          <div class="balance-card">
-            <div class="balance-header">
-              <img src="crypto-logos/bitcoin.svg" alt="BTC">
-              <span>BTC</span>
-            </div>
-            <div class="balance-amount">0.1254</div>
-            <div class="balance-value">$5,374.72</div>
-          </div>
-          <div class="balance-card">
-            <div class="balance-header">
-              <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH">
-              <span>ETH</span>
-            </div>
-            <div class="balance-amount">2.456</div>
-            <div class="balance-value">$4,921.32</div>
-          </div>
-          <div class="balance-card">
-            <div class="balance-header">
-              <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT">
-              <span>USDT</span>
-            </div>
-            <div class="balance-amount">1,245.50</div>
-            <div class="balance-value">$1,245.50</div>
-          </div>
-          <div class="balance-card">
-            <div class="balance-header">
-              <img src="crypto-logos/solana-sol-logo.svg" alt="SOL">
-              <span>SOL</span>
-            </div>
-            <div class="balance-amount">15.25</div>
-            <div class="balance-value">$1,832.15</div>
-          </div>
-          <div class="balance-card">
-            <div class="balance-header">
-              <img src="crypto-logos/xrp-xrp-logo.svg" alt="XRP">
-              <span>XRP</span>
-            </div>
-            <div class="balance-amount">1,250.00</div>
-            <div class="balance-value">$775.00</div>
-          </div>
-          <div class="balance-card">
-            <div class="balance-header">
-              <img src="crypto-logos/cardano-ada-logo.svg" alt="ADA">
-              <span>ADA</span>
-            </div>
-            <div class="balance-amount">2,500.00</div>
-            <div class="balance-value">$1,125.00</div>
-          </div>
-          <div class="balance-card">
-            <div class="balance-header">
-              <img src="crypto-logos/dogecoin-doge-logo.svg" alt="DOGE">
-              <span>DOGE</span>
-            </div>
-            <div class="balance-amount">10,000.00</div>
-            <div class="balance-value">$1,200.00</div>
-          </div>
-          <div class="balance-card">
-            <div class="balance-header">
-              <img src="crypto-logos/polkadot-new-dot-logo.svg" alt="DOT">
-              <span>DOT</span>
-            </div>
-            <div class="balance-amount">150.00</div>
-            <div class="balance-value">$1,087.50</div>
-          </div>
+        <div class="price-info">
+          <div class="current-price" id="currentPrice">$0.00</div>
+          <div class="price-change" id="priceChange">+0.00%</div>
         </div>
       </div>
 
-      <!-- Swap Interface -->
-      <div class="swap-interface">
-        <div class="card-header">
-          <div class="card-title">Swap Tokens</div>
+      <!-- Price Overview -->
+      <div class="price-overview">
+        <div class="price-list">
+          <h3>Top Cryptocurrencies</h3>
+          <!-- Prices will be populated by JavaScript -->
+          <div id="cryptoPricesList"></div>
         </div>
-        <div class="swap-container">
-          <div class="swap-row">
-            <label class="form-label">You pay</label>
-            <div class="swap-input-group">
-              <input type="number" class="swap-input" placeholder="0.0">
-              <div class="token-selector">
-                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT">
-                <span>USDT</span>
-                <i class="fas fa-chevron-down"></i>
+
+        <div class="price-list">
+          <h3>Popular Pairs (USDT)</h3>
+          <!-- Pairs will be populated by JavaScript -->
+          <div id="tradingPairsList"></div>
+        </div>
+      </div>
+
+      <!-- Trading Layout -->
+      <div class="trading-layout">
+        <!-- Buy Card -->
+        <div class="trade-card">
+          <div class="card-header">
+            <div class="card-title">Buy <span id="buyAssetName">BTC</span></div>
+          </div>
+          <form class="trade-form">
+            <div class="form-group">
+              <label class="form-label">Amount (<span id="buyAssetSymbol">BTC</span>)</label>
+              <input type="number" class="form-input" id="buyAmount" placeholder="0.00" step="0.000001">
+              <div class="amount-controls">
+                <button type="button" class="amount-btn">25%</button>
+                <button type="button" class="amount-btn">50%</button>
+                <button type="button" class="amount-btn">75%</button>
+                <button type="button" class="amount-btn">100%</button>
               </div>
             </div>
-          </div>
+            <div class="form-group">
+              <label class="form-label">Total (USDT)</label>
+              <input type="number" class="form-input" id="buyTotal" placeholder="0.00" readonly>
+            </div>
+            <button type="button" class="btn buy-btn" id="buyButton">
+              <i class="fas fa-arrow-up"></i> Buy <span id="buyButtonAsset">BTC</span>
+            </button>
+          </form>
+        </div>
 
-          <div class="swap-arrow">
-            <i class="fas fa-arrow-down"></i>
+        <!-- Sell Card -->
+        <div class="trade-card">
+          <div class="card-header">
+            <div class="card-title">Sell <span id="sellAssetName">BTC</span></div>
           </div>
-
-          <div class="swap-row">
-            <label class="form-label">You receive</label>
-            <div class="swap-input-group">
-              <input type="number" class="swap-input" placeholder="0.0">
-              <div class="token-selector">
-                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH">
-                <span>ETH</span>
-                <i class="fas fa-chevron-down"></i>
+          <form class="trade-form">
+            <div class="form-group">
+              <label class="form-label">Amount (<span id="sellAssetSymbol">BTC</span>)</label>
+              <input type="number" class="form-input" id="sellAmount" placeholder="0.00" step="0.000001">
+              <div class="amount-controls">
+                <button type="button" class="amount-btn">25%</button>
+                <button type="button" class="amount-btn">50%</button>
+                <button type="button" class="amount-btn">75%</button>
+                <button type="button" class="amount-btn">100%</button>
               </div>
             </div>
-          </div>
+            <div class="form-group">
+              <label class="form-label">Total (USDT)</label>
+              <input type="number" class="form-input" id="sellTotal" placeholder="0.00" readonly>
+            </div>
+            <button type="button" class="btn sell-btn" id="sellButton">
+              <i class="fas fa-arrow-down"></i> Sell <span id="sellButtonAsset">BTC</span>
+            </button>
+          </form>
+        </div>
 
-          <button class="swap-btn">Swap</button>
+        <!-- Asset Balances -->
+        <div class="asset-balances">
+          <div class="section-header">
+            <h2 class="section-title">Your Assets</h2>
+            <button class="btn-secondary">
+              <i class="fas fa-history"></i> View History
+            </button>
+          </div>
+          <div class="balances-grid" id="balancesGrid">
+            <!-- Balances will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Swap Interface -->
+        <div class="swap-interface">
+          <div class="section-header">
+            <h2 class="section-title">Swap Tokens</h2>
+          </div>
+          <div class="swap-container">
+            <div class="swap-row">
+              <label class="form-label">You pay</label>
+              <div class="swap-input-group">
+                <input type="number" class="swap-input" id="swapInputAmount" placeholder="0.0">
+                <div class="token-selector" id="fromTokenSelector">
+                  <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" id="fromTokenIcon">
+                  <span id="fromTokenSymbol">USDT</span>
+                  <i class="fas fa-chevron-down"></i>
+                  <div class="token-dropdown" id="fromTokenDropdown"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="swap-arrow">
+              <i class="fas fa-arrow-down" id="swapDirectionArrow"></i>
+            </div>
+
+            <div class="swap-row">
+              <label class="form-label">You receive</label>
+              <div class="swap-input-group">
+                <input type="number" class="swap-input" id="swapOutputAmount" placeholder="0.0">
+                <div class="token-selector" id="toTokenSelector">
+                  <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH" id="toTokenIcon">
+                  <span id="toTokenSymbol">ETH</span>
+                  <i class="fas fa-chevron-down"></i>
+                  <div class="token-dropdown" id="toTokenDropdown"></div>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn swap-btn" id="swapButton">
+              <i class="fas fa-exchange-alt"></i> Swap Tokens
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1110,10 +1518,9 @@
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
       projectId: "bitnest-c7452",
-      storageBucket: "bitnest-c7452.firebasestorage.app",
+      storageBucket: "bitnest-c7452.appspot.com",
       messagingSenderId: "583165336540",
-      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
-      measurementId: "G-PGJNHTL03J"
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
     };
 
     // Initialize Firebase
@@ -1124,8 +1531,525 @@
     // DOM Elements
     const userNameElement = document.getElementById('userName');
     const userProfilePicElement = document.getElementById('userProfilePic');
+    const welcomeTitleElement = document.getElementById('welcomeTitle');
+    const totalBalanceElement = document.getElementById('totalBalance');
+    const activeTradesElement = document.getElementById('activeTrades');
+    const tradingVolumeElement = document.getElementById('tradingVolume');
     const userProfileElement = document.getElementById('userProfile');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavMenu = document.getElementById('mobileNavMenu');
     const notificationBell = document.querySelector('.notification-bell');
+    
+    // Trading elements
+    const currentPairElement = document.getElementById('currentPair');
+    const pairNameElement = document.getElementById('pairName');
+    const pairBaseIconElement = document.getElementById('pairBaseIcon');
+    const currentPriceElement = document.getElementById('currentPrice');
+    const priceChangeElement = document.getElementById('priceChange');
+    const cryptoPricesList = document.getElementById('cryptoPricesList');
+    const tradingPairsList = document.getElementById('tradingPairsList');
+    const balancesGrid = document.getElementById('balancesGrid');
+    const pairDropdown = document.getElementById('pairDropdown');
+    
+    // Form elements
+    const buyAmountInput = document.getElementById('buyAmount');
+    const buyTotalInput = document.getElementById('buyTotal');
+    const sellAmountInput = document.getElementById('sellAmount');
+    const sellTotalInput = document.getElementById('sellTotal');
+    const buyButton = document.getElementById('buyButton');
+    const sellButton = document.getElementById('sellButton');
+    const buyAssetName = document.getElementById('buyAssetName');
+    const buyAssetSymbol = document.getElementById('buyAssetSymbol');
+    const buyButtonAsset = document.getElementById('buyButtonAsset');
+    const sellAssetName = document.getElementById('sellAssetName');
+    const sellAssetSymbol = document.getElementById('sellAssetSymbol');
+    const sellButtonAsset = document.getElementById('sellButtonAsset');
+    
+    // Swap elements
+    const swapInputAmount = document.getElementById('swapInputAmount');
+    const swapOutputAmount = document.getElementById('swapOutputAmount');
+    const fromTokenSelector = document.getElementById('fromTokenSelector');
+    const fromTokenIcon = document.getElementById('fromTokenIcon');
+    const fromTokenSymbol = document.getElementById('fromTokenSymbol');
+    const fromTokenDropdown = document.getElementById('fromTokenDropdown');
+    const toTokenSelector = document.getElementById('toTokenSelector');
+    const toTokenIcon = document.getElementById('toTokenIcon');
+    const toTokenSymbol = document.getElementById('toTokenSymbol');
+    const toTokenDropdown = document.getElementById('toTokenDropdown');
+    const swapButton = document.getElementById('swapButton');
+    const swapDirectionArrow = document.getElementById('swapDirectionArrow');
+
+    // Current trading pair
+    let currentPair = 'BTC/USDT';
+    let currentPrice = 0;
+    let priceChange = 0;
+    let isPositiveChange = true;
+    
+    // Supported cryptocurrencies with their CoinGecko IDs
+    const supportedCryptos = [
+      { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin' },
+      { id: 'ethereum', symbol: 'ETH', name: 'Ethereum' },
+      { id: 'tether', symbol: 'USDT', name: 'Tether' },
+      { id: 'binancecoin', symbol: 'BNB', name: 'Binance Coin' },
+      { id: 'solana', symbol: 'SOL', name: 'Solana' },
+      { id: 'ripple', symbol: 'XRP', name: 'XRP' },
+      { id: 'cardano', symbol: 'ADA', name: 'Cardano' },
+      { id: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin' },
+      { id: 'polkadot', symbol: 'DOT', name: 'Polkadot' },
+      { id: 'matic-network', symbol: 'MATIC', name: 'Polygon' },
+      { id: 'litecoin', symbol: 'LTC', name: 'Litecoin' },
+      { id: 'bitcoin-cash', symbol: 'BCH', name: 'Bitcoin Cash' },
+      { id: 'chainlink', symbol: 'LINK', name: 'Chainlink' },
+      { id: 'stellar', symbol: 'XLM', name: 'Stellar' },
+      { id: 'monero', symbol: 'XMR', name: 'Monero' },
+      { id: 'ethereum-classic', symbol: 'ETC', name: 'Ethereum Classic' },
+      { id: 'filecoin', symbol: 'FIL', name: 'Filecoin' },
+      { id: 'cosmos', symbol: 'ATOM', name: 'Cosmos' },
+      { id: 'uniswap', symbol: 'UNI', name: 'Uniswap' },
+      { id: 'vechain', symbol: 'VET', name: 'VeChain' },
+      { id: 'tron', symbol: 'TRX', name: 'TRON' },
+      { id: 'algorand', symbol: 'ALGO', name: 'Algorand' },
+      { id: 'avalanche-2', symbol: 'AVAX', name: 'Avalanche' },
+      { id: 'sui', symbol: 'SUI', name: 'Sui' },
+      { id: 'usd-coin', symbol: 'USDC', name: 'USD Coin' }
+    ];
+
+    // User balances (all set to 0 initially)
+    const userBalances = {};
+    supportedCryptos.forEach(crypto => {
+      userBalances[crypto.symbol] = { amount: 0, value: 0 };
+    });
+
+    // Initialize all values
+    const initializeValues = () => {
+      totalBalanceElement.textContent = '$0.00';
+      activeTradesElement.textContent = '0';
+      tradingVolumeElement.textContent = '$0.00';
+      
+      // Calculate total balance (will be 0)
+      let totalBalance = 0;
+      Object.values(userBalances).forEach(balance => {
+        totalBalance += balance.value;
+      });
+      totalBalanceElement.textContent = `$${totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      
+      // Set trading volume to 0
+      tradingVolumeElement.textContent = '$0.00';
+    };
+
+    // Fetch crypto prices from CoinGecko
+    const fetchCryptoPrices = async () => {
+      try {
+        const ids = supportedCryptos.map(crypto => crypto.id).join(',');
+        const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h`);
+        const data = await response.json();
+        
+        // Update prices in our supported cryptos
+        data.forEach(coinData => {
+          const crypto = supportedCryptos.find(c => c.id === coinData.id);
+          if (crypto) {
+            crypto.current_price = coinData.current_price;
+            crypto.price_change_percentage_24h = coinData.price_change_percentage_24h;
+          }
+        });
+        
+        updateCryptoPrices();
+        updateCurrentPair();
+        
+      } catch (error) {
+        console.error('Error fetching crypto prices:', error);
+        // Fallback to some default prices if API fails
+        supportedCryptos.forEach(crypto => {
+          crypto.current_price = crypto.current_price || 0;
+          crypto.price_change_percentage_24h = crypto.price_change_percentage_24h || 0;
+        });
+        updateCryptoPrices();
+        updateCurrentPair();
+      }
+    };
+
+    // Update crypto prices display
+    const updateCryptoPrices = () => {
+      cryptoPricesList.innerHTML = '';
+      tradingPairsList.innerHTML = '';
+      pairDropdown.innerHTML = '';
+      
+      // Create pair options for dropdown
+      supportedCryptos.forEach(crypto => {
+        if (crypto.symbol !== 'USDT') {
+          const pairOption = document.createElement('div');
+          pairOption.className = 'pair-option';
+          pairOption.innerHTML = `
+            <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+            <span>${crypto.symbol}/USDT</span>
+          `;
+          pairOption.addEventListener('click', () => {
+            selectTradingPair(`${crypto.symbol}/USDT`);
+            pairDropdown.classList.remove('active');
+          });
+          pairDropdown.appendChild(pairOption);
+        }
+      });
+      
+      // Display top cryptocurrencies
+      supportedCryptos.forEach(crypto => {
+        // Crypto price item
+        const isPositive = crypto.price_change_percentage_24h >= 0;
+        const changeClass = isPositive ? 'positive' : 'negative';
+        const changeSymbol = isPositive ? '+' : '';
+        
+        const cryptoItem = document.createElement('div');
+        cryptoItem.className = 'price-item';
+        cryptoItem.innerHTML = `
+          <div class="price-item-left">
+            <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+            <div>
+              <div class="price-item-name">${crypto.name}</div>
+              <div class="price-item-symbol">${crypto.symbol}</div>
+            </div>
+          </div>
+          <div class="price-item-right">
+            <div class="price-item-value">$${crypto.current_price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div class="price-item-change ${changeClass}">${changeSymbol}${crypto.price_change_percentage_24h.toFixed(2)}%</div>
+          </div>
+        `;
+        cryptoPricesList.appendChild(cryptoItem);
+        
+        // Add click handler to select this crypto
+        cryptoItem.addEventListener('click', () => {
+          if (crypto.symbol !== 'USDT') {
+            selectTradingPair(`${crypto.symbol}/USDT`);
+          }
+        });
+        
+        // Trading pair item (only for coins that aren't USDT)
+        if (crypto.symbol !== 'USDT') {
+          const pairItem = document.createElement('div');
+          pairItem.className = 'price-item';
+          pairItem.innerHTML = `
+            <div class="price-item-left">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" style="width: 20px; height: 20px;" onerror="this.src='crypto-logos/generic-coin.svg'">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" style="width: 20px; height: 20px;">
+              </div>
+              <div>
+                <div class="price-item-name">${crypto.symbol}/USDT</div>
+                <div class="price-item-symbol">${crypto.name}/Tether</div>
+              </div>
+            </div>
+            <div class="price-item-right">
+              <div class="price-item-value">${crypto.current_price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+              <div class="price-item-change ${changeClass}">${changeSymbol}${crypto.price_change_percentage_24h.toFixed(2)}%</div>
+            </div>
+          `;
+          tradingPairsList.appendChild(pairItem);
+          
+          // Add click handler to switch to this pair
+          pairItem.addEventListener('click', () => {
+            selectTradingPair(`${crypto.symbol}/USDT`);
+          });
+        }
+      });
+    };
+
+    // Select trading pair
+    const selectTradingPair = (pair) => {
+      currentPair = pair;
+      const [baseSymbol] = pair.split('/');
+      const crypto = supportedCryptos.find(c => c.symbol === baseSymbol);
+      
+      if (crypto) {
+        currentPrice = crypto.current_price;
+        priceChange = crypto.price_change_percentage_24h;
+        isPositiveChange = priceChange >= 0;
+        updateCurrentPair();
+      }
+    };
+
+    // Update current trading pair display
+    const updateCurrentPair = () => {
+      const [baseSymbol, quoteSymbol] = currentPair.split('/');
+      const baseCrypto = supportedCryptos.find(c => c.symbol === baseSymbol);
+      
+      if (!baseCrypto) return;
+      
+      pairNameElement.textContent = currentPair;
+      pairBaseIconElement.src = `crypto-logos/${baseCrypto.id}-${baseSymbol.toLowerCase()}-logo.svg`;
+      pairBaseIconElement.alt = baseSymbol;
+      pairBaseIconElement.onerror = function() { this.src='crypto-logos/generic-coin.svg'; };
+      
+      currentPriceElement.textContent = `$${currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      
+      const changeSymbol = isPositiveChange ? '+' : '';
+      priceChangeElement.textContent = `${changeSymbol}${priceChange.toFixed(2)}%`;
+      priceChangeElement.className = `price-change ${isPositiveChange ? 'positive' : 'negative'}`;
+      
+      // Update form labels
+      buyAssetName.textContent = baseCrypto.name;
+      buyAssetSymbol.textContent = baseSymbol;
+      buyButtonAsset.textContent = baseSymbol;
+      sellAssetName.textContent = baseCrypto.name;
+      sellAssetSymbol.textContent = baseSymbol;
+      sellButtonAsset.textContent = baseSymbol;
+      
+      // Clear input fields
+      buyAmountInput.value = '';
+      buyTotalInput.value = '';
+      sellAmountInput.value = '';
+      sellTotalInput.value = '';
+    };
+
+    // Update user balances display
+    const updateBalances = () => {
+      balancesGrid.innerHTML = '';
+      
+      // Only show 8 assets (2 rows of 4)
+      const displayedAssets = supportedCryptos.slice(0, 8);
+      
+      displayedAssets.forEach(crypto => {
+        const balance = userBalances[crypto.symbol] || { amount: 0, value: 0 };
+        
+        const balanceCard = document.createElement('div');
+        balanceCard.className = 'balance-card';
+        balanceCard.innerHTML = `
+          <div class="balance-header">
+            <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+            <span>${crypto.symbol}</span>
+          </div>
+          <div class="balance-amount">${balance.amount.toLocaleString('en-US', { maximumFractionDigits: 6 })}</div>
+          <div class="balance-value">$${balance.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        `;
+        balancesGrid.appendChild(balanceCard);
+      });
+    };
+
+    // Initialize token dropdowns for swap
+    const initializeTokenDropdowns = () => {
+      fromTokenDropdown.innerHTML = '';
+      toTokenDropdown.innerHTML = '';
+      
+      supportedCryptos.forEach(crypto => {
+        // From token options
+        const fromOption = document.createElement('div');
+        fromOption.className = 'token-option';
+        fromOption.innerHTML = `
+          <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+          <span>${crypto.symbol}</span>
+        `;
+        fromOption.addEventListener('click', () => {
+          fromTokenIcon.src = `crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg`;
+          fromTokenIcon.alt = crypto.symbol;
+          fromTokenIcon.onerror = function() { this.src='crypto-logos/generic-coin.svg'; };
+          fromTokenSymbol.textContent = crypto.symbol;
+          fromTokenDropdown.classList.remove('active');
+          swapInputAmount.value = '';
+          swapOutputAmount.value = '';
+        });
+        fromTokenDropdown.appendChild(fromOption);
+        
+        // To token options
+        const toOption = document.createElement('div');
+        toOption.className = 'token-option';
+        toOption.innerHTML = `
+          <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+          <span>${crypto.symbol}</span>
+        `;
+        toOption.addEventListener('click', () => {
+          toTokenIcon.src = `crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg`;
+          toTokenIcon.alt = crypto.symbol;
+          toTokenIcon.onerror = function() { this.src='crypto-logos/generic-coin.svg'; };
+          toTokenSymbol.textContent = crypto.symbol;
+          toTokenDropdown.classList.remove('active');
+          swapInputAmount.value = '';
+          swapOutputAmount.value = '';
+        });
+        toTokenDropdown.appendChild(toOption);
+      });
+    };
+
+    // Toggle user menu
+    userProfileElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.classList.toggle('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Toggle mobile nav menu
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileNavMenu.classList.toggle('active');
+      userMenu.classList.remove('active');
+    });
+
+    // Close menus when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!userProfileElement.contains(e.target)) {
+        userMenu.classList.remove('active');
+      }
+      if (!mobileMenuBtn.contains(e.target) && !mobileNavMenu.contains(e.target)) {
+        mobileNavMenu.classList.remove('active');
+      }
+      if (!currentPairElement.contains(e.target) && !pairDropdown.contains(e.target)) {
+        pairDropdown.classList.remove('active');
+      }
+      if (!fromTokenSelector.contains(e.target) && !fromTokenDropdown.contains(e.target)) {
+        fromTokenDropdown.classList.remove('active');
+      }
+      if (!toTokenSelector.contains(e.target) && !toTokenDropdown.contains(e.target)) {
+        toTokenDropdown.classList.remove('active');
+      }
+    });
+
+    // Pair selector dropdown
+    currentPairElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      pairDropdown.classList.toggle('active');
+      fromTokenDropdown.classList.remove('active');
+      toTokenDropdown.classList.remove('active');
+    });
+
+    // Token selector dropdowns
+    fromTokenSelector.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fromTokenDropdown.classList.toggle('active');
+      toTokenDropdown.classList.remove('active');
+      pairDropdown.classList.remove('active');
+    });
+
+    toTokenSelector.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toTokenDropdown.classList.toggle('active');
+      fromTokenDropdown.classList.remove('active');
+      pairDropdown.classList.remove('active');
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        console.error('Sign out error:', error);
+      });
+    });
+
+    // Notification bell
+    notificationBell.addEventListener('click', () => {
+      notificationBell.style.animation = 'bellShake 0.5s ease';
+      setTimeout(() => {
+        notificationBell.style.animation = '';
+      }, 500);
+      alert("You have 3 new notifications!");
+    });
+
+    // Buy/Sell form functionality
+    buyAmountInput.addEventListener('input', () => {
+      const amount = parseFloat(buyAmountInput.value) || 0;
+      buyTotalInput.value = (amount * currentPrice).toFixed(2);
+    });
+
+    sellAmountInput.addEventListener('input', () => {
+      const amount = parseFloat(sellAmountInput.value) || 0;
+      sellTotalInput.value = (amount * currentPrice).toFixed(2);
+    });
+
+    // Percentage buttons
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const percent = parseFloat(this.textContent) / 100;
+        const form = this.closest('.trade-form');
+        const amountInput = form.querySelector('input[type="number"]:not([readonly])');
+        const totalInput = form.querySelector('input[readonly]');
+        
+        if (form.closest('.trade-card').querySelector('.card-title').textContent.includes('Buy')) {
+          // For buy form, calculate based on USDT balance
+          const maxAmount = (userBalances.USDT.value || 0) / currentPrice;
+          amountInput.value = (maxAmount * percent).toFixed(6);
+          totalInput.value = (maxAmount * percent * currentPrice).toFixed(2);
+        } else {
+          // For sell form, calculate based on current crypto balance
+          const [baseSymbol] = currentPair.split('/');
+          const maxAmount = userBalances[baseSymbol]?.amount || 0;
+          amountInput.value = (maxAmount * percent).toFixed(6);
+          totalInput.value = (maxAmount * percent * currentPrice).toFixed(2);
+        }
+      });
+    });
+
+    // Buy/Sell buttons
+    buyButton.addEventListener('click', () => {
+      const amount = parseFloat(buyAmountInput.value) || 0;
+      const total = parseFloat(buyTotalInput.value) || 0;
+      const [baseSymbol] = currentPair.split('/');
+      
+      if (amount <= 0) {
+        alert('Please enter a valid amount');
+        return;
+      }
+      
+      if (total > (userBalances.USDT.value || 0)) {
+        alert('Insufficient USDT balance');
+        return;
+      }
+      
+      alert(`Buy order placed for ${amount} ${baseSymbol} at $${currentPrice.toFixed(2)} each (Total: $${total.toFixed(2)})`);
+    });
+
+    sellButton.addEventListener('click', () => {
+      const amount = parseFloat(sellAmountInput.value) || 0;
+      const total = parseFloat(sellTotalInput.value) || 0;
+      const [baseSymbol] = currentPair.split('/');
+      
+      if (amount <= 0) {
+        alert('Please enter a valid amount');
+        return;
+      }
+      
+      if (amount > (userBalances[baseSymbol]?.amount || 0)) {
+        alert(`Insufficient ${baseSymbol} balance`);
+        return;
+      }
+      
+      alert(`Sell order placed for ${amount} ${baseSymbol} at $${currentPrice.toFixed(2)} each (Total: $${total.toFixed(2)})`);
+    });
+
+    // Swap direction arrow
+    swapDirectionArrow.addEventListener('click', () => {
+      // Swap the from/to tokens
+      const tempSymbol = fromTokenSymbol.textContent;
+      const tempIcon = fromTokenIcon.src;
+      
+      fromTokenSymbol.textContent = toTokenSymbol.textContent;
+      fromTokenIcon.src = toTokenIcon.src;
+      toTokenSymbol.textContent = tempSymbol;
+      toTokenIcon.src = tempIcon;
+      
+      // Also swap input values
+      const tempAmount = swapInputAmount.value;
+      swapInputAmount.value = swapOutputAmount.value;
+      swapOutputAmount.value = tempAmount;
+    });
+
+    // Swap button
+    swapButton.addEventListener('click', () => {
+      const fromSymbol = fromTokenSymbol.textContent;
+      const toSymbol = toTokenSymbol.textContent;
+      const amount = parseFloat(swapInputAmount.value) || 0;
+      
+      if (amount <= 0) {
+        alert('Please enter a valid amount');
+        return;
+      }
+      
+      if (amount > (userBalances[fromSymbol]?.amount || 0)) {
+        alert(`Insufficient ${fromSymbol} balance`);
+        return;
+      }
+      
+      alert(`Swap ${amount} ${fromSymbol} to ${toSymbol} would be executed`);
+    });
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
@@ -1143,7 +2067,10 @@
           
           // Update UI with user data
           const displayName = userData.name || user.displayName || "User";
-          userNameElement.textContent = displayName;
+          // Show only first name if available
+          const firstName = displayName.split(' ')[0];
+          userNameElement.textContent = firstName;
+          welcomeTitleElement.textContent = `Trade Crypto Assets, ${firstName}!`;
           
           // Update profile picture if available
           if (user.photoURL) {
@@ -1151,19 +2078,7 @@
           }
         } else {
           console.log("No user data found in Firestore");
-          userNameElement.textContent = user.displayName || "User";
         }
-        
-        // Add logout functionality
-        userProfileElement.addEventListener('click', () => {
-          if (confirm('Are you sure you want to sign out?')) {
-            signOut(auth).then(() => {
-              window.location.href = 'login.html';
-            }).catch((error) => {
-              console.error('Sign out error:', error);
-            });
-          }
-        });
         
       } else {
         // User is signed out
@@ -1172,92 +2087,16 @@
       }
     });
 
-    // Notification bell animation
-    notificationBell.addEventListener('click', function() {
-      notificationBell.style.animation = 'bellRing 0.5s ease';
-      setTimeout(() => {
-        notificationBell.style.animation = '';
-      }, 500);
-      alert("You have 3 new notifications!");
-    });
-
-    // Simple interactive functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      // Token selector dropdowns
-      const tokenSelectors = document.querySelectorAll('.token-selector');
-      tokenSelectors.forEach(selector => {
-        selector.addEventListener('click', function() {
-          // In a real app, this would open a token selection modal
-          alert('Token selection would appear here');
-        });
-      });
-
-      // Price items click handler
-      const priceItems = document.querySelectorAll('.price-item');
-      priceItems.forEach(item => {
-        item.addEventListener('click', function() {
-          // In a real app, this would select the clicked cryptocurrency
-          const symbol = this.querySelector('.price-item-symbol').textContent;
-          alert(`Would load trading pair for ${symbol}/USDT`);
-        });
-      });
-
-      // Buy/Sell buttons
-      const buyBtn = document.querySelector('.buy-btn');
-      const sellBtn = document.querySelector('.sell-btn');
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', async () => {
+      initializeValues();
+      await fetchCryptoPrices();
+      updateBalances();
+      initializeTokenDropdowns();
+      selectTradingPair('BTC/USDT');
       
-      buyBtn.addEventListener('click', function() {
-        // In a real app, this would execute a buy order
-        alert('Buy order would be placed');
-      });
-      
-      sellBtn.addEventListener('click', function() {
-        // In a real app, this would execute a sell order
-        alert('Sell order would be placed');
-      });
-
-      // Swap button
-      const swapBtn = document.querySelector('.swap-btn');
-      swapBtn.addEventListener('click', function() {
-        // In a real app, this would execute a token swap
-        alert('Token swap would be executed');
-      });
-
-      // Percentage buttons
-      const amountBtns = document.querySelectorAll('.amount-btn');
-      amountBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          // In a real app, this would calculate the amount based on available balance
-          const percent = parseInt(this.textContent) / 100;
-          const amount = (percent * 1).toFixed(6); // Example with 1 as max
-          const form = this.closest('.trade-form');
-          const input = form.querySelector('.form-input[type="number"]');
-          input.value = amount;
-          
-          // Calculate total
-          if (form.querySelector('.card-title').textContent.includes('Buy')) {
-            const price = parseFloat(document.querySelector('.current-price').textContent.replace('$', ''));
-            const total = (parseFloat(amount) * price).toFixed(2);
-            form.querySelector('input[readonly]').value = total;
-          } else {
-            const price = parseFloat(document.querySelector('.current-price').textContent.replace('$', ''));
-            const total = (parseFloat(amount) * price).toFixed(2);
-            form.querySelector('input[readonly]').value = total;
-          }
-        });
-      });
-
-      // Amount input calculation
-      const amountInputs = document.querySelectorAll('.form-input[type="number"]:not([readonly])');
-      amountInputs.forEach(input => {
-        input.addEventListener('input', function() {
-          const form = this.closest('.trade-form');
-          const price = parseFloat(document.querySelector('.current-price').textContent.replace('$', ''));
-          const amount = parseFloat(this.value) || 0;
-          const total = (amount * price).toFixed(2);
-          form.querySelector('input[readonly]').value = total;
-        });
-      });
+      // Refresh prices every minute
+      setInterval(fetchCryptoPrices, 60000);
     });
   </script>
 </body>

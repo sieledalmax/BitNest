@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>BitNest | P2P Trading</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +21,6 @@
       --accent-orange: #ff7b25;
       --border-radius: 16px;
       --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       --glass-effect: rgba(16, 18, 22, 0.7);
       --success: #00e676;
       --warning: #ffab00;
@@ -43,62 +42,10 @@
       overflow-x: hidden;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--card-bg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 4px;
-    }
-
-    /* Floating Animations */
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Notification Bell Animation */
-    @keyframes bellRing {
-      0% { transform: rotate(0deg); }
-      10% { transform: rotate(15deg); }
-      20% { transform: rotate(-15deg); }
-      30% { transform: rotate(10deg); }
-      40% { transform: rotate(-10deg); }
-      50% { transform: rotate(5deg); }
-      60% { transform: rotate(-5deg); }
-      100% { transform: rotate(0deg); }
-    }
-
-    /* Crypto Chart Animation */
-    @keyframes chartGrow {
-      from { transform: scaleY(0); }
-      to { transform: scaleY(1); }
-    }
-
-    /* Navbar Styles */
+    /* Navbar - Centered with Animations */
     .navbar {
       background-color: var(--glass-effect);
-      padding: 1rem 3rem;
+      padding: 1rem 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -107,28 +54,36 @@
       z-index: 1000;
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .navbar:hover {
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
     }
 
     .navbar .left {
       display: flex;
       align-items: center;
-      gap: 2.5rem;
+      justify-content: flex-start;
+      gap: 2rem;
+      flex: 1;
     }
 
     .navbar .logo {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
     }
 
-    .logo-icon {
-      animation: float 4s ease-in-out infinite;
+    .navbar .logo:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
     }
 
     .nav-links {
@@ -139,15 +94,31 @@
     .navbar a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: var(--transition);
       position: relative;
       padding: 0.5rem 0;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .navbar a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
     }
 
     .navbar a:hover {
       color: var(--text-primary);
+    }
+
+    .navbar a:hover::after {
+      width: 100%;
     }
 
     .navbar a.active {
@@ -155,30 +126,31 @@
     }
 
     .navbar a.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
       width: 100%;
-      height: 2px;
-      background: var(--primary);
-      border-radius: 2px;
     }
 
     .navbar .right {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 1.5rem;
+      flex: 1;
     }
 
     .notification-bell {
       position: relative;
       cursor: pointer;
-      transition: var(--transition);
+      transition: transform 0.2s ease;
     }
 
     .notification-bell:hover {
-      animation: bellRing 0.5s ease;
+      transform: translateY(-2px);
+      animation: bellShake 0.5s ease infinite alternate;
+    }
+
+    @keyframes bellShake {
+      0% { transform: rotate(-5deg); }
+      100% { transform: rotate(5deg); }
     }
 
     .notification-badge {
@@ -195,13 +167,26 @@
       justify-content: center;
       font-size: 0.7rem;
       font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     .user-profile {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
       cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .user-profile:hover {
+      transform: translateX(5px);
     }
 
     .profile-pic {
@@ -210,66 +195,154 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--primary);
+      transition: all 0.3s ease;
     }
 
-    .btn {
-      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
-      border: none;
-      padding: 0.75rem 1.75rem;
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: var(--transition);
-      display: inline-flex;
+    .user-profile:hover .profile-pic {
+      box-shadow: 0 0 15px rgba(30, 211, 198, 0.5);
+      transform: scale(1.1);
+    }
+
+    .user-name {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Enhanced Dropdown Menus */
+    .user-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 240px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .user-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .user-menu-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
       font-size: 0.95rem;
-      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      white-space: nowrap;
+      transition: all 0.2s ease;
       position: relative;
       overflow: hidden;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(30, 211, 198, 0.4);
+    .user-menu-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(30, 211, 198, 0.1), transparent);
+      transition: all 0.5s ease;
     }
 
-    .btn span {
+    .user-menu-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    .user-menu-item:hover::before {
+      left: 100%;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.5rem;
       transition: transform 0.3s ease;
     }
 
-    .btn:hover span {
-      transform: translateX(3px);
+    .mobile-menu-btn:hover {
+      transform: rotate(90deg);
     }
 
-    .btn-secondary {
-      background: transparent;
-      color: var(--text-primary);
+    .mobile-nav-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 5%;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      width: 90%;
+      max-width: 280px;
+      z-index: 1001;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: none;
+    .mobile-nav-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    /* Main Container */
+    .mobile-nav-item {
+      padding: 0.85rem 1.75rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    /* Enhanced Main Content */
     .container {
-      padding: 2rem 3rem;
+      padding: 2rem 1.5rem;
       max-width: 1800px;
       margin: 0 auto;
+      animation: fadeIn 0.5s ease;
     }
 
-    /* Dashboard Grid */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 1.5rem;
     }
 
-    /* Welcome Banner */
+    /* Enhanced Welcome Banner */
     .welcome-banner {
       grid-column: span 12;
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
@@ -278,29 +351,41 @@
       margin-bottom: 1.5rem;
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: var(--box-shadow);
-      position: relative;
-      overflow: hidden;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+      overflow: hidden;
     }
 
     .welcome-banner::before {
       content: '';
       position: absolute;
-      top: 0;
-      right: 0;
-      width: 40%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(30, 211, 198, 0.08), rgba(58, 134, 255, 0.05));
-      clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
-      z-index: 0;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent,
+        transparent,
+        transparent,
+        rgba(30, 211, 198, 0.05),
+        transparent
+      );
+      transform: rotate(30deg);
+      animation: shine 6s infinite linear;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      100% { transform: translateX(100%) rotate(30deg); }
     }
 
     .welcome-content {
+      max-width: 60%;
       position: relative;
       z-index: 1;
-      max-width: 60%;
     }
 
     .welcome-content h1 {
@@ -311,14 +396,18 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      width: fit-content;
+      animation: textGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes textGlow {
+      0% { text-shadow: 0 0 10px rgba(30, 211, 198, 0.3); }
+      100% { text-shadow: 0 0 20px rgba(30, 211, 198, 0.6); }
     }
 
     .welcome-content p {
       color: var(--text-secondary);
       margin-bottom: 1.5rem;
       font-size: 1.05rem;
-      line-height: 1.6;
     }
 
     .welcome-stats {
@@ -337,6 +426,12 @@
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .stat-value:hover {
+      transform: translateY(-3px);
+      text-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
     }
 
     .stat-label {
@@ -345,14 +440,24 @@
     }
 
     .welcome-image {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
       position: relative;
       z-index: 1;
-      animation: float 6s ease-in-out infinite;
     }
 
-    .welcome-image img {
-      width: 300px;
-      height: auto;
+    .welcome-image .crypto-icon {
+      width: 50px;
+      height: 50px;
+      transition: all 0.3s ease;
+    }
+
+    .welcome-image .crypto-icon:hover {
+      transform: translateY(-5px) scale(1.1);
+      filter: drop-shadow(0 5px 15px rgba(30, 211, 198, 0.4));
     }
 
     /* Section Header */
@@ -379,6 +484,7 @@
       height: 20px;
       background: linear-gradient(var(--primary), var(--accent-blue));
       border-radius: 3px;
+      animation: pulse 2s infinite;
     }
 
     /* P2P Trading Styles */
@@ -397,6 +503,13 @@
       padding: 1rem 1.5rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      transition: all 0.3s ease;
+    }
+
+    .p2p-controls:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
     }
 
     .p2p-filters {
@@ -426,11 +539,12 @@
       align-items: center;
       gap: 0.5rem;
       font-size: 0.9rem;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .filter-toggle-btn:hover {
       background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
     }
 
     .secondary-filters {
@@ -452,6 +566,7 @@
 
     .secondary-filters.active {
       display: flex;
+      animation: fadeIn 0.3s ease;
     }
 
     .filter-dropdown {
@@ -469,11 +584,12 @@
       align-items: center;
       gap: 0.5rem;
       font-size: 0.9rem;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .filter-btn:hover {
       background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
     }
 
     .filter-dropdown-content {
@@ -486,6 +602,7 @@
       border-radius: 8px;
       padding: 0.5rem 0;
       border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: fadeIn 0.3s ease;
     }
 
     .filter-dropdown-content a {
@@ -494,12 +611,13 @@
       text-decoration: none;
       display: block;
       font-size: 0.9rem;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .filter-dropdown-content a:hover {
       background-color: rgba(255, 255, 255, 0.05);
       color: var(--primary);
+      padding-left: 1.25rem;
     }
 
     .filter-dropdown:hover .filter-dropdown-content {
@@ -520,6 +638,13 @@
       border-radius: 8px;
       color: var(--text-primary);
       font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
+      outline: none;
     }
 
     .search-box i {
@@ -537,16 +662,33 @@
       color: white;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       gap: 0.5rem;
       box-shadow: 0 4px 16px rgba(131, 56, 236, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .become-vendor-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.5s ease;
     }
 
     .become-vendor-btn:hover {
-      transform: translateY(-2px);
+      transform: translateY(-3px);
       box-shadow: 0 8px 24px rgba(131, 56, 236, 0.4);
+    }
+
+    .become-vendor-btn:hover::before {
+      left: 100%;
     }
 
     /* Sort Options */
@@ -566,6 +708,13 @@
       border-radius: 8px;
       cursor: pointer;
       font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    #sortSelect:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
+      outline: none;
     }
 
     /* P2P Offers Table */
@@ -573,7 +722,14 @@
       background-color: var(--card-bg);
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
       overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .p2p-offers:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
     }
 
     .p2p-offers-header {
@@ -592,7 +748,7 @@
       grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
       padding: 1.25rem 1.5rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .p2p-offer:last-child {
@@ -601,6 +757,7 @@
 
     .p2p-offer:hover {
       background-color: var(--card-hover);
+      transform: translateY(-2px);
     }
 
     .offer-trader {
@@ -615,6 +772,12 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--primary);
+      transition: all 0.3s ease;
+    }
+
+    .p2p-offer:hover .trader-avatar {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(30, 211, 198, 0.3);
     }
 
     .trader-info {
@@ -625,6 +788,11 @@
     .trader-name {
       font-weight: 600;
       margin-bottom: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .p2p-offer:hover .trader-name {
+      color: var(--primary);
     }
 
     .trader-stats {
@@ -651,6 +819,11 @@
     .premium-value {
       font-size: 1rem;
       color: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+
+    .p2p-offer:hover .premium-value {
+      transform: translateX(5px);
     }
 
     .market-rate {
@@ -666,6 +839,11 @@
 
     .offer-limits span {
       font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .p2p-offer:hover .offer-limits span {
+      transform: translateX(5px);
     }
 
     .offer-payment {
@@ -683,6 +861,12 @@
       display: flex;
       align-items: center;
       gap: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .p2p-offer:hover .payment-method {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
     }
 
     .offer-action {
@@ -699,15 +883,32 @@
       border-radius: 6px;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .buy-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.5s ease;
     }
 
     .buy-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 230, 118, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 230, 118, 0.4);
+    }
+
+    .buy-btn:hover::before {
+      left: 100%;
     }
 
     /* P2P Trading Modal */
@@ -726,11 +927,6 @@
       animation: fadeIn 0.3s ease-out;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
     .modal-content {
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
       width: 90%;
@@ -740,11 +936,7 @@
       box-shadow: var(--box-shadow);
       position: relative;
       animation: slideUp 0.4s ease-out;
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .close-modal {
@@ -756,11 +948,11 @@
       color: var(--text-secondary);
       font-size: 1.5rem;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .close-modal:hover {
-      color: var(--text-primary);
+      color: var(--primary);
       transform: rotate(90deg);
     }
 
@@ -790,7 +982,7 @@
       border-radius: 8px;
       color: var(--text-primary);
       font-size: 1rem;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .form-control:focus {
@@ -804,6 +996,78 @@
       justify-content: flex-end;
       gap: 1rem;
       margin-top: 2rem;
+    }
+
+    /* Enhanced Buttons */
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.75rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.5s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(30, 211, 198, 0.4);
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Loading Spinner */
+    .loading-placeholder {
+      padding: 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .fa-spinner {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     /* Responsive Styles */
@@ -844,14 +1108,14 @@
     @media (max-width: 768px) {
       .navbar {
         padding: 1rem;
-        flex-direction: column;
-        gap: 1rem;
       }
       
       .nav-links {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
+        display: none;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
       }
       
       .p2p-offers-header {
@@ -868,16 +1132,28 @@
         justify-content: flex-start;
         margin-top: 1rem;
       }
+
+      .welcome-banner {
+        flex-direction: column;
+      }
+
+      .welcome-content {
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+      }
+
+      .welcome-stats {
+        justify-content: center;
+      }
+
+      .welcome-image {
+        margin-top: 1.5rem;
+      }
     }
 
     @media (max-width: 576px) {
       .welcome-banner {
         padding: 1.5rem;
-        flex-direction: column;
-      }
-      
-      .welcome-content {
-        max-width: 100%;
       }
       
       .welcome-content h1 {
@@ -898,8 +1174,22 @@
       }
 
       .welcome-image img {
-        width: 200px;
-        margin-top: 1rem;
+        width: 40px;
+      }
+
+      .user-name {
+        display: none;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .mobile-nav-menu {
+        width: 90%;
+        right: 5%;
+      }
+      
+      .modal-content {
+        padding: 1.5rem;
       }
     }
   </style>
@@ -909,7 +1199,6 @@
   <div class="navbar">
     <div class="left">
       <div class="logo">
-        <i class="fas fa-coins logo-icon"></i>
         <span>BitNest</span>
       </div>
       <div class="nav-links">
@@ -927,10 +1216,47 @@
         <i class="fas fa-bell"></i>
         <div class="notification-badge">3</div>
       </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
       <div class="user-profile" id="userProfile">
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
-        <span id="userName">Loading...</span>
+        <span class="user-name" id="userName">Loading...</span>
+        <div class="user-menu" id="userMenu">
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="#" class="user-menu-item" style="padding-left: 20px;">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="#" class="user-menu-item" id="logoutBtn" style="padding-left: 20px;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
       </div>
+    </div>
+    <div class="mobile-nav-menu" id="mobileNavMenu">
+      <a href="dashboard.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <a href="assets.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-wallet"></i> Assets
+      </a>
+      <a href="earn.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-percentage"></i> Earn
+      </a>
+      <a href="trading_view.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-exchange-alt"></i> Trade
+      </a>
+      <a href="p2p.html" class="mobile-nav-item active" style="padding-left: 20px;">
+        <i class="fas fa-users"></i> P2P
+      </a>
+      <a href="deposit.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-plus-circle"></i> Deposit
+      </a>
+      <a href="cards.html" class="mobile-nav-item" style="padding-left: 20px;">
+        <i class="fas fa-credit-card"></i> Cards
+      </a>
     </div>
   </div>
 
@@ -958,7 +1284,10 @@
           </div>
         </div>
         <div class="welcome-image">
-          <img src="https://cryptologos.cc/logos/versions/tether-usdt-logo.svg" alt="P2P Trading">
+          <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" class="crypto-icon">
+          <img src="crypto-logos/bitcoin.svg" alt="BTC" class="crypto-icon">
+          <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH" class="crypto-icon">
+          <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC" class="crypto-icon">
         </div>
       </div>
 
@@ -1097,7 +1426,7 @@
             <div>Action</div>
           </div>
           <!-- Vendor cards will be inserted here by JavaScript -->
-          <div class="loading-placeholder" style="padding: 2rem; text-align: center;">
+          <div class="loading-placeholder">
             <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
             <p>Loading vendors...</p>
           </div>
@@ -1219,6 +1548,14 @@
     const sortSelect = document.getElementById('sortSelect');
     const moreFiltersBtn = document.getElementById('moreFiltersBtn');
     const secondaryFilters = document.getElementById('secondaryFilters');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavMenu = document.getElementById('mobileNavMenu');
+    const userProfile = document.getElementById('userProfile');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const welcomeTitle = document.getElementById('welcomeTitle');
+    const userName = document.getElementById('userName');
+    const userProfilePic = document.getElementById('userProfilePic');
 
     // Market rates for premium calculation
     const marketRates = {
@@ -1715,20 +2052,68 @@
       });
     }
 
+    // Set up mobile menu
+    function setupMobileMenu() {
+      mobileMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileNavMenu.classList.toggle('active');
+        userMenu.classList.remove('active');
+      });
+      
+      userProfile.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userMenu.classList.toggle('active');
+        mobileNavMenu.classList.remove('active');
+      });
+      
+      // Close menus when clicking outside
+      document.addEventListener('click', () => {
+        userMenu.classList.remove('active');
+        mobileNavMenu.classList.remove('active');
+      });
+    }
+
     // Set up authentication
     function setupAuth() {
-      onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, async (user) => {
         if (user) {
-          document.getElementById('userName').textContent = user.displayName || 'User';
+          // Get user data from Firestore
+          const userDocRef = doc(db, "users", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            const displayName = userData.name || user.displayName || "User";
+            // Show only first name if available
+            const firstName = displayName.split(' ')[0];
+            userName.textContent = firstName;
+            welcomeTitle.textContent = `Welcome back, ${firstName}!`;
+            
+            // Update profile picture if available
+            if (user.photoURL) {
+              userProfilePic.src = user.photoURL;
+            }
+          }
         } else {
           window.location.href = 'login.html';
         }
+      });
+
+      // Logout functionality
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        signOut(auth).then(() => {
+          window.location.href = 'login.html';
+        }).catch((error) => {
+          console.error('Sign out error:', error);
+        });
       });
     }
 
     // Initialize the application
     async function initApp() {
       setupAuth();
+      setupMobileMenu();
       setupModals();
       setupFilters();
       setupFilterToggle();
