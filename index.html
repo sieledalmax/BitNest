@@ -4,8 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>BitNest - Wise Investment</title>
+  
+  <!-- Favicon for all browsers -->
+  <link rel="icon" href="/icons/icon.192.png" type="image/png">
+  <link rel="shortcut icon" href="/icons/icon.192.png">
+  
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- PWA Configuration -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1ed3c6">
+
+  <!-- iOS specific meta tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/icons/icon.192.png">
+
+  <!-- Windows specific meta tags -->
+  <meta name="msapplication-TileImage" content="/icons/icon.144.png">
+  <meta name="msapplication-TileColor" content="#1ed3c6">
+
   <style>
     * {
       box-sizing: border-box;
@@ -19,13 +39,14 @@
       color: white;
       scroll-behavior: smooth;
       background-color: #0f0f0f;
+      overflow-x: hidden;
     }
 
     .background {
       background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=2232&auto=format&fit=crop');
       background-size: cover;
       background-position: center;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -153,6 +174,7 @@
     .auth-buttons {
       display: flex;
       gap: 15px;
+      align-items: center;
     }
 
     .auth-buttons button {
@@ -165,6 +187,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: 1rem;
+      white-space: nowrap;
     }
 
     .auth-buttons button:hover {
@@ -182,6 +205,46 @@
     .auth-buttons button.login:hover {
       background: rgba(255, 255, 255, 0.1);
       box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Improved Install Button Styles */
+    .auth-buttons button.install-btn {
+      background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+      color: black;
+      display: none; /* Hidden by default */
+      animation: pulse 2s infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-buttons button.install-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      transition: all 0.3s;
+    }
+
+    .auth-buttons button.install-btn:hover::after {
+      left: 100%;
+    }
+
+    .auth-buttons button.install-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(249, 212, 35, 0.4);
+    }
+
+    .auth-buttons button.install-btn i {
+      margin-right: 8px;
     }
 
     .main-content {
@@ -227,6 +290,25 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+      z-index: -1;
+    }
+
+    .cta:hover::before {
+      left: 100%;
     }
 
     .cta:hover {
@@ -355,24 +437,59 @@
       margin-right: 10px;
     }
 
-    /* Mobile styles */
+    /* Mobile styles - Improved for better responsiveness */
+    @media (max-width: 992px) {
+      header {
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+      
+      nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+      }
+      
+      .auth-buttons {
+        margin-left: auto;
+      }
+    }
+
     @media (max-width: 768px) {
       header {
-        flex-direction: column;
         padding: 15px;
       }
 
+      .logo {
+        font-size: 1.6rem;
+      }
+
       nav {
-        margin: 15px 0;
-        flex-wrap: wrap;
-        justify-content: center;
         gap: 15px;
+        margin: 15px 0;
+      }
+
+      nav a {
+        font-size: 0.95rem;
       }
 
       .auth-buttons {
         width: 100%;
         justify-content: center;
         margin-top: 10px;
+        gap: 10px;
+      }
+
+      .auth-buttons button {
+        padding: 10px 15px;
+        font-size: 0.95rem;
+        flex-grow: 1;
+      }
+
+      .auth-buttons button.install-btn {
+        order: -1;
+        width: 100%;
       }
 
       .main-content {
@@ -381,31 +498,44 @@
       }
 
       .main-content h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
       }
 
       .main-content p {
-        font-size: 1rem;
+        font-size: 1.05rem;
       }
 
       .note {
         margin: 15px auto;
         text-align: left;
+        max-width: 100%;
       }
 
       .stats {
         flex-direction: column;
         align-items: center;
+        margin: 30px 0;
       }
 
       .stat-item {
         width: 80%;
+        padding: 15px;
+      }
+
+      .stat-number {
+        font-size: 2rem;
       }
 
       .scrolling-features {
         position: relative;
         bottom: auto;
         margin-top: 30px;
+        padding: 12px 0;
+      }
+
+      .feature-item {
+        margin: 0 20px;
+        font-size: 1rem;
       }
 
       .footer-info div {
@@ -415,6 +545,10 @@
     }
 
     @media (max-width: 480px) {
+      .logo {
+        font-size: 1.5rem;
+      }
+
       nav {
         gap: 10px;
       }
@@ -423,8 +557,12 @@
         font-size: 0.9rem;
       }
 
+      .auth-buttons {
+        flex-wrap: wrap;
+      }
+
       .auth-buttons button {
-        padding: 10px 15px;
+        padding: 10px;
         font-size: 0.9rem;
       }
 
@@ -432,18 +570,29 @@
         font-size: 1.8rem;
       }
 
+      .main-content p {
+        font-size: 1rem;
+      }
+
       .cta {
         padding: 14px 20px;
         font-size: 1rem;
+        width: 100%;
+        justify-content: center;
       }
 
       .stat-item {
         width: 90%;
-        padding: 15px;
+        padding: 12px;
       }
 
       .stat-number {
         font-size: 1.8rem;
+      }
+
+      .feature-item {
+        font-size: 0.9rem;
+        margin: 0 15px;
       }
     }
 
@@ -487,6 +636,12 @@
 
     .pulse {
       animation: pulse 2s infinite;
+    }
+
+    /* New shimmer effect for install button */
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
   </style>
 </head>
@@ -533,6 +688,9 @@
         <a href="#">Company</a>
       </nav>
       <div class="auth-buttons">
+        <button id="installBtn" class="install-btn" style="display: none;">
+          <i class="fas fa-download"></i> Get App + 500 SATS
+        </button>
         <a href="login.html"><button class="login">Log in</button></a>
         <a href="register.html"><button>Sign up</button></a>
       </div>
@@ -658,6 +816,65 @@
         clearInterval(typingEffect);
       }
     }, 50);
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('✅ ServiceWorker registered');
+            
+            // Check if the app is launched as a PWA
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+              console.log('Launched as PWA');
+            }
+          })
+          .catch(err => {
+            console.log('❌ ServiceWorker failed', err);
+          });
+      });
+    }
+
+    // Enhanced PWA Installation with SATS reward
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'block';
+      
+      installBtn.addEventListener('click', () => {
+        installBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
+        installBtn.disabled = true;
+        deferredPrompt.prompt();
+        
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User installed the PWA');
+            // Trigger your 500 SATS reward here
+            installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
+            setTimeout(() => {
+              installBtn.style.display = 'none';
+            }, 3000);
+          } else {
+            installBtn.innerHTML = '<i class="fas fa-download"></i> Get App + 500 SATS';
+            installBtn.disabled = false;
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA was installed');
+      if (installBtn) {
+        installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
+        setTimeout(() => {
+          installBtn.style.display = 'none';
+        }, 2000);
+      }
+    });
   </script>
 </body>
 </html>
