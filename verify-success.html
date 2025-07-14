@@ -25,18 +25,20 @@
       max-width: 500px;
       width: 100%;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      animation: fadeInUp 0.5s ease-out;
     }
     .success-icon {
       font-size: 3rem;
       color: #1ed3c6;
       margin-bottom: 20px;
+      animation: bounce 1s;
     }
     .countdown {
-      font-size: 1.2rem;
+      font-size: 1rem;
       margin: 20px 0;
       color: #aaa;
     }
-    .primary {
+    .primary-btn {
       background-color: #1ed3c6;
       color: black;
       border: none;
@@ -45,10 +47,35 @@
       font-weight: bold;
       cursor: pointer;
       transition: all 0.3s;
+      font-size: 1rem;
+      margin-top: 20px;
+      display: inline-block;
+      text-decoration: none;
     }
-    .primary:hover {
+    .primary-btn:hover {
       background-color: #17b3a8;
       transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
+    }
+    .verified-email {
+      font-weight: bold;
+      color: #1ed3c6;
+      word-break: break-all;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-20px);}
+      60% {transform: translateY(-10px);}
     }
   </style>
 </head>
@@ -56,15 +83,15 @@
   <div class="success-box">
     <i class="fas fa-check-circle success-icon"></i>
     <h2>Email Verified Successfully!</h2>
-    <p id="verifiedEmail"></p>
-    <div class="countdown" id="countdown">Completing verification...</div>
-    <button class="primary" id="continueBtn" style="display: none;">Continue to Dashboard</button>
-    <div id="transferMessage" style="display: none;">
-      <p>Please wait while we secure your session...</p>
-    </div>
+    <p>Your email <span class="verified-email" id="verifiedEmail"></span> has been confirmed.</p>
+    <p>You can now access all BitNest features.</p>
+    <div class="countdown" id="countdown">Redirecting to dashboard in 5 seconds...</div>
+    <a href="dashboard.html" class="primary-btn" id="continueBtn">
+      <i class="fas fa-arrow-right"></i> Go to Dashboard
+    </a>
   </div>
 
-  <!-- Add Firebase SDK -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <script>
@@ -82,59 +109,73 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Handle the verification process
-    async function handleVerification() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get('email');
-      const mode = urlParams.get('mode');
-      const oobCode = urlParams.get('oobCode');
+    // Display the verified email if available
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    if (email) {
+      document.getElementById('verifiedEmail').textContent = decodeURIComponent(email);
+    }
 
-      // Display verified email if available
-      if (email) {
-        document.getElementById('verifiedEmail').innerHTML = 
-          `Email <strong>${decodeURIComponent(email)}</strong> has been verified.`;
+    // Start countdown to dashboard
+    let seconds = 5;
+    const countdownElement = document.getElementById('countdown');
+    const countdownInterval = setInterval(() => {
+      seconds--;
+      countdownElement.textContent = `Redirecting to dashboard in ${seconds} seconds...`;
+      if (seconds <= 0) {
+        clearInterval(countdownInterval);
+        redirectToDashboard();
       }
+    }, 1000);
 
-      // If this is a Firebase verification redirect
-      if (mode === 'verifyEmail' && oobCode) {
-        document.getElementById('transferMessage').style.display = 'block';
-        
-        try {
-          // Apply the verification code
-          await auth.applyActionCode(oobCode);
-          
-          // Get the user's email from the verification code
-          const verifiedEmail = await auth.checkActionCode(oobCode)
-            .then(info => info.data.email);
-          
-          // Sign in the user (this will persist across browsers)
-          await auth.signInWithEmailLink(verifiedEmail, window.location.href);
-          
-          // Redirect to dashboard
-          window.location.href = 'dashboard.html';
-        } catch (error) {
-          console.error('Verification error:', error);
-          document.getElementById('countdown').textContent = 
-            'Verification complete! Please sign in on your original browser.';
-          document.getElementById('continueBtn').style.display = 'block';
-          document.getElementById('continueBtn').textContent = 'Go to Login';
-          document.getElementById('continueBtn').onclick = () => {
-            window.location.href = 'login.html';
-          };
-        }
-      } else if (email) {
-        // If coming directly with just email parameter
-        document.getElementById('countdown').textContent = 
-          'Verification complete! Please sign in to continue.';
-        document.getElementById('continueBtn').style.display = 'block';
-        document.getElementById('continueBtn').onclick = () => {
-          window.location.href = 'login.html';
-        };
+    // Handle verification if coming from Firebase link
+    if (window.location.search.includes('mode=verifyEmail')) {
+      const actionCode = urlParams.get('oobCode');
+      
+      if (actionCode) {
+        auth.applyActionCode(actionCode)
+          .then(() => {
+            // Check which email was verified
+            return auth.checkActionCode(actionCode);
+          })
+          .then((info) => {
+            // Sign in the user automatically
+            const email = info.data.email;
+            document.getElementById('verifiedEmail').textContent = email;
+            
+            // Try to sign in with email link (for cross-browser support)
+            if (auth.isSignInWithEmailLink(window.location.href)) {
+              let emailForSignIn = email || window.localStorage.getItem('emailForVerification');
+              
+              if (!emailForSignIn) {
+                emailForSignIn = prompt('Please provide your email for confirmation');
+              }
+              
+              if (emailForSignIn) {
+                return auth.signInWithEmailLink(emailForSignIn, window.location.href)
+                  .then(() => {
+                    window.localStorage.removeItem('emailForVerification');
+                  });
+              }
+            }
+          })
+          .catch((error) => {
+            console.error('Error during verification:', error);
+            countdownElement.textContent = 'Verification complete! You can now log in.';
+          });
       }
     }
 
-    // Start the verification process
-    handleVerification();
+    function redirectToDashboard() {
+      window.location.href = 'dashboard.html';
+    }
+
+    // Manual continue button
+    document.getElementById('continueBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      clearInterval(countdownInterval);
+      redirectToDashboard();
+    });
   </script>
 </body>
 </html>
