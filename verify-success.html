@@ -31,7 +31,12 @@
       font-size: 3rem;
       color: #1ed3c6;
       margin-bottom: 20px;
+    }
+    .success-icon.verified {
       animation: bounce 1s;
+    }
+    .success-icon.error {
+      color: #ff6b6b;
     }
     .countdown {
       font-size: 1rem;
@@ -56,6 +61,13 @@
       background-color: #17b3a8;
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
+    }
+    .primary-btn.error {
+      background-color: #ff6b6b;
+      color: white;
+    }
+    .primary-btn.error:hover {
+      background-color: #e05555;
     }
     .verified-email {
       font-weight: bold;
@@ -86,6 +98,9 @@
       animation: spin 1s linear infinite;
       margin: 20px auto;
     }
+    .spinner.error {
+      border-top-color: #ff6b6b;
+    }
     @keyframes spin {
       100% {transform: rotate(360deg);}
     }
@@ -93,18 +108,17 @@
 </head>
 <body>
   <div class="success-box">
-    <i class="fas fa-check-circle success-icon"></i>
-    <h2>Email Verified Successfully!</h2>
-    <p>Your email <span class="verified-email" id="verifiedEmail"></span> has been confirmed.</p>
-    <div class="countdown" id="countdown">Setting up your session...</div>
+    <i class="fas fa-check-circle success-icon" id="statusIcon"></i>
+    <h2 id="statusTitle">Email Verification</h2>
+    <p id="statusMessage">Processing your verification...</p>
+    <p>Your email: <span class="verified-email" id="verifiedEmail"></span></p>
+    <div class="countdown" id="countdown"></div>
     <div class="spinner" id="spinner"></div>
-    <a href="dashboard.html" class="primary-btn" id="continueBtn" style="display: none;">
-      <i class="fas fa-arrow-right"></i> Go to Dashboard
+    <a href="dashboard.html" class="primary-btn" id="actionBtn" style="display: none;">
+      <i class="fas fa-arrow-right"></i> Continue
     </a>
-    <p id="errorMessage" style="color: #ff6b6b; display: none;"></p>
   </div>
 
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <script>
@@ -123,11 +137,38 @@
     const auth = firebase.auth();
 
     // DOM elements
+    const statusIcon = document.getElementById('statusIcon');
+    const statusTitle = document.getElementById('statusTitle');
+    const statusMessage = document.getElementById('statusMessage');
     const verifiedEmailEl = document.getElementById('verifiedEmail');
     const countdownEl = document.getElementById('countdown');
-    const continueBtn = document.getElementById('continueBtn');
+    const actionBtn = document.getElementById('actionBtn');
     const spinner = document.getElementById('spinner');
-    const errorMessage = document.getElementById('errorMessage');
+
+    // Update UI state
+    function setUIState(state, message) {
+      if (state === 'success') {
+        statusIcon.classList.add('verified');
+        statusIcon.classList.remove('error');
+        statusTitle.textContent = "Email Verified Successfully!";
+        statusMessage.textContent = message || "You can now access all BitNest features.";
+        actionBtn.className = "primary-btn";
+        actionBtn.innerHTML = '<i class="fas fa-arrow-right"></i> Go to Dashboard';
+        actionBtn.href = "dashboard.html";
+      } 
+      else if (state === 'error') {
+        statusIcon.classList.remove('verified');
+        statusIcon.classList.add('error');
+        statusTitle.textContent = "Verification Error";
+        statusMessage.textContent = message || "There was an error verifying your email.";
+        actionBtn.className = "primary-btn error";
+        actionBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Go to Login';
+        actionBtn.href = "login.html";
+      }
+      
+      spinner.style.display = 'none';
+      actionBtn.style.display = 'inline-block';
+    }
 
     // Handle verification process
     async function handleVerification() {
@@ -136,21 +177,21 @@
       const emailParam = urlParams.get('email');
       const mode = urlParams.get('mode');
 
-      try {
-        // Display the email being verified
-        if (emailParam) {
-          verifiedEmailEl.textContent = decodeURIComponent(emailParam);
-        }
+      // Display the email being verified
+      if (emailParam) {
+        verifiedEmailEl.textContent = decodeURIComponent(emailParam);
+      }
 
-        // If this is a Firebase verification link
-        if (mode === 'verifyEmail' && actionCode) {
-          // Apply the verification code
-          await auth.applyActionCode(actionCode);
-          
-          // Get the verified email from the action code
+      // If this is a Firebase verification link
+      if (mode === 'verifyEmail' && actionCode) {
+        try {
+          // Verify the action code
           const actionCodeInfo = await auth.checkActionCode(actionCode);
           const verifiedEmail = actionCodeInfo.data.email;
           verifiedEmailEl.textContent = verifiedEmail;
+          
+          // Apply the verification code
+          await auth.applyActionCode(actionCode);
           
           // Check if we need to sign in (cross-browser scenario)
           if (!auth.currentUser) {
@@ -167,90 +208,80 @@
             // Sign in with email link
             await auth.signInWithEmailLink(emailForSignIn, window.location.href);
             window.localStorage.removeItem('emailForVerification');
-            
-            // Force refresh of the user token
-            await auth.currentUser.reload();
           }
           
-          // Verify the email is actually marked as verified
-          if (auth.currentUser && !auth.currentUser.emailVerified) {
+          // Force refresh of the user token
+          if (auth.currentUser) {
             await auth.currentUser.reload();
+            
+            // Verify the email is actually marked as verified
             if (!auth.currentUser.emailVerified) {
               throw new Error('Email not verified after reload');
             }
+            
+            // Success state
+            setUIState('success', "Your email has been successfully verified.");
+            startCountdown("dashboard.html", 3);
+            return;
           }
           
-          // Redirect to dashboard
-          redirectToDashboard();
-          return;
-        }
-        
-        // If we have an email parameter but no action code (direct access)
-        if (emailParam) {
-          countdownEl.textContent = "Verification complete!";
-          spinner.style.display = 'none';
-          continueBtn.style.display = 'inline-block';
-          
-          // Check if user is already authenticated
-          if (auth.currentUser) {
-            redirectToDashboard();
+          throw new Error('Authentication failed');
+        } 
+        catch (error) {
+          console.error('Verification error:', error);
+          if (error.code === 'auth/invalid-action-code') {
+            setUIState('error', "This verification link has expired or already been used.");
+          } else {
+            setUIState('error', error.message || "Error completing verification.");
           }
+          startCountdown("login.html", 5);
           return;
         }
-        
-        throw new Error('No verification information found');
-      } catch (error) {
-        console.error('Verification error:', error);
-        handleVerificationError(error);
       }
-    }
-
-    function redirectToDashboard() {
-      // Add small delay to ensure auth state is fully updated
-      setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 500);
-    }
-
-    function handleVerificationError(error) {
-      errorMessage.textContent = "Verification complete! " + (error.message || "Please sign in to continue.");
-      errorMessage.style.display = 'block';
-      spinner.style.display = 'none';
-      continueBtn.style.display = 'inline-block';
-      continueBtn.textContent = "Go to Login";
-      continueBtn.href = "login.html";
       
-      // Clear any existing countdown
+      // If we have an email parameter but no action code (direct access)
+      if (emailParam) {
+        // Check if user is already authenticated
+        if (auth.currentUser && auth.currentUser.emailVerified) {
+          setUIState('success', "Your email is already verified.");
+          startCountdown("dashboard.html", 3);
+        } else {
+          setUIState('error', "Please sign in to complete verification.");
+          startCountdown("login.html", 5);
+        }
+        return;
+      }
+      
+      // No verification information found
+      setUIState('error', "No verification information found.");
+      startCountdown("login.html", 5);
+    }
+
+    // Start countdown to redirect
+    function startCountdown(redirectUrl, seconds) {
+      countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
+      
+      const countdownInterval = setInterval(() => {
+        seconds--;
+        countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
+        
+        if (seconds <= 0) {
+          clearInterval(countdownInterval);
+          window.location.href = redirectUrl;
+        }
+      }, 1000);
+      
+      // Store interval to clear if button is clicked
+      window.countdownInterval = countdownInterval;
+    }
+
+    // Manual action button
+    actionBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       if (window.countdownInterval) {
         clearInterval(window.countdownInterval);
       }
-    }
-
-    // Start countdown as fallback (8 seconds)
-    window.countdownInterval = setInterval(() => {
-      const countdownText = countdownEl.textContent;
-      const match = countdownText.match(/in (\d+) seconds/);
-      
-      if (match) {
-        const seconds = parseInt(match[1]) - 1;
-        if (seconds <= 0) {
-          clearInterval(window.countdownInterval);
-          if (auth.currentUser && auth.currentUser.emailVerified) {
-            redirectToDashboard();
-          } else {
-            window.location.href = continueBtn.href;
-          }
-        } else {
-          countdownEl.textContent = countdownText.replace(/in \d+ seconds/, `in ${seconds} seconds`);
-        }
-      }
-    }, 1000);
-
-    // Manual continue button
-    continueBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      clearInterval(window.countdownInterval);
-      window.location.href = continueBtn.href;
+      window.location.href = actionBtn.href;
     });
 
     // Start verification process
