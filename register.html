@@ -558,31 +558,12 @@
     </div>
   </div>
 
-  <!-- Firebase SDK with Custom Verification URL -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-    import { 
-      getAuth, 
-      createUserWithEmailAndPassword,
-      updateProfile,
-      sendEmailVerification,
-      GoogleAuthProvider,
-      signInWithPopup,
-      onAuthStateChanged,
-      signOut,
-      applyActionCode,
-      checkActionCode,
-      signInWithEmailLink,
-      isSignInWithEmailLink,
-      sendSignInLinkToEmail
-    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
-    import { 
-      getFirestore, 
-      doc, 
-      setDoc 
-    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
-
-    // Firebase configuration
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
@@ -592,11 +573,10 @@
       appId: "1:583165336540:web:25719de02e18bc60eb0d19"
     };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const provider = new firebase.auth.GoogleAuthProvider();
 
     // DOM elements
     const registerForm = document.getElementById('registerForm');
@@ -615,97 +595,8 @@
     const signupFormContainer = document.getElementById('signupFormContainer');
     const verificationMessage = document.getElementById('verificationMessage');
     const verificationEmailText = document.getElementById('verificationEmailText');
-
-    // Cross-browser verification state
-    let verificationEmail = null;
-
-    // Check authentication state
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        if (user.emailVerified) {
-          redirectToDashboard(user);
-        } else {
-          showVerificationMessage(user.email);
-          verificationEmail = user.email;
-          startEmailVerificationCheck(user);
-        }
-      }
-    });
-
-    async function redirectToDashboard(user) {
-      await setDoc(doc(db, "users", user.uid), {
-        emailVerified: true,
-        verified: true,
-        lastLogin: new Date()
-      }, { merge: true });
-      
-      window.location.href = 'dashboard.html';
-    }
-
-    function startEmailVerificationCheck(user) {
-      const verificationCheckInterval = setInterval(async () => {
-        try {
-          await user.reload();
-          user = auth.currentUser;
-          
-          if (user.emailVerified) {
-            clearInterval(verificationCheckInterval);
-            redirectToDashboard(user);
-          }
-        } catch (error) {
-          console.error('Error checking verification status:', error);
-          clearInterval(verificationCheckInterval);
-        }
-      }, 3000);
-    }
-
-    function showVerificationMessage(email) {
-      signupFormContainer.style.display = 'none';
-      verificationMessage.style.display = 'block';
-      verificationEmailText.innerHTML = `We've sent a verification link to <strong>${email}</strong>. 
-        Please check your inbox and click the link to verify your email address.`;
-
-      document.getElementById('resendLink').addEventListener('click', async (e) => {
-        e.preventDefault();
-        try {
-          await sendEmailVerification(auth.currentUser, {
-            url: `https://bit-nest.vercel.app/verify-success.html?email=${encodeURIComponent(email)}`,
-            handleCodeInApp: true
-          });
-          alert('Verification email resent successfully!');
-        } catch (error) {
-          console.error('Error resending verification email:', error);
-          alert('Failed to resend verification email. Please try again.');
-        }
-      });
-
-      document.getElementById('signOutLink').addEventListener('click', async (e) => {
-        e.preventDefault();
-        try {
-          await signOut(auth);
-          window.location.reload();
-        } catch (error) {
-          console.error('Sign out error:', error);
-        }
-      });
-    }
-
-    // Account type switcher
-    accountTypeButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault();
-        accountTypeButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        
-        if (button.dataset.type === 'personal') {
-          accountSwitch.classList.remove('business-active');
-          accountSwitch.classList.add('personal-active');
-        } else {
-          accountSwitch.classList.remove('personal-active');
-          accountSwitch.classList.add('business-active');
-        }
-      });
-    });
+    const resendLink = document.getElementById('resendLink');
+    const signOutLink = document.getElementById('signOutLink');
 
     // Password strength indicator
     passwordInput.addEventListener('input', () => {
@@ -729,6 +620,23 @@
       }
     });
 
+    // Account type switcher
+    accountTypeButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        accountTypeButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        if (button.dataset.type === 'personal') {
+          accountSwitch.classList.remove('business-active');
+          accountSwitch.classList.add('personal-active');
+        } else {
+          accountSwitch.classList.remove('personal-active');
+          accountSwitch.classList.add('business-active');
+        }
+      });
+    });
+
     // Email/password registration
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -743,22 +651,23 @@
       errorMessage.style.display = 'none';
       
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
         
-        await updateProfile(user, { displayName: name });
+        await firebase.auth().updateProfile(user, { displayName: name });
         
-        // Send verification email with cross-browser support
-        await sendEmailVerification(user, {
-          url: `https://bit-nest.vercel.app/verify-success.html?email=${encodeURIComponent(email)}`,
+        // Send verification email
+        await auth.currentUser.sendEmailVerification({
+          url: window.location.origin + '/verify-success.html?email=' + encodeURIComponent(email),
           handleCodeInApp: true
         });
         
-        await setDoc(doc(db, "users", user.uid), {
+        // Store user data
+        await db.collection("users").doc(user.uid).set({
           name: name,
           email: email,
           accountType: accountType,
-          createdAt: new Date(),
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           balance: 0,
           lastLogin: null,
           verified: false,
@@ -767,10 +676,9 @@
 
         // Store email for cross-browser verification
         window.localStorage.setItem('emailForVerification', email);
-        verificationEmail = email;
 
+        // Show verification message
         showVerificationMessage(email);
-        startEmailVerificationCheck(user);
         
       } catch (error) {
         console.error('Registration error:', error);
@@ -785,16 +693,16 @@
     // Google registration
     googleSignupBtn.addEventListener('click', async () => {
       try {
-        const result = await signInWithPopup(auth, provider);
+        const result = await auth.signInWithPopup(provider);
         const user = result.user;
         
-        await setDoc(doc(db, "users", user.uid), {
+        await db.collection("users").doc(user.uid).set({
           name: user.displayName,
           email: user.email,
           accountType: 'personal',
-          createdAt: new Date(),
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           balance: 0,
-          lastLogin: new Date(),
+          lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
           verified: true,
           emailVerified: true,
           photoURL: user.photoURL
@@ -813,6 +721,38 @@
       alert('Apple signup coming soon!');
     });
 
+    // Show verification message
+    function showVerificationMessage(email) {
+      signupFormContainer.style.display = 'none';
+      verificationMessage.style.display = 'block';
+      verificationEmailText.innerHTML = `We've sent a verification link to <strong>${email}</strong>. Please check your inbox and click the link to verify your email address.`;
+
+      resendLink.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+          await auth.currentUser.sendEmailVerification({
+            url: window.location.origin + '/verify-success.html?email=' + encodeURIComponent(email),
+            handleCodeInApp: true
+          });
+          alert('Verification email resent successfully!');
+        } catch (error) {
+          console.error('Error resending verification email:', error);
+          alert('Failed to resend verification email. Please try again.');
+        }
+      });
+
+      signOutLink.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+          await auth.signOut();
+          window.location.reload();
+        } catch (error) {
+          console.error('Sign out error:', error);
+        }
+      });
+    }
+
+    // Error message helper
     function getFriendlyErrorMessage(errorCode) {
       switch(errorCode) {
         case 'auth/invalid-email': return 'Please enter a valid email address';

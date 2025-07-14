@@ -121,6 +121,8 @@
 
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
@@ -133,6 +135,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
     const statusIcon = document.getElementById('statusIcon');
     const statusTitle = document.getElementById('statusTitle');
@@ -166,22 +169,99 @@
       actionBtn.style.display = 'inline-block';
     }
 
-    async function checkEmailVerified(email) {
+    async function completeSignIn(email) {
+      try {
+        const result = await auth.signInWithEmailLink(email, window.location.href);
+        window.localStorage.removeItem('emailForVerification');
+        
+        await result.user.reload();
+        if (!result.user.emailVerified) {
+          throw new Error('Email not verified after sign-in');
+        }
+        
+        await db.collection("users").doc(result.user.uid).update({
+          emailVerified: true,
+          verified: true,
+          lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        return true;
+      } catch (error) {
+        console.error('Sign-in error:', error);
+        return false;
+      }
+    }
+
+    async function handleVerification() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const actionCode = urlParams.get('oobCode');
+      const emailParam = urlParams.get('email');
+      const email = emailParam || window.localStorage.getItem('emailForVerification');
+
+      if (email) {
+        verifiedEmailEl.textContent = email;
+      }
+
       try {
         if (auth.isSignInWithEmailLink(window.location.href)) {
-          await auth.signInWithEmailLink(email, window.location.href);
-          return true;
+          if (await completeSignIn(email)) {
+            setUIState('success', "Your email has been successfully verified.");
+            startCountdown("dashboard.html", 3);
+            return;
+          }
         }
-        
-        if (auth.currentUser) {
-          await auth.currentUser.reload();
-          return auth.currentUser.emailVerified;
+
+        if (actionCode) {
+          await auth.applyActionCode(actionCode);
+          
+          if (email) {
+            const methods = await auth.fetchSignInMethodsForEmail(email);
+            if (methods.includes('password')) {
+              setUIState('success', "Email verified! Please sign in with your password.");
+              startCountdown("login.html", 5);
+              return;
+            }
+            
+            if (await completeSignIn(email)) {
+              setUIState('success', "Your email has been successfully verified.");
+              startCountdown("dashboard.html", 3);
+              return;
+            }
+          }
+          
+          setUIState('success', "Email verified successfully!");
+          startCountdown("dashboard.html", 3);
+          return;
         }
-        
-        return false;
+
+        if (email) {
+          const user = auth.currentUser;
+          if (user && user.email === email && user.emailVerified) {
+            setUIState('success', "Your email is already verified.");
+            startCountdown("dashboard.html", 3);
+            return;
+          }
+        }
+
+        setUIState('error', "Invalid verification link or missing parameters.");
+        startCountdown("login.html", 5);
       } catch (error) {
-        console.error('Verification check error:', error);
-        return false;
+        console.error('Verification error:', error);
+        
+        if (error.code === 'auth/invalid-action-code') {
+          if (email) {
+            const user = auth.currentUser;
+            if (user && user.email === email && user.emailVerified) {
+              setUIState('success', "Your email was already verified.");
+              startCountdown("dashboard.html", 3);
+              return;
+            }
+          }
+          setUIState('error', "This verification link has expired or is invalid.");
+        } else {
+          setUIState('error', error.message || "Error completing verification.");
+        }
+        startCountdown("login.html", 5);
       }
     }
 
@@ -201,105 +281,6 @@
       window.countdownInterval = countdownInterval;
     }
 
-    async function handleVerification() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const actionCode = urlParams.get('oobCode');
-      const emailParam = urlParams.get('email');
-      const mode = urlParams.get('mode');
-      const continueUrl = urlParams.get('continueUrl') || 'dashboard.html';
-
-      const email = emailParam ? decodeURIComponent(emailParam) : null;
-      if (email) {
-        verifiedEmailEl.textContent = email;
-      }
-
-      try {
-        if (auth.currentUser) {
-          await auth.currentUser.reload();
-          if (auth.currentUser.emailVerified) {
-            setUIState('success', "Your email is already verified.");
-            startCountdown(continueUrl, 3);
-            return;
-          }
-        }
-
-        if (mode === 'verifyEmail' && actionCode) {
-          await auth.applyActionCode(actionCode);
-          
-          if (auth.isSignInWithEmailLink(window.location.href)) {
-            let emailForSignIn = email || window.localStorage.getItem('emailForSignIn');
-            
-            if (!emailForSignIn) {
-              emailForSignIn = prompt('Please provide your email for confirmation');
-            }
-            
-            if (emailForSignIn) {
-              const result = await auth.signInWithEmailLink(emailForSignIn, window.location.href);
-              window.localStorage.removeItem('emailForSignIn');
-              await result.user.reload();
-              
-              if (!result.user.emailVerified) {
-                throw new Error('Email not verified after reload');
-              }
-              
-              setUIState('success', "Your email has been successfully verified.");
-              startCountdown(continueUrl, 3);
-              return;
-            }
-          }
-          
-          if (email) {
-            const methods = await auth.fetchSignInMethodsForEmail(email);
-            if (methods.length > 0) {
-              setUIState('error', "Please sign in with your existing account.");
-              startCountdown("login.html", 5);
-              return;
-            }
-            
-            setUIState('error', "Please create an account first.");
-            startCountdown("signup.html", 5);
-            return;
-          }
-          
-          throw new Error('Authentication failed');
-        }
-        
-        if (email) {
-          const methods = await auth.fetchSignInMethodsForEmail(email);
-          if (methods.length > 0) {
-            if (await checkEmailVerified(email)) {
-              setUIState('success', "Your email is already verified.");
-              startCountdown(continueUrl, 3);
-            } else {
-              setUIState('error', "Please sign in to complete verification.");
-              startCountdown("login.html", 5);
-            }
-          } else {
-            setUIState('error', "Please create an account first.");
-            startCountdown("signup.html", 5);
-          }
-          return;
-        }
-        
-        setUIState('error', "No verification information found.");
-        startCountdown("login.html", 5);
-      } catch (error) {
-        console.error('Verification error:', error);
-        if (error.code === 'auth/invalid-action-code') {
-          if (email && await checkEmailVerified(email)) {
-            setUIState('success', "Your email was already verified.");
-            startCountdown(continueUrl, 3);
-          } else {
-            setUIState('error', "This verification link has expired or already been used.");
-            startCountdown("login.html", 5);
-          }
-        } else {
-          setUIState('error', error.message || "Error completing verification.");
-          startCountdown("login.html", 5);
-        }
-      }
-    }
-
     actionBtn.addEventListener('click', (e) => {
       e.preventDefault();
       if (window.countdownInterval) {
@@ -308,6 +289,7 @@
       window.location.href = actionBtn.href;
     });
 
+    // Start verification process
     handleVerification();
   </script>
 </body>
