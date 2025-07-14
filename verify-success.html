@@ -57,50 +57,84 @@
     <i class="fas fa-check-circle success-icon"></i>
     <h2>Email Verified Successfully!</h2>
     <p id="verifiedEmail"></p>
-    <div class="countdown" id="countdown">Redirecting in 5 seconds...</div>
-    <button class="primary" id="continueBtn">Continue to Dashboard</button>
+    <div class="countdown" id="countdown">Completing verification...</div>
+    <button class="primary" id="continueBtn" style="display: none;">Continue to Dashboard</button>
+    <div id="transferMessage" style="display: none;">
+      <p>Please wait while we secure your session...</p>
+    </div>
   </div>
 
+  <!-- Add Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <script>
-    // Extract email from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('email');
-    
-    // Display verified email if available
-    if (email) {
-      document.getElementById('verifiedEmail').innerHTML = 
-        `Email <strong>${decodeURIComponent(email)}</strong> has been verified.`;
-    }
+    // Firebase configuration (must match your app)
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.appspot.com",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
+    };
 
-    // Start countdown
-    let seconds = 5;
-    const countdownElement = document.getElementById('countdown');
-    const countdownInterval = setInterval(() => {
-      seconds--;
-      countdownElement.textContent = `Redirecting in ${seconds} seconds...`;
-      if (seconds <= 0) {
-        clearInterval(countdownInterval);
-        redirectToDashboard();
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Handle the verification process
+    async function handleVerification() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const email = urlParams.get('email');
+      const mode = urlParams.get('mode');
+      const oobCode = urlParams.get('oobCode');
+
+      // Display verified email if available
+      if (email) {
+        document.getElementById('verifiedEmail').innerHTML = 
+          `Email <strong>${decodeURIComponent(email)}</strong> has been verified.`;
       }
-    }, 1000);
 
-    // Manual continue button
-    document.getElementById('continueBtn').addEventListener('click', () => {
-      clearInterval(countdownInterval);
-      redirectToDashboard();
-    });
-
-    function redirectToDashboard() {
-      window.location.href = 'dashboard.html';
+      // If this is a Firebase verification redirect
+      if (mode === 'verifyEmail' && oobCode) {
+        document.getElementById('transferMessage').style.display = 'block';
+        
+        try {
+          // Apply the verification code
+          await auth.applyActionCode(oobCode);
+          
+          // Get the user's email from the verification code
+          const verifiedEmail = await auth.checkActionCode(oobCode)
+            .then(info => info.data.email);
+          
+          // Sign in the user (this will persist across browsers)
+          await auth.signInWithEmailLink(verifiedEmail, window.location.href);
+          
+          // Redirect to dashboard
+          window.location.href = 'dashboard.html';
+        } catch (error) {
+          console.error('Verification error:', error);
+          document.getElementById('countdown').textContent = 
+            'Verification complete! Please sign in on your original browser.';
+          document.getElementById('continueBtn').style.display = 'block';
+          document.getElementById('continueBtn').textContent = 'Go to Login';
+          document.getElementById('continueBtn').onclick = () => {
+            window.location.href = 'login.html';
+          };
+        }
+      } else if (email) {
+        // If coming directly with just email parameter
+        document.getElementById('countdown').textContent = 
+          'Verification complete! Please sign in to continue.';
+        document.getElementById('continueBtn').style.display = 'block';
+        document.getElementById('continueBtn').onclick = () => {
+          window.location.href = 'login.html';
+        };
+      }
     }
 
-    // Check for Firebase verification completion
-    if (window.location.search.includes('mode=verifyEmail')) {
-      // This handles the Firebase redirect after verification
-      setTimeout(() => {
-        redirectToDashboard();
-      }, 2000);
-    }
+    // Start the verification process
+    handleVerification();
   </script>
 </body>
 </html>

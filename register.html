@@ -569,7 +569,12 @@
       GoogleAuthProvider,
       signInWithPopup,
       onAuthStateChanged,
-      signOut
+      signOut,
+      applyActionCode,
+      checkActionCode,
+      signInWithEmailLink,
+      isSignInWithEmailLink,
+      sendSignInLinkToEmail
     } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
     import { 
       getFirestore, 
@@ -611,6 +616,9 @@
     const verificationMessage = document.getElementById('verificationMessage');
     const verificationEmailText = document.getElementById('verificationEmailText');
 
+    // Cross-browser verification state
+    let verificationEmail = null;
+
     // Check authentication state
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -618,6 +626,7 @@
           redirectToDashboard(user);
         } else {
           showVerificationMessage(user.email);
+          verificationEmail = user.email;
           startEmailVerificationCheck(user);
         }
       }
@@ -660,7 +669,8 @@
         e.preventDefault();
         try {
           await sendEmailVerification(auth.currentUser, {
-            url: `https://bit-nest.vercel.app/verify-success?email=${encodeURIComponent(email)}`
+            url: `https://bit-nest.vercel.app/verify-success.html?email=${encodeURIComponent(email)}`,
+            handleCodeInApp: true
           });
           alert('Verification email resent successfully!');
         } catch (error) {
@@ -738,9 +748,10 @@
         
         await updateProfile(user, { displayName: name });
         
-        // Send verification email with custom URL
+        // Send verification email with cross-browser support
         await sendEmailVerification(user, {
-          url: `https://bit-nest.vercel.app/verify-success?email=${encodeURIComponent(email)}`
+          url: `https://bit-nest.vercel.app/verify-success.html?email=${encodeURIComponent(email)}`,
+          handleCodeInApp: true
         });
         
         await setDoc(doc(db, "users", user.uid), {
@@ -753,6 +764,10 @@
           verified: false,
           emailVerified: false
         });
+
+        // Store email for cross-browser verification
+        window.localStorage.setItem('emailForVerification', email);
+        verificationEmail = email;
 
         showVerificationMessage(email);
         startEmailVerificationCheck(user);
