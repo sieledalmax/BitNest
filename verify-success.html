@@ -6,6 +6,7 @@
   <title>Email Verified | BitNest</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* [Keep all your existing styles] */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #121212;
@@ -170,6 +171,28 @@
       actionBtn.style.display = 'inline-block';
     }
 
+    // Check if email is already verified
+    async function checkEmailVerified(email) {
+      try {
+        // Try to sign in with email link (works if passwordless enabled)
+        if (auth.isSignInWithEmailLink(window.location.href)) {
+          await auth.signInWithEmailLink(email, window.location.href);
+          return true;
+        }
+        
+        // Check current user
+        if (auth.currentUser) {
+          await auth.currentUser.reload();
+          return auth.currentUser.emailVerified;
+        }
+        
+        return false;
+      } catch (error) {
+        console.error('Verification check error:', error);
+        return false;
+      }
+    }
+
     // Handle verification process
     async function handleVerification() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -178,8 +201,16 @@
       const mode = urlParams.get('mode');
 
       // Display the email being verified
-      if (emailParam) {
-        verifiedEmailEl.textContent = decodeURIComponent(emailParam);
+      const email = emailParam ? decodeURIComponent(emailParam) : null;
+      if (email) {
+        verifiedEmailEl.textContent = email;
+      }
+
+      // First check if email is already verified
+      if (email && await checkEmailVerified(email)) {
+        setUIState('success', "Your email is already verified.");
+        startCountdown("dashboard.html", 3);
+        return;
       }
 
       // If this is a Firebase verification link
@@ -195,19 +226,18 @@
           
           // Check if we need to sign in (cross-browser scenario)
           if (!auth.currentUser) {
-            // Try to get email from localStorage or prompt user
-            let emailForSignIn = window.localStorage.getItem('emailForVerification') || verifiedEmail;
-            
-            if (!emailForSignIn) {
-              emailForSignIn = prompt('Please confirm your email address:');
-              if (!emailForSignIn) {
-                throw new Error('Email required for sign in');
+            // Try passwordless sign-in first
+            if (auth.isSignInWithEmailLink(window.location.href)) {
+              await auth.signInWithEmailLink(verifiedEmail, window.location.href);
+            } else {
+              // Fallback to regular sign-in
+              const credential = await auth.fetchSignInMethodsForEmail(verifiedEmail);
+              if (credential.length > 0) {
+                setUIState('error', "Please sign in with your existing account.");
+                startCountdown("login.html", 5);
+                return;
               }
             }
-            
-            // Sign in with email link
-            await auth.signInWithEmailLink(emailForSignIn, window.location.href);
-            window.localStorage.removeItem('emailForVerification');
           }
           
           // Force refresh of the user token
@@ -230,19 +260,26 @@
         catch (error) {
           console.error('Verification error:', error);
           if (error.code === 'auth/invalid-action-code') {
-            setUIState('error', "This verification link has expired or already been used.");
+            // Check if email is already verified
+            if (email && await checkEmailVerified(email)) {
+              setUIState('success', "Your email was already verified.");
+              startCountdown("dashboard.html", 3);
+            } else {
+              setUIState('error', "This verification link has expired or already been used.");
+              startCountdown("login.html", 5);
+            }
           } else {
             setUIState('error', error.message || "Error completing verification.");
+            startCountdown("login.html", 5);
           }
-          startCountdown("login.html", 5);
           return;
         }
       }
       
       // If we have an email parameter but no action code (direct access)
-      if (emailParam) {
-        // Check if user is already authenticated
-        if (auth.currentUser && auth.currentUser.emailVerified) {
+      if (email) {
+        // Check if user is already verified
+        if (await checkEmailVerified(email)) {
           setUIState('success', "Your email is already verified.");
           startCountdown("dashboard.html", 3);
         } else {
