@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Sign Up | BitNest</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="icons/icon.192.png" type="image/png">
@@ -259,6 +259,16 @@
       box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
     }
 
+    .shake {
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+
     .divider {
       text-align: center;
       margin: 25px 0;
@@ -353,6 +363,7 @@
     .verification-message {
       text-align: center;
       padding: 20px;
+      display: none;
     }
 
     .verification-message i {
@@ -542,7 +553,7 @@
           <div class="lang">🌐 English</div>
         </div>
         
-        <div class="verification-message" id="verificationMessage" style="display: none;">
+        <div class="verification-message" id="verificationMessage">
           <i class="fas fa-envelope"></i>
           <h3>Verify Your Email</h3>
           <p id="verificationEmailText"></p>
@@ -558,7 +569,6 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
@@ -640,29 +650,43 @@
     // Email/password registration
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = nameInput.value;
-      const email = emailInput.value;
+      e.stopPropagation();
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
       const password = passwordInput.value;
       const accountType = document.querySelector('.account-switch button.active').dataset.type;
-      
-      registerText.style.display = 'none';
-      registerSpinner.style.display = 'block';
-      registerBtn.disabled = true;
-      errorMessage.style.display = 'none';
-      
+
+      // Client-side validation
+      if (!name || !email || !password) {
+        showError('Please fill all fields');
+        return;
+      }
+
+      if (password.length < 6) {
+        showError('Password must be at least 6 characters');
+        return;
+      }
+
+      toggleLoading(true);
+
       try {
+        // 1. Create user account
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
-        
-        await firebase.auth().updateProfile(user, { displayName: name });
-        
-        // Send verification email
-        await auth.currentUser.sendEmailVerification({
+
+        // 2. Update profile name
+        await firebase.auth().updateProfile(user, {
+          displayName: name
+        });
+
+        // 3. Send verification email
+        await user.sendEmailVerification({
           url: window.location.origin + '/verify-success.html?email=' + encodeURIComponent(email),
           handleCodeInApp: true
         });
-        
-        // Store user data
+
+        // 4. Save user data to Firestore
         await db.collection("users").doc(user.uid).set({
           name: name,
           email: email,
@@ -674,19 +698,17 @@
           emailVerified: false
         });
 
-        // Store email for cross-browser verification
-        window.localStorage.setItem('emailForVerification', email);
+        // 5. Store email for cross-browser verification
+        localStorage.setItem('emailForVerification', email);
 
-        // Show verification message
+        // 6. Show verification message
         showVerificationMessage(email);
-        
+
       } catch (error) {
         console.error('Registration error:', error);
-        errorMessage.textContent = getFriendlyErrorMessage(error.code);
-        errorMessage.style.display = 'block';
-        registerText.style.display = 'block';
-        registerSpinner.style.display = 'none';
-        registerBtn.disabled = false;
+        showError(getFriendlyErrorMessage(error.code));
+      } finally {
+        toggleLoading(false);
       }
     });
 
@@ -711,8 +733,7 @@
         window.location.href = 'dashboard.html';
       } catch (error) {
         console.error('Google signup error:', error);
-        errorMessage.textContent = getFriendlyErrorMessage(error.code);
-        errorMessage.style.display = 'block';
+        showError(getFriendlyErrorMessage(error.code));
       }
     });
 
@@ -730,7 +751,8 @@
       resendLink.addEventListener('click', async (e) => {
         e.preventDefault();
         try {
-          await auth.currentUser.sendEmailVerification({
+          const user = auth.currentUser;
+          await user.sendEmailVerification({
             url: window.location.origin + '/verify-success.html?email=' + encodeURIComponent(email),
             handleCodeInApp: true
           });
@@ -752,17 +774,41 @@
       });
     }
 
-    // Error message helper
-    function getFriendlyErrorMessage(errorCode) {
-      switch(errorCode) {
-        case 'auth/invalid-email': return 'Please enter a valid email address';
-        case 'auth/email-already-in-use': return 'This email is already registered';
-        case 'auth/weak-password': return 'Password should be at least 6 characters';
-        case 'auth/operation-not-allowed': return 'Email/password accounts are not enabled';
-        case 'auth/popup-closed-by-user': return 'Signup popup was closed';
-        default: return 'Registration failed. Please try again';
-      }
+    // Helper functions
+    function toggleLoading(isLoading) {
+      registerText.style.display = isLoading ? 'none' : 'block';
+      registerSpinner.style.display = isLoading ? 'block' : 'none';
+      registerBtn.disabled = isLoading;
+      errorMessage.style.display = 'none';
     }
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+      registerBtn.classList.add('shake');
+      setTimeout(() => registerBtn.classList.remove('shake'), 500);
+    }
+
+    function getFriendlyErrorMessage(errorCode) {
+      const errors = {
+        'auth/email-already-in-use': 'This email is already registered',
+        'auth/invalid-email': 'Please enter a valid email address',
+        'auth/operation-not-allowed': 'Email/password accounts are not enabled',
+        'auth/weak-password': 'Password must be at least 6 characters',
+        'auth/network-request-failed': 'Network error. Please check your connection',
+        'default': 'Registration failed. Please try again'
+      };
+      return errors[errorCode] || errors['default'];
+    }
+
+    // Check auth state on load
+    auth.onAuthStateChanged((user) => {
+      if (user && user.emailVerified) {
+        window.location.href = 'dashboard.html';
+      } else if (user) {
+        showVerificationMessage(user.email);
+      }
+    });
   </script>
 </body>
 </html>
