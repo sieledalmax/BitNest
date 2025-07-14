@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verified | BitNest</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #121212;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .success-box {
+      background-color: #1e1e1e;
+      padding: 40px;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .success-icon {
+      font-size: 3rem;
+      color: #1ed3c6;
+      margin-bottom: 20px;
+    }
+    .countdown {
+      font-size: 1.2rem;
+      margin: 20px 0;
+      color: #aaa;
+    }
+    .primary {
+      background-color: #1ed3c6;
+      color: black;
+      border: none;
+      padding: 14px 25px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .primary:hover {
+      background-color: #17b3a8;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="success-box">
+    <i class="fas fa-check-circle success-icon"></i>
+    <h2>Email Verified Successfully!</h2>
+    <p>Your email address has been confirmed. You can now access your BitNest account.</p>
+    <div class="countdown" id="countdown">Redirecting in 5 seconds...</div>
+    <button class="primary" id="continueBtn">Continue to Dashboard</button>
+  </div>
+
+  <script>
+    // Start countdown
+    let seconds = 5;
+    const countdownElement = document.getElementById('countdown');
+    const countdownInterval = setInterval(() => {
+      seconds--;
+      countdownElement.textContent = `Redirecting in ${seconds} seconds...`;
+      if (seconds <= 0) {
+        clearInterval(countdownInterval);
+        window.location.href = 'dashboard.html';
+      }
+    }, 1000);
+
+    // Manual continue button
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      clearInterval(countdownInterval);
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+</body>
+</html>

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Sign Up | BitNest</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="icons/icon.192.png" type="image/png">
   <style>
     * {
       box-sizing: border-box;
@@ -38,7 +39,6 @@
       overflow: hidden;
     }
 
-    /* Floating crypto elements */
     .crypto-floaters {
       position: absolute;
       width: 100%;
@@ -56,7 +56,6 @@
       filter: drop-shadow(0 0 5px rgba(30, 211, 198, 0.3));
     }
 
-    /* Add more floating elements with different positions and animations */
     .floater:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; animation-duration: 18s; }
     .floater:nth-child(2) { top: 70%; left: 15%; width: 30px; height: 30px; animation-delay: 2s; animation-duration: 20s; }
     .floater:nth-child(3) { top: 30%; left: 80%; width: 50px; height: 50px; animation-delay: 4s; animation-duration: 15s; }
@@ -341,7 +340,6 @@
       color: #666;
     }
 
-    /* Loading spinner */
     .spinner {
       display: none;
       width: 20px;
@@ -350,6 +348,26 @@
       border-radius: 50%;
       border-top-color: white;
       animation: spin 1s ease-in-out infinite;
+    }
+
+    .verification-message {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .verification-message i {
+      font-size: 3rem;
+      color: #1ed3c6;
+      margin-bottom: 20px;
+    }
+
+    .verification-message h3 {
+      margin-bottom: 15px;
+    }
+
+    .verification-message p {
+      color: #aaa;
+      margin-bottom: 25px;
     }
 
     @keyframes spin {
@@ -444,7 +462,6 @@
 <body>
   <div class="container">
     <div class="left">
-      <!-- Floating crypto elements -->
       <div class="crypto-floaters">
         <img src="crypto-logos/bitcoin.svg" class="floater" alt="Bitcoin">
         <img src="crypto-logos/ethereum-eth-logo.svg" class="floater" alt="Ethereum">
@@ -472,56 +489,71 @@
     </div>
     <div class="right">
       <div class="form-box">
-        <h2>Create your account</h2>
-        
-        <div class="account-switch personal-active" id="accountSwitch">
-          <button class="active" data-type="personal">Personal account</button>
-          <button data-type="business">Business account</button>
-        </div>
-        
-        <form id="registerForm">
-          <div class="form-group">
-            <label for="name">Full name</label>
-            <input type="text" id="name" placeholder="Enter your full name" required>
+        <div id="signupFormContainer">
+          <h2>Create your account</h2>
+          
+          <div class="account-switch personal-active" id="accountSwitch">
+            <button class="active" data-type="personal">Personal account</button>
+            <button data-type="business">Business account</button>
           </div>
           
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="Enter your email" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Create a password" required minlength="6">
-            <div class="password-strength">
-              <div class="strength-bar" id="strengthBar"></div>
+          <form id="registerForm">
+            <div class="form-group">
+              <label for="name">Full name</label>
+              <input type="text" id="name" placeholder="Enter your full name" required>
             </div>
-            <div class="error-message" id="error-message"></div>
+            
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" placeholder="Create a password" required minlength="6">
+              <div class="password-strength">
+                <div class="strength-bar" id="strengthBar"></div>
+              </div>
+              <div class="error-message" id="error-message"></div>
+            </div>
+            
+            <button type="submit" class="primary" id="registerBtn">
+              <span id="registerText">Create account</span>
+              <div class="spinner" id="registerSpinner"></div>
+            </button>
+          </form>
+
+          <div class="divider">OR</div>
+
+          <div class="social-buttons">
+            <button id="googleSignup">
+              <i class="fab fa-google"></i> Continue with Google
+            </button>
+            <button id="appleSignup">
+              <i class="fab fa-apple"></i> Continue with Apple
+            </button>
           </div>
-          
-          <button type="submit" class="primary" id="registerBtn">
-            <span id="registerText">Create account</span>
-            <div class="spinner" id="registerSpinner"></div>
-          </button>
-        </form>
 
-        <div class="divider">OR</div>
+          <div class="login-link">
+            Already have a BitNest account?
+            <a href="login.html">Log in</a>
+          </div>
 
-        <div class="social-buttons">
-          <button id="googleSignup">
-            <i class="fab fa-google"></i> Continue with Google
-          </button>
-          <button id="appleSignup">
-            <i class="fab fa-apple"></i> Continue with Apple
-          </button>
+          <div class="lang">🌐 English</div>
         </div>
-
-        <div class="login-link">
-          Already have a BitNest account?
-          <a href="login.html">Log in</a>
+        
+        <div class="verification-message" id="verificationMessage" style="display: none;">
+          <i class="fas fa-envelope"></i>
+          <h3>Verify Your Email</h3>
+          <p id="verificationEmailText"></p>
+          <p style="color: #666; font-size: 0.9rem;">
+            Didn't receive the email? <a href="#" id="resendLink" style="color: #1ed3c6; text-decoration: none;">Resend verification</a>
+          </p>
+          <p style="color: #666; font-size: 0.9rem; margin-top: 20px;">
+            <a href="#" id="signOutLink" style="color: #666; text-decoration: none;">Sign out and use different email</a>
+          </p>
+          <div class="spinner" style="margin: 20px auto;"></div>
         </div>
-
-        <div class="lang">🌐 English</div>
       </div>
     </div>
   </div>
@@ -533,8 +565,11 @@
       getAuth, 
       createUserWithEmailAndPassword,
       updateProfile,
+      sendEmailVerification,
       GoogleAuthProvider,
-      signInWithPopup
+      signInWithPopup,
+      onAuthStateChanged,
+      signOut
     } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
     import { 
       getFirestore, 
@@ -572,6 +607,124 @@
     const appleSignupBtn = document.getElementById('appleSignup');
     const accountSwitch = document.getElementById('accountSwitch');
     const accountTypeButtons = document.querySelectorAll('.account-switch button');
+    const signupFormContainer = document.getElementById('signupFormContainer');
+    const verificationMessage = document.getElementById('verificationMessage');
+    const verificationEmailText = document.getElementById('verificationEmailText');
+
+    // =============================================
+    // NEW VERIFICATION REDIRECT HANDLING
+    // =============================================
+    const handleVerificationRedirect = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = urlParams.get('mode');
+      
+      if (mode === 'verifyEmail') {
+        try {
+          // Force refresh the user token
+          await auth.currentUser?.reload();
+          
+          if (auth.currentUser?.emailVerified) {
+            // Update Firestore
+            await setDoc(doc(db, "users", auth.currentUser.uid), {
+              emailVerified: true,
+              verified: true,
+              lastLogin: new Date()
+            }, { merge: true });
+            
+            // Redirect to verification success page
+            window.location.href = `verify-success.html?email=${encodeURIComponent(auth.currentUser.email)}`;
+          }
+        } catch (error) {
+          console.error('Verification error:', error);
+        }
+      }
+    };
+
+    // Check on page load
+    handleVerificationRedirect();
+    // =============================================
+
+    // Check authentication state
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        if (user.emailVerified) {
+          // Email is verified, redirect to dashboard
+          redirectToDashboard(user);
+        } else {
+          // Email not verified, show verification message
+          showVerificationMessage(user.email);
+          // Start checking for verification
+          startEmailVerificationCheck(user);
+        }
+      }
+    });
+
+    // Function to redirect to dashboard and update user data
+    async function redirectToDashboard(user) {
+      // Update Firestore that email is verified
+      await setDoc(doc(db, "users", user.uid), {
+        emailVerified: true,
+        verified: true,
+        lastLogin: new Date()
+      }, { merge: true });
+      
+      // Redirect to dashboard
+      window.location.href = 'dashboard.html';
+    }
+
+    // Function to periodically check email verification status
+    function startEmailVerificationCheck(user) {
+      const verificationCheckInterval = setInterval(async () => {
+        try {
+          // Reload the user to get fresh data
+          await user.reload();
+          user = auth.currentUser;
+          
+          if (user.emailVerified) {
+            // Clear the interval and redirect
+            clearInterval(verificationCheckInterval);
+            redirectToDashboard(user);
+          }
+        } catch (error) {
+          console.error('Error checking verification status:', error);
+          clearInterval(verificationCheckInterval);
+        }
+      }, 3000); // Check every 3 seconds
+    }
+
+    // Function to show verification message
+    function showVerificationMessage(email) {
+      signupFormContainer.style.display = 'none';
+      verificationMessage.style.display = 'block';
+      verificationEmailText.innerHTML = `We've sent a verification link to <strong>${email}</strong>. 
+        Please check your inbox and click the link to verify your email address.
+        <br><br>
+        You will be automatically redirected once verified.`;
+
+      // Add event listener for resend link
+      document.getElementById('resendLink').addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+          await sendEmailVerification(auth.currentUser);
+          alert('Verification email resent successfully!');
+        } catch (error) {
+          console.error('Error resending verification email:', error);
+          alert('Failed to resend verification email. Please try again.');
+        }
+      });
+
+      // Add event listener for sign out link
+      document.getElementById('signOutLink').addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+          await signOut(auth);
+          window.location.reload();
+        } catch (error) {
+          console.error('Sign out error:', error);
+        }
+      });
+    }
 
     // Account type switcher
     accountTypeButtons.forEach(button => {
@@ -639,7 +792,11 @@
         // 2. Update profile with displayName
         await updateProfile(user, { displayName: name });
         
-        // 3. Store additional user data in Firestore
+        // 3. Send verification email and store email
+        await sendEmailVerification(user);
+        window.localStorage.setItem('emailForVerification', email);
+        
+        // 4. Store additional user data in Firestore
         await setDoc(doc(db, "users", user.uid), {
           name: name,
           email: email,
@@ -647,11 +804,13 @@
           createdAt: new Date(),
           balance: 0,
           lastLogin: null,
-          verified: false
+          verified: false,
+          emailVerified: false
         });
 
-        // Redirect to dashboard
-        window.location.href = 'dashboard.html';
+        // Show verification message and start checking
+        showVerificationMessage(email);
+        startEmailVerificationCheck(user);
         
       } catch (error) {
         // Handle errors
@@ -681,6 +840,7 @@
           balance: 0,
           lastLogin: new Date(),
           verified: true,
+          emailVerified: true,
           photoURL: user.photoURL
         });
         
