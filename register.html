@@ -558,7 +558,7 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK with Custom Verification URL -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
     import { 
@@ -611,78 +611,35 @@
     const verificationMessage = document.getElementById('verificationMessage');
     const verificationEmailText = document.getElementById('verificationEmailText');
 
-    // =============================================
-    // NEW VERIFICATION REDIRECT HANDLING
-    // =============================================
-    const handleVerificationRedirect = async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const mode = urlParams.get('mode');
-      
-      if (mode === 'verifyEmail') {
-        try {
-          // Force refresh the user token
-          await auth.currentUser?.reload();
-          
-          if (auth.currentUser?.emailVerified) {
-            // Update Firestore
-            await setDoc(doc(db, "users", auth.currentUser.uid), {
-              emailVerified: true,
-              verified: true,
-              lastLogin: new Date()
-            }, { merge: true });
-            
-            // Redirect to verification success page
-            window.location.href = `verify-success.html?email=${encodeURIComponent(auth.currentUser.email)}`;
-          }
-        } catch (error) {
-          console.error('Verification error:', error);
-        }
-      }
-    };
-
-    // Check on page load
-    handleVerificationRedirect();
-    // =============================================
-
     // Check authentication state
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in
         if (user.emailVerified) {
-          // Email is verified, redirect to dashboard
           redirectToDashboard(user);
         } else {
-          // Email not verified, show verification message
           showVerificationMessage(user.email);
-          // Start checking for verification
           startEmailVerificationCheck(user);
         }
       }
     });
 
-    // Function to redirect to dashboard and update user data
     async function redirectToDashboard(user) {
-      // Update Firestore that email is verified
       await setDoc(doc(db, "users", user.uid), {
         emailVerified: true,
         verified: true,
         lastLogin: new Date()
       }, { merge: true });
       
-      // Redirect to dashboard
       window.location.href = 'dashboard.html';
     }
 
-    // Function to periodically check email verification status
     function startEmailVerificationCheck(user) {
       const verificationCheckInterval = setInterval(async () => {
         try {
-          // Reload the user to get fresh data
           await user.reload();
           user = auth.currentUser;
           
           if (user.emailVerified) {
-            // Clear the interval and redirect
             clearInterval(verificationCheckInterval);
             redirectToDashboard(user);
           }
@@ -690,23 +647,21 @@
           console.error('Error checking verification status:', error);
           clearInterval(verificationCheckInterval);
         }
-      }, 3000); // Check every 3 seconds
+      }, 3000);
     }
 
-    // Function to show verification message
     function showVerificationMessage(email) {
       signupFormContainer.style.display = 'none';
       verificationMessage.style.display = 'block';
       verificationEmailText.innerHTML = `We've sent a verification link to <strong>${email}</strong>. 
-        Please check your inbox and click the link to verify your email address.
-        <br><br>
-        You will be automatically redirected once verified.`;
+        Please check your inbox and click the link to verify your email address.`;
 
-      // Add event listener for resend link
       document.getElementById('resendLink').addEventListener('click', async (e) => {
         e.preventDefault();
         try {
-          await sendEmailVerification(auth.currentUser);
+          await sendEmailVerification(auth.currentUser, {
+            url: `https://bit-nest.vercel.app/verify-success?email=${encodeURIComponent(email)}`
+          });
           alert('Verification email resent successfully!');
         } catch (error) {
           console.error('Error resending verification email:', error);
@@ -714,7 +669,6 @@
         }
       });
 
-      // Add event listener for sign out link
       document.getElementById('signOutLink').addEventListener('click', async (e) => {
         e.preventDefault();
         try {
@@ -748,25 +702,20 @@
       const password = passwordInput.value;
       let strength = 0;
       
-      // Length check
       if (password.length > 5) strength += 20;
       if (password.length > 8) strength += 20;
-      
-      // Character type checks
       if (/[A-Z]/.test(password)) strength += 20;
       if (/[0-9]/.test(password)) strength += 20;
       if (/[^A-Za-z0-9]/.test(password)) strength += 20;
       
-      // Update strength bar
       strengthBar.style.width = `${strength}%`;
       
-      // Color coding
       if (strength < 40) {
-        strengthBar.style.background = '#ff6b6b'; // Weak
+        strengthBar.style.background = '#ff6b6b';
       } else if (strength < 80) {
-        strengthBar.style.background = '#feca57'; // Medium
+        strengthBar.style.background = '#feca57';
       } else {
-        strengthBar.style.background = '#1dd1a1'; // Strong
+        strengthBar.style.background = '#1dd1a1';
       }
     });
 
@@ -778,25 +727,22 @@
       const password = passwordInput.value;
       const accountType = document.querySelector('.account-switch button.active').dataset.type;
       
-      // Show loading state
       registerText.style.display = 'none';
       registerSpinner.style.display = 'block';
       registerBtn.disabled = true;
       errorMessage.style.display = 'none';
       
       try {
-        // 1. Create user in Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
-        // 2. Update profile with displayName
         await updateProfile(user, { displayName: name });
         
-        // 3. Send verification email and store email
-        await sendEmailVerification(user);
-        window.localStorage.setItem('emailForVerification', email);
+        // Send verification email with custom URL
+        await sendEmailVerification(user, {
+          url: `https://bit-nest.vercel.app/verify-success?email=${encodeURIComponent(email)}`
+        });
         
-        // 4. Store additional user data in Firestore
         await setDoc(doc(db, "users", user.uid), {
           name: name,
           email: email,
@@ -808,17 +754,13 @@
           emailVerified: false
         });
 
-        // Show verification message and start checking
         showVerificationMessage(email);
         startEmailVerificationCheck(user);
         
       } catch (error) {
-        // Handle errors
         console.error('Registration error:', error);
         errorMessage.textContent = getFriendlyErrorMessage(error.code);
         errorMessage.style.display = 'block';
-        
-        // Reset button state
         registerText.style.display = 'block';
         registerSpinner.style.display = 'none';
         registerBtn.disabled = false;
@@ -831,11 +773,10 @@
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
         
-        // Store additional user data in Firestore
         await setDoc(doc(db, "users", user.uid), {
           name: user.displayName,
           email: user.email,
-          accountType: 'personal', // Default to personal
+          accountType: 'personal',
           createdAt: new Date(),
           balance: 0,
           lastLogin: new Date(),
@@ -857,21 +798,14 @@
       alert('Apple signup coming soon!');
     });
 
-    // Helper function to convert Firebase error codes to friendly messages
     function getFriendlyErrorMessage(errorCode) {
       switch(errorCode) {
-        case 'auth/invalid-email':
-          return 'Please enter a valid email address';
-        case 'auth/email-already-in-use':
-          return 'This email is already registered';
-        case 'auth/weak-password':
-          return 'Password should be at least 6 characters';
-        case 'auth/operation-not-allowed':
-          return 'Email/password accounts are not enabled';
-        case 'auth/popup-closed-by-user':
-          return 'Signup popup was closed';
-        default:
-          return 'Registration failed. Please try again';
+        case 'auth/invalid-email': return 'Please enter a valid email address';
+        case 'auth/email-already-in-use': return 'This email is already registered';
+        case 'auth/weak-password': return 'Password should be at least 6 characters';
+        case 'auth/operation-not-allowed': return 'Email/password accounts are not enabled';
+        case 'auth/popup-closed-by-user': return 'Signup popup was closed';
+        default: return 'Registration failed. Please try again';
       }
     }
   </script>

@@ -56,12 +56,22 @@
   <div class="success-box">
     <i class="fas fa-check-circle success-icon"></i>
     <h2>Email Verified Successfully!</h2>
-    <p>Your email address has been confirmed. You can now access your BitNest account.</p>
+    <p id="verifiedEmail"></p>
     <div class="countdown" id="countdown">Redirecting in 5 seconds...</div>
     <button class="primary" id="continueBtn">Continue to Dashboard</button>
   </div>
 
   <script>
+    // Extract email from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    
+    // Display verified email if available
+    if (email) {
+      document.getElementById('verifiedEmail').innerHTML = 
+        `Email <strong>${decodeURIComponent(email)}</strong> has been verified.`;
+    }
+
     // Start countdown
     let seconds = 5;
     const countdownElement = document.getElementById('countdown');
@@ -70,15 +80,27 @@
       countdownElement.textContent = `Redirecting in ${seconds} seconds...`;
       if (seconds <= 0) {
         clearInterval(countdownInterval);
-        window.location.href = 'dashboard.html';
+        redirectToDashboard();
       }
     }, 1000);
 
     // Manual continue button
     document.getElementById('continueBtn').addEventListener('click', () => {
       clearInterval(countdownInterval);
-      window.location.href = 'dashboard.html';
+      redirectToDashboard();
     });
+
+    function redirectToDashboard() {
+      window.location.href = 'dashboard.html';
+    }
+
+    // Check for Firebase verification completion
+    if (window.location.search.includes('mode=verifyEmail')) {
+      // This handles the Firebase redirect after verification
+      setTimeout(() => {
+        redirectToDashboard();
+      }, 2000);
+    }
   </script>
 </body>
 </html>
