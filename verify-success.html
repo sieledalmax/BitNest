@@ -167,27 +167,38 @@
             // Sign in with email link
             await auth.signInWithEmailLink(emailForSignIn, window.location.href);
             window.localStorage.removeItem('emailForVerification');
-          }
-          
-          // Reload user to get fresh verification status
-          if (auth.currentUser) {
+            
+            // Force refresh of the user token
             await auth.currentUser.reload();
           }
+          
+          // Verify the email is actually marked as verified
+          if (auth.currentUser && !auth.currentUser.emailVerified) {
+            await auth.currentUser.reload();
+            if (!auth.currentUser.emailVerified) {
+              throw new Error('Email not verified after reload');
+            }
+          }
+          
+          // Redirect to dashboard
+          redirectToDashboard();
+          return;
         }
         
-        // If we have a verified user, redirect to dashboard
-        if (auth.currentUser && auth.currentUser.emailVerified) {
-          redirectToDashboard();
-        } else {
-          // If no verification needed but have email param
-          if (emailParam) {
-            countdownEl.textContent = "Verification complete!";
-            spinner.style.display = 'none';
-            continueBtn.style.display = 'inline-block';
-          } else {
-            throw new Error('No verification information found');
+        // If we have an email parameter but no action code (direct access)
+        if (emailParam) {
+          countdownEl.textContent = "Verification complete!";
+          spinner.style.display = 'none';
+          continueBtn.style.display = 'inline-block';
+          
+          // Check if user is already authenticated
+          if (auth.currentUser) {
+            redirectToDashboard();
           }
+          return;
         }
+        
+        throw new Error('No verification information found');
       } catch (error) {
         console.error('Verification error:', error);
         handleVerificationError(error);
@@ -195,11 +206,14 @@
     }
 
     function redirectToDashboard() {
-      window.location.href = 'dashboard.html';
+      // Add small delay to ensure auth state is fully updated
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 500);
     }
 
     function handleVerificationError(error) {
-      errorMessage.textContent = "Verification complete! Please sign in to continue.";
+      errorMessage.textContent = "Verification complete! " + (error.message || "Please sign in to continue.");
       errorMessage.style.display = 'block';
       spinner.style.display = 'none';
       continueBtn.style.display = 'inline-block';
