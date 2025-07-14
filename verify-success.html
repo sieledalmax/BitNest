@@ -31,12 +31,63 @@
       font-size: 3rem;
       color: #1ed3c6;
       margin-bottom: 20px;
+    }
+    .success-icon.verified {
       animation: bounce 1s;
+    }
+    .success-icon.error {
+      color: #ff6b6b;
     }
     .countdown {
       font-size: 1rem;
       margin: 20px 0;
       color: #aaa;
+    }
+    .primary-btn {
+      background-color: #1ed3c6;
+      color: black;
+      border: none;
+      padding: 14px 25px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1rem;
+      margin-top: 20px;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .primary-btn:hover {
+      background-color: #17b3a8;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
+    }
+    .primary-btn.error {
+      background-color: #ff6b6b;
+      color: white;
+    }
+    .primary-btn.error:hover {
+      background-color: #e05555;
+    }
+    .verified-email {
+      font-weight: bold;
+      color: #1ed3c6;
+      word-break: break-all;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-20px);}
+      60% {transform: translateY(-10px);}
     }
     .spinner {
       width: 40px;
@@ -47,33 +98,30 @@
       animation: spin 1s linear infinite;
       margin: 20px auto;
     }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-20px); }
-      60% { transform: translateY(-10px); }
+    .spinner.error {
+      border-top-color: #ff6b6b;
     }
     @keyframes spin {
-      100% { transform: rotate(360deg); }
+      100% {transform: rotate(360deg);}
     }
   </style>
 </head>
 <body>
   <div class="success-box">
-    <i class="fas fa-check-circle success-icon"></i>
-    <h2>Email Verified Successfully!</h2>
-    <p>Your email <span id="verifiedEmail"></span> has been confirmed.</p>
-    <div class="countdown" id="countdown">Redirecting to dashboard...</div>
-    <div class="spinner"></div>
+    <i class="fas fa-check-circle success-icon" id="statusIcon"></i>
+    <h2 id="statusTitle">Email Verification</h2>
+    <p id="statusMessage">Processing your verification...</p>
+    <p>Your email: <span class="verified-email" id="verifiedEmail"></span></p>
+    <div class="countdown" id="countdown"></div>
+    <div class="spinner" id="spinner"></div>
+    <a href="dashboard.html" class="primary-btn" id="actionBtn" style="display: none;">
+      <i class="fas fa-arrow-right"></i> Continue
+    </a>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <script>
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
@@ -83,65 +131,183 @@
       appId: "1:583165336540:web:25719de02e18bc60eb0d19"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Get URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('email');
-    const actionCode = urlParams.get('oobCode');
-    const mode = urlParams.get('mode');
+    const statusIcon = document.getElementById('statusIcon');
+    const statusTitle = document.getElementById('statusTitle');
+    const statusMessage = document.getElementById('statusMessage');
+    const verifiedEmailEl = document.getElementById('verifiedEmail');
+    const countdownEl = document.getElementById('countdown');
+    const actionBtn = document.getElementById('actionBtn');
+    const spinner = document.getElementById('spinner');
 
-    // Display the verified email
-    if (email) {
-      document.getElementById('verifiedEmail').textContent = decodeURIComponent(email);
+    function setUIState(state, message) {
+      if (state === 'success') {
+        statusIcon.classList.add('verified');
+        statusIcon.classList.remove('error');
+        statusTitle.textContent = "Email Verified Successfully!";
+        statusMessage.textContent = message || "You can now access all BitNest features.";
+        actionBtn.className = "primary-btn";
+        actionBtn.innerHTML = '<i class="fas fa-arrow-right"></i> Go to Dashboard';
+        actionBtn.href = "dashboard.html";
+      } 
+      else if (state === 'error') {
+        statusIcon.classList.remove('verified');
+        statusIcon.classList.add('error');
+        statusTitle.textContent = "Verification Error";
+        statusMessage.textContent = message || "There was an error verifying your email.";
+        actionBtn.className = "primary-btn error";
+        actionBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Go to Login';
+        actionBtn.href = "login.html";
+      }
+      
+      spinner.style.display = 'none';
+      actionBtn.style.display = 'inline-block';
     }
 
-    // Handle verification silently
-    async function handleVerification() {
+    async function checkEmailVerified(email) {
       try {
-        // If this is a Firebase verification link
-        if (mode === 'verifyEmail' && actionCode) {
-          try {
-            // Try to apply the verification code
-            await auth.applyActionCode(actionCode);
-          } catch (applyError) {
-            // Ignore "already used" errors since we just want to verify the email
-            if (applyError.code !== 'auth/invalid-action-code') {
-              throw applyError;
-            }
-          }
+        if (auth.isSignInWithEmailLink(window.location.href)) {
+          await auth.signInWithEmailLink(email, window.location.href);
+          return true;
         }
-
-        // Check if we have an email to sign in with
-        const emailToVerify = email || (actionCode ? (await auth.checkActionCode(actionCode)).data.email : null;
         
-        if (emailToVerify) {
-          // Try passwordless sign-in if enabled
-          if (auth.isSignInWithEmailLink(window.location.href)) {
-            await auth.signInWithEmailLink(emailToVerify, window.location.href);
-          }
-          
-          // Reload user to check verification status
-          if (auth.currentUser) {
-            await auth.currentUser.reload();
-          }
+        if (auth.currentUser) {
+          await auth.currentUser.reload();
+          return auth.currentUser.emailVerified;
         }
-
-        // Redirect to dashboard after short delay
-        setTimeout(() => {
-          window.location.href = 'dashboard.html';
-        }, 2000);
-
+        
+        return false;
       } catch (error) {
-        console.error('Silent verification error:', error);
-        // Still redirect to dashboard even if verification fails silently
-        window.location.href = 'dashboard.html';
+        console.error('Verification check error:', error);
+        return false;
       }
     }
 
-    // Start verification process
+    function startCountdown(redirectUrl, seconds) {
+      countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
+      
+      const countdownInterval = setInterval(() => {
+        seconds--;
+        countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
+        
+        if (seconds <= 0) {
+          clearInterval(countdownInterval);
+          window.location.href = redirectUrl;
+        }
+      }, 1000);
+      
+      window.countdownInterval = countdownInterval;
+    }
+
+    async function handleVerification() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const actionCode = urlParams.get('oobCode');
+      const emailParam = urlParams.get('email');
+      const mode = urlParams.get('mode');
+      const continueUrl = urlParams.get('continueUrl') || 'dashboard.html';
+
+      const email = emailParam ? decodeURIComponent(emailParam) : null;
+      if (email) {
+        verifiedEmailEl.textContent = email;
+      }
+
+      try {
+        if (auth.currentUser) {
+          await auth.currentUser.reload();
+          if (auth.currentUser.emailVerified) {
+            setUIState('success', "Your email is already verified.");
+            startCountdown(continueUrl, 3);
+            return;
+          }
+        }
+
+        if (mode === 'verifyEmail' && actionCode) {
+          await auth.applyActionCode(actionCode);
+          
+          if (auth.isSignInWithEmailLink(window.location.href)) {
+            let emailForSignIn = email || window.localStorage.getItem('emailForSignIn');
+            
+            if (!emailForSignIn) {
+              emailForSignIn = prompt('Please provide your email for confirmation');
+            }
+            
+            if (emailForSignIn) {
+              const result = await auth.signInWithEmailLink(emailForSignIn, window.location.href);
+              window.localStorage.removeItem('emailForSignIn');
+              await result.user.reload();
+              
+              if (!result.user.emailVerified) {
+                throw new Error('Email not verified after reload');
+              }
+              
+              setUIState('success', "Your email has been successfully verified.");
+              startCountdown(continueUrl, 3);
+              return;
+            }
+          }
+          
+          if (email) {
+            const methods = await auth.fetchSignInMethodsForEmail(email);
+            if (methods.length > 0) {
+              setUIState('error', "Please sign in with your existing account.");
+              startCountdown("login.html", 5);
+              return;
+            }
+            
+            setUIState('error', "Please create an account first.");
+            startCountdown("signup.html", 5);
+            return;
+          }
+          
+          throw new Error('Authentication failed');
+        }
+        
+        if (email) {
+          const methods = await auth.fetchSignInMethodsForEmail(email);
+          if (methods.length > 0) {
+            if (await checkEmailVerified(email)) {
+              setUIState('success', "Your email is already verified.");
+              startCountdown(continueUrl, 3);
+            } else {
+              setUIState('error', "Please sign in to complete verification.");
+              startCountdown("login.html", 5);
+            }
+          } else {
+            setUIState('error', "Please create an account first.");
+            startCountdown("signup.html", 5);
+          }
+          return;
+        }
+        
+        setUIState('error', "No verification information found.");
+        startCountdown("login.html", 5);
+      } catch (error) {
+        console.error('Verification error:', error);
+        if (error.code === 'auth/invalid-action-code') {
+          if (email && await checkEmailVerified(email)) {
+            setUIState('success', "Your email was already verified.");
+            startCountdown(continueUrl, 3);
+          } else {
+            setUIState('error', "This verification link has expired or already been used.");
+            startCountdown("login.html", 5);
+          }
+        } else {
+          setUIState('error', error.message || "Error completing verification.");
+          startCountdown("login.html", 5);
+        }
+      }
+    }
+
+    actionBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (window.countdownInterval) {
+        clearInterval(window.countdownInterval);
+      }
+      window.location.href = actionBtn.href;
+    });
+
     handleVerification();
   </script>
 </body>
