@@ -381,6 +381,27 @@
       margin-bottom: 25px;
     }
 
+    .verification-success {
+      text-align: center;
+      padding: 20px;
+      display: none;
+    }
+
+    .verification-success i {
+      font-size: 3rem;
+      color: #1ed3c6;
+      margin-bottom: 20px;
+    }
+
+    .verification-success h3 {
+      margin-bottom: 15px;
+    }
+
+    .verification-success p {
+      color: #aaa;
+      margin-bottom: 25px;
+    }
+
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
@@ -563,17 +584,41 @@
           <p style="color: #666; font-size: 0.9rem; margin-top: 20px;">
             <a href="#" id="signOutLink" style="color: #666; text-decoration: none;">Sign out and use different email</a>
           </p>
-          <div class="spinner" style="margin: 20px auto;"></div>
+        </div>
+        
+        <div class="verification-success" id="verificationSuccess">
+          <i class="fas fa-check-circle"></i>
+          <h3>Email Verified Successfully!</h3>
+          <p>Your email address has been successfully verified. You can now access all features of BitNest.</p>
+          <button class="primary" id="continueToDashboard">
+            Continue to Dashboard
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-  
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword,
+      updateProfile,
+      sendEmailVerification,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged,
+      signOut,
+      isSignInWithEmailLink,
+      signInWithEmailLink
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      setDoc 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
@@ -583,10 +628,11 @@
       appId: "1:583165336540:web:25719de02e18bc60eb0d19"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const provider = new firebase.auth.GoogleAuthProvider();
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
     // DOM elements
     const registerForm = document.getElementById('registerForm');
@@ -607,27 +653,73 @@
     const verificationEmailText = document.getElementById('verificationEmailText');
     const resendLink = document.getElementById('resendLink');
     const signOutLink = document.getElementById('signOutLink');
+    const verificationSuccess = document.getElementById('verificationSuccess');
+    const continueToDashboard = document.getElementById('continueToDashboard');
 
-    // Password strength indicator
-    passwordInput.addEventListener('input', () => {
-      const password = passwordInput.value;
-      let strength = 0;
-      
-      if (password.length > 5) strength += 20;
-      if (password.length > 8) strength += 20;
-      if (/[A-Z]/.test(password)) strength += 20;
-      if (/[0-9]/.test(password)) strength += 20;
-      if (/[^A-Za-z0-9]/.test(password)) strength += 20;
-      
-      strengthBar.style.width = `${strength}%`;
-      
-      if (strength < 40) {
-        strengthBar.style.background = '#ff6b6b';
-      } else if (strength < 80) {
-        strengthBar.style.background = '#feca57';
-      } else {
-        strengthBar.style.background = '#1dd1a1';
+    // Check if this is an email verification redirect
+    if (isSignInWithEmailLink(auth, window.location.href)) {
+      handleEmailVerificationRedirect();
+    } else {
+      // Normal page load
+      initAuthStateListener();
+    }
+
+    function initAuthStateListener() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          if (user.emailVerified) {
+            // User is verified, show success message
+            signupFormContainer.style.display = 'none';
+            verificationMessage.style.display = 'none';
+            verificationSuccess.style.display = 'block';
+          } else {
+            // User is logged in but not verified
+            showVerificationMessage(user.email);
+          }
+        }
+      });
+    }
+
+    async function handleEmailVerificationRedirect() {
+      try {
+        // Get the email from local storage
+        let email = localStorage.getItem('emailForVerification');
+        
+        if (!email) {
+          // If missing email, prompt user to enter it
+          email = prompt('Please provide your email for confirmation');
+          if (!email) return;
+        }
+
+        // Complete sign-in with email link
+        await signInWithEmailLink(auth, email, window.location.href);
+        
+        // Clear the email from storage
+        localStorage.removeItem('emailForVerification');
+        
+        // Update UI to show verification success
+        signupFormContainer.style.display = 'none';
+        verificationMessage.style.display = 'none';
+        verificationSuccess.style.display = 'block';
+        
+        // Update user's emailVerified status in Firestore
+        const user = auth.currentUser;
+        if (user) {
+          await setDoc(doc(db, "users", user.uid), {
+            emailVerified: true,
+            lastLogin: new Date()
+          }, { merge: true });
+        }
+      } catch (error) {
+        console.error('Error during email verification:', error);
+        alert('Email verification failed. Please try again.');
+        window.location.href = window.location.origin;
       }
+    }
+
+    // Continue to dashboard button
+    continueToDashboard.addEventListener('click', () => {
+      window.location.href = 'dashboard.html';
     });
 
     // Account type switcher
@@ -647,66 +739,80 @@
       });
     });
 
+    // Password strength indicator
+    passwordInput.addEventListener('input', () => {
+      const password = passwordInput.value;
+      let strength = 0;
+      
+      // Length check
+      if (password.length > 5) strength += 20;
+      if (password.length > 8) strength += 20;
+      
+      // Character type checks
+      if (/[A-Z]/.test(password)) strength += 20;
+      if (/[0-9]/.test(password)) strength += 20;
+      if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+      
+      // Update strength bar
+      strengthBar.style.width = `${strength}%`;
+      
+      // Color coding
+      if (strength < 40) {
+        strengthBar.style.background = '#ff6b6b'; // Weak
+      } else if (strength < 80) {
+        strengthBar.style.background = '#feca57'; // Medium
+      } else {
+        strengthBar.style.background = '#1dd1a1'; // Strong
+      }
+    });
+
     // Email/password registration
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      e.stopPropagation();
-
-      const name = nameInput.value.trim();
-      const email = emailInput.value.trim();
+      const name = nameInput.value;
+      const email = emailInput.value;
       const password = passwordInput.value;
       const accountType = document.querySelector('.account-switch button.active').dataset.type;
-
-      // Client-side validation
-      if (!name || !email || !password) {
-        showError('Please fill all fields');
-        return;
-      }
-
-      if (password.length < 6) {
-        showError('Password must be at least 6 characters');
-        return;
-      }
-
+      
+      // Show loading state
       toggleLoading(true);
-
+      
       try {
-        // 1. Create user account
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        // 1. Create user in Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
-        // 2. Update profile name
-        await firebase.auth().updateProfile(user, {
-          displayName: name
-        });
-
-        // 3. Send verification email
-        await user.sendEmailVerification({
-          url: window.location.origin + '/verify-success.html?email=' + encodeURIComponent(email),
+        
+        // 2. Update profile with displayName
+        await updateProfile(user, { displayName: name });
+        
+        // 3. Store email for verification
+        localStorage.setItem('emailForVerification', email);
+        
+        // 4. Send verification email with proper continue URL
+        await sendEmailVerification(user, {
+          url: window.location.origin,
           handleCodeInApp: true
         });
-
-        // 4. Save user data to Firestore
-        await db.collection("users").doc(user.uid).set({
+        
+        // 5. Store additional user data in Firestore
+        await setDoc(doc(db, "users", user.uid), {
           name: name,
           email: email,
           accountType: accountType,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          createdAt: new Date(),
           balance: 0,
           lastLogin: null,
           verified: false,
           emailVerified: false
         });
 
-        // 5. Store email for cross-browser verification
-        localStorage.setItem('emailForVerification', email);
-
-        // 6. Show verification message
+        // Show verification message
         showVerificationMessage(email);
-
+        
       } catch (error) {
         console.error('Registration error:', error);
-        showError(getFriendlyErrorMessage(error.code));
+        errorMessage.textContent = getFriendlyErrorMessage(error.code);
+        errorMessage.style.display = 'block';
       } finally {
         toggleLoading(false);
       }
@@ -715,16 +821,17 @@
     // Google registration
     googleSignupBtn.addEventListener('click', async () => {
       try {
-        const result = await auth.signInWithPopup(provider);
+        const result = await signInWithPopup(auth, provider);
         const user = result.user;
         
-        await db.collection("users").doc(user.uid).set({
+        // Store additional user data in Firestore
+        await setDoc(doc(db, "users", user.uid), {
           name: user.displayName,
           email: user.email,
           accountType: 'personal',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          createdAt: new Date(),
           balance: 0,
-          lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+          lastLogin: new Date(),
           verified: true,
           emailVerified: true,
           photoURL: user.photoURL
@@ -733,7 +840,8 @@
         window.location.href = 'dashboard.html';
       } catch (error) {
         console.error('Google signup error:', error);
-        showError(getFriendlyErrorMessage(error.code));
+        errorMessage.textContent = getFriendlyErrorMessage(error.code);
+        errorMessage.style.display = 'block';
       }
     });
 
@@ -752,8 +860,8 @@
         e.preventDefault();
         try {
           const user = auth.currentUser;
-          await user.sendEmailVerification({
-            url: window.location.origin + '/verify-success.html?email=' + encodeURIComponent(email),
+          await sendEmailVerification(user, {
+            url: window.location.origin,
             handleCodeInApp: true
           });
           alert('Verification email resent successfully!');
@@ -766,7 +874,7 @@
       signOutLink.addEventListener('click', async (e) => {
         e.preventDefault();
         try {
-          await auth.signOut();
+          await signOut(auth);
           window.location.reload();
         } catch (error) {
           console.error('Sign out error:', error);
@@ -774,7 +882,6 @@
       });
     }
 
-    // Helper functions
     function toggleLoading(isLoading) {
       registerText.style.display = isLoading ? 'none' : 'block';
       registerSpinner.style.display = isLoading ? 'block' : 'none';
@@ -782,33 +889,24 @@
       errorMessage.style.display = 'none';
     }
 
-    function showError(message) {
-      errorMessage.textContent = message;
-      errorMessage.style.display = 'block';
-      registerBtn.classList.add('shake');
-      setTimeout(() => registerBtn.classList.remove('shake'), 500);
-    }
-
     function getFriendlyErrorMessage(errorCode) {
-      const errors = {
-        'auth/email-already-in-use': 'This email is already registered',
-        'auth/invalid-email': 'Please enter a valid email address',
-        'auth/operation-not-allowed': 'Email/password accounts are not enabled',
-        'auth/weak-password': 'Password must be at least 6 characters',
-        'auth/network-request-failed': 'Network error. Please check your connection',
-        'default': 'Registration failed. Please try again'
-      };
-      return errors[errorCode] || errors['default'];
-    }
-
-    // Check auth state on load
-    auth.onAuthStateChanged((user) => {
-      if (user && user.emailVerified) {
-        window.location.href = 'dashboard.html';
-      } else if (user) {
-        showVerificationMessage(user.email);
+      switch(errorCode) {
+        case 'auth/invalid-email':
+          return 'Please enter a valid email address';
+        case 'auth/email-already-in-use':
+          return 'This email is already registered';
+        case 'auth/weak-password':
+          return 'Password must be at least 6 characters';
+        case 'auth/operation-not-allowed':
+          return 'Email/password accounts are not enabled';
+        case 'auth/popup-closed-by-user':
+          return 'Signup popup was closed';
+        case 'auth/network-request-failed':
+          return 'Network error. Please check your connection';
+        default:
+          return 'Registration failed. Please try again';
       }
-    });
+    }
   </script>
 </body>
 </html>
