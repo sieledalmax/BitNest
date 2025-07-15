@@ -51,6 +51,7 @@
       color: var(--text-primary);
       line-height: 1.6;
       overflow-x: hidden;
+      width: 100%;
     }
 
     /* Navbar - Centered with Animations */
@@ -66,6 +67,7 @@
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       transition: all 0.3s ease;
+      width: 100%;
     }
 
     .navbar:hover {
@@ -366,17 +368,20 @@
       background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
       color: black;
       border: none;
-      padding: 12px 20px;
+      padding: 10px 16px;
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-size: 1rem;
+      font-size: 0.9rem;
       white-space: nowrap;
       display: none;
       animation: pulse 2s infinite;
       position: relative;
       overflow: hidden;
+      z-index: 10;
+      box-shadow: 0 4px 15px rgba(249, 212, 35, 0.4);
+      margin: 0 auto;
     }
 
     .install-btn::after {
@@ -402,11 +407,22 @@
 
     .install-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(249, 212, 35, 0.4);
+      box-shadow: 0 6px 20px rgba(249, 212, 35, 0.5);
     }
 
     .install-btn i {
       margin-right: 8px;
+    }
+
+    .install-badge {
+      display: inline-block;
+      background: var(--accent-purple);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      margin-left: 8px;
+      font-weight: 600;
     }
 
     /* Enhanced Main Content */
@@ -415,6 +431,8 @@
       max-width: 1800px;
       margin: 0 auto;
       animation: fadeIn 0.5s ease;
+      width: 100%;
+      overflow: hidden;
     }
 
     @keyframes fadeIn {
@@ -426,13 +444,14 @@
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 1.5rem;
+      width: 100%;
     }
 
     /* Enhanced Welcome Banner */
     .welcome-banner {
       grid-column: span 12;
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
-      padding: 2.5rem;
+      padding: 2.5rem 1.5rem 3.5rem;
       border-radius: var(--border-radius);
       margin-bottom: 1.5rem;
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -442,6 +461,7 @@
       align-items: center;
       position: relative;
       overflow: hidden;
+      width: 100%;
     }
 
     .welcome-banner::before {
@@ -469,9 +489,10 @@
     }
 
     .welcome-content {
-      max-width: 60%;
+      max-width: 100%;
       position: relative;
       z-index: 1;
+      width: 100%;
     }
 
     .welcome-content h1 {
@@ -500,11 +521,13 @@
       display: flex;
       gap: 2rem;
       margin-top: 1.5rem;
+      flex-wrap: wrap;
     }
 
     .stat-item {
       display: flex;
       flex-direction: column;
+      min-width: 100px;
     }
 
     .stat-value {
@@ -526,7 +549,7 @@
     }
 
     .welcome-image {
-      display: flex;
+      display: none;
       flex-wrap: wrap;
       gap: 1rem;
       justify-content: center;
@@ -548,13 +571,14 @@
 
     /* Enhanced Portfolio Summary */
     .portfolio-summary {
-      grid-column: span 8;
+      grid-column: span 12;
       background-color: var(--card-bg);
       padding: 1.75rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
       transition: all 0.3s ease;
+      width: 100%;
     }
 
     .portfolio-summary:hover {
@@ -567,6 +591,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
+      width: 100%;
     }
 
     .section-title {
@@ -610,6 +635,7 @@
     .portfolio-chart {
       height: 200px;
       margin-top: 1.5rem;
+      width: 100%;
     }
 
     .chart-container {
@@ -633,12 +659,66 @@
       box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
     }
 
+    /* Mobile Navigation Card - Only shows on mobile */
+    .mobile-nav-card {
+      display: none;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      width: 100%;
+    }
+
+    .mobile-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    .mobile-nav-item-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: var(--text-primary);
+      min-width: 0;
+    }
+
+    .mobile-nav-item-card:hover {
+      background: rgba(30, 211, 198, 0.1);
+      transform: translateY(-3px);
+    }
+
+    .mobile-nav-item-card i {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .mobile-nav-item-card span {
+      font-size: 0.75rem;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
     /* Enhanced Quick Actions */
     .quick-actions {
-      grid-column: span 4;
+      grid-column: span 12;
       display: grid;
       grid-template-rows: repeat(3, 1fr);
       gap: 1.5rem;
+      width: 100%;
     }
 
     .action-card {
@@ -650,6 +730,7 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      width: 100%;
     }
 
     .action-card::before {
@@ -701,6 +782,7 @@
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1.5rem;
       margin-top: 1.5rem;
+      width: 100%;
     }
 
     .asset-card {
@@ -712,6 +794,7 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      width: 100%;
     }
 
     .asset-card::after {
@@ -741,12 +824,14 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
+      width: 100%;
     }
 
     .asset-info {
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      min-width: 0;
     }
 
     .asset-icon {
@@ -758,6 +843,7 @@
       justify-content: center;
       background: rgba(255, 255, 255, 0.05);
       transition: all 0.3s ease;
+      flex-shrink: 0;
     }
 
     .asset-card:hover .asset-icon {
@@ -777,6 +863,9 @@
 
     .asset-name {
       font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .asset-symbol {
@@ -812,6 +901,7 @@
       display: flex;
       gap: 0.75rem;
       margin-top: 1.5rem;
+      width: 100%;
     }
 
     .asset-btn {
@@ -827,6 +917,7 @@
       gap: 0.5rem;
       font-size: 0.85rem;
       transition: all 0.2s ease;
+      min-width: 0;
     }
 
     .asset-btn:hover {
@@ -856,12 +947,14 @@
     .promo-section {
       grid-column: span 12;
       margin-top: 1.5rem;
+      width: 100%;
     }
 
     .promo-cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1.5rem;
+      width: 100%;
     }
 
     .promo-card {
@@ -876,6 +969,7 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      width: 100%;
     }
 
     .promo-card::before {
@@ -927,6 +1021,7 @@
 
     .promo-content {
       flex: 1;
+      min-width: 0;
     }
 
     .promo-card h3 {
@@ -1054,6 +1149,7 @@
       display: flex;
       gap: 0.75rem;
       margin-bottom: 1.5rem;
+      width: 100%;
     }
 
     .currency-option {
@@ -1149,52 +1245,6 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
-    /* Mobile Navigation Card - Only shows on mobile */
-    .mobile-nav-card {
-      display: none;
-      background-color: var(--card-bg);
-      border-radius: var(--border-radius);
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: var(--box-shadow);
-    }
-
-    .mobile-nav-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
-    }
-
-    .mobile-nav-item-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 0.75rem;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.05);
-      transition: all 0.3s ease;
-      text-decoration: none;
-      color: var(--text-primary);
-    }
-
-    .mobile-nav-item-card:hover {
-      background: rgba(30, 211, 198, 0.1);
-      transform: translateY(-3px);
-    }
-
-    .mobile-nav-item-card i {
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-      color: var(--primary);
-    }
-
-    .mobile-nav-item-card span {
-      font-size: 0.75rem;
-      text-align: center;
-    }
-
     /* Responsive Styles */
     @media (max-width: 1200px) {
       .portfolio-summary {
@@ -1267,7 +1317,7 @@
         display: block;
       }
 
-      /* Move install button to welcome banner */
+      /* Install button styles for mobile */
       .install-btn {
         position: absolute;
         bottom: -20px;
@@ -1276,17 +1326,23 @@
         z-index: 10;
         font-size: 0.9rem;
         padding: 10px 16px;
+        white-space: nowrap;
       }
 
       .navbar .right {
         gap: 1rem;
       }
+
+      /* Adjust mobile nav grid */
+      .mobile-nav-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
 
     @media (max-width: 576px) {
       .welcome-banner {
-        padding: 1.5rem;
-        padding-bottom: 2.5rem; /* Extra space for install button */
+        padding: 1.5rem 1rem 3rem;
+        padding-bottom: 3.5rem; /* Extra space for install button */
       }
       
       .welcome-stats {
@@ -1315,8 +1371,21 @@
         display: none;
       }
 
+      /* Adjust mobile nav grid for smaller screens */
       .mobile-nav-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .mobile-nav-item-card {
+        padding: 0.5rem;
+      }
+
+      .mobile-nav-item-card i {
+        font-size: 1rem;
+      }
+
+      .mobile-nav-item-card span {
+        font-size: 0.65rem;
       }
     }
 
@@ -1338,8 +1407,14 @@
         flex-direction: column;
       }
 
+      /* Adjust mobile nav grid for very small screens */
       .mobile-nav-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .install-btn {
+        font-size: 0.8rem;
+        padding: 8px 12px;
       }
     }
   </style>
@@ -1365,6 +1440,7 @@
     <div class="right">
       <button class="install-btn" id="installBtn">
         <i class="fas fa-download"></i> Install App
+        <span class="install-badge">500 SATS</span>
       </button>
       <div class="notification-bell" id="notificationBell">
         <i class="fas fa-bell"></i>
@@ -1419,36 +1495,6 @@
   <!-- Main Content -->
   <div class="container">
     <div class="dashboard-grid">
-      <!-- Mobile Navigation Card - Only shows on mobile -->
-      <div class="mobile-nav-card">
-        <div class="mobile-nav-grid">
-          <a href="assets.html" class="mobile-nav-item-card">
-            <i class="fas fa-wallet"></i>
-            <span>Assets</span>
-          </a>
-          <a href="earn.html" class="mobile-nav-item-card">
-            <i class="fas fa-percentage"></i>
-            <span>Earn</span>
-          </a>
-          <a href="trading_view.html" class="mobile-nav-item-card">
-            <i class="fas fa-exchange-alt"></i>
-            <span>Trade</span>
-          </a>
-          <a href="P2P.html" class="mobile-nav-item-card">
-            <i class="fas fa-users"></i>
-            <span>P2P</span>
-          </a>
-          <a href="deposit.html" class="mobile-nav-item-card">
-            <i class="fas fa-plus-circle"></i>
-            <span>Deposit</span>
-          </a>
-          <a href="cards.html" class="mobile-nav-item-card">
-            <i class="fas fa-credit-card"></i>
-            <span>Cards</span>
-          </a>
-        </div>
-      </div>
-
       <!-- Welcome Banner -->
       <div class="welcome-banner">
         <div class="welcome-content">
@@ -1509,6 +1555,36 @@
             <div class="chart-bar" style="height: 50%;" data-value="$0.00"></div>
             <div class="chart-bar" style="height: 50%;" data-value="$0.00"></div>
           </div>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Card - Only shows on mobile -->
+      <div class="mobile-nav-card">
+        <div class="mobile-nav-grid">
+          <a href="assets.html" class="mobile-nav-item-card">
+            <i class="fas fa-wallet"></i>
+            <span>Assets</span>
+          </a>
+          <a href="earn.html" class="mobile-nav-item-card">
+            <i class="fas fa-percentage"></i>
+            <span>Earn</span>
+          </a>
+          <a href="trading_view.html" class="mobile-nav-item-card">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Trade</span>
+          </a>
+          <a href="P2P.html" class="mobile-nav-item-card">
+            <i class="fas fa-users"></i>
+            <span>P2P</span>
+          </a>
+          <a href="deposit.html" class="mobile-nav-item-card">
+            <i class="fas fa-plus-circle"></i>
+            <span>Deposit</span>
+          </a>
+          <a href="cards.html" class="mobile-nav-item-card">
+            <i class="fas fa-credit-card"></i>
+            <span>Cards</span>
+          </a>
         </div>
       </div>
 
@@ -1852,7 +1928,7 @@
               installBtn.style.display = 'none';
             }, 3000);
           } else {
-            installBtn.innerHTML = '<i class="fas fa-download"></i> Install App';
+            installBtn.innerHTML = '<i class="fas fa-download"></i> Install App <span class="install-badge">500 SATS</span>';
             installBtn.disabled = false;
           }
           deferredPrompt = null;
