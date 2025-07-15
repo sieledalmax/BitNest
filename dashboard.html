@@ -149,71 +149,63 @@
     }
 
     .notification-bell {
-  position: relative;
-  cursor: pointer;
-}
+      position: relative;
+      cursor: pointer;
+    }
 
-.notification-badge {
-  display: none; /* Hide the badge since we have 0 notifications */
-}
+    .notification-badge {
+      display: none; /* Hide the badge since we have 0 notifications */
+    }
 
-.notification-dropdown {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  background: var(--card-bg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  padding: 1rem;
-  min-width: 300px;
-  z-index: 1001;
-  display: none;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
+    .notification-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 1rem;
+      min-width: 300px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-.notification-dropdown.active {
-  display: block;
-}
+    .notification-dropdown.active {
+      display: block;
+    }
 
-.notification-dropdown p {
-  color: var(--text-secondary);
-  text-align: center;
-  padding: 1rem;
-}
-
-/* Remove the bellShake animation */
+    .notification-dropdown p {
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 1rem;
+    }
 
     .notification-bell:hover {
       transform: translateY(-2px);
     }
 
     .notification-dropdown {
-  /* Same styles as in your deposit page */
-  position: absolute;
-  top: calc(100% + 5px);
-  right: 0;
-  background: var(--card-bg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  padding: 0.5rem 0;
-  min-width: 240px;
-  z-index: 1001;
-  display: none;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-}
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 240px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
 
-.notification-dropdown.active {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-    @keyframes bellShake {
-      0% { transform: rotate(-5deg); }
-      100% { transform: rotate(5deg); }
+    .notification-dropdown.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
 
     @keyframes pulse {
@@ -1157,6 +1149,52 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
+    /* Mobile Navigation Card - Only shows on mobile */
+    .mobile-nav-card {
+      display: none;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+    }
+
+    .mobile-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+
+    .mobile-nav-item-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .mobile-nav-item-card:hover {
+      background: rgba(30, 211, 198, 0.1);
+      transform: translateY(-3px);
+    }
+
+    .mobile-nav-item-card i {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .mobile-nav-item-card span {
+      font-size: 0.75rem;
+      text-align: center;
+    }
+
     /* Responsive Styles */
     @media (max-width: 1200px) {
       .portfolio-summary {
@@ -1223,11 +1261,32 @@
       .stat-value {
         font-size: 1.3rem;
       }
+
+      /* Show mobile nav card */
+      .mobile-nav-card {
+        display: block;
+      }
+
+      /* Move install button to welcome banner */
+      .install-btn {
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        font-size: 0.9rem;
+        padding: 10px 16px;
+      }
+
+      .navbar .right {
+        gap: 1rem;
+      }
     }
 
     @media (max-width: 576px) {
       .welcome-banner {
         padding: 1.5rem;
+        padding-bottom: 2.5rem; /* Extra space for install button */
       }
       
       .welcome-stats {
@@ -1255,6 +1314,10 @@
       .user-name {
         display: none;
       }
+
+      .mobile-nav-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     @media (max-width: 400px) {
@@ -1273,6 +1336,10 @@
       
       .currency-select {
         flex-direction: column;
+      }
+
+      .mobile-nav-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -1299,13 +1366,12 @@
       <button class="install-btn" id="installBtn">
         <i class="fas fa-download"></i> Install App
       </button>
-      <!-- Replace the notification bell section with this: -->
-<div class="notification-bell" id="notificationBell">
-  <i class="fas fa-bell"></i>
-  <div class="notification-dropdown" id="notificationDropdown">
-    <p>No new notifications</p>
-  </div>
-</div>
+      <div class="notification-bell" id="notificationBell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>No new notifications</p>
+        </div>
+      </div>
       <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-bars"></i>
       </button>
@@ -1353,6 +1419,36 @@
   <!-- Main Content -->
   <div class="container">
     <div class="dashboard-grid">
+      <!-- Mobile Navigation Card - Only shows on mobile -->
+      <div class="mobile-nav-card">
+        <div class="mobile-nav-grid">
+          <a href="assets.html" class="mobile-nav-item-card">
+            <i class="fas fa-wallet"></i>
+            <span>Assets</span>
+          </a>
+          <a href="earn.html" class="mobile-nav-item-card">
+            <i class="fas fa-percentage"></i>
+            <span>Earn</span>
+          </a>
+          <a href="trading_view.html" class="mobile-nav-item-card">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Trade</span>
+          </a>
+          <a href="P2P.html" class="mobile-nav-item-card">
+            <i class="fas fa-users"></i>
+            <span>P2P</span>
+          </a>
+          <a href="deposit.html" class="mobile-nav-item-card">
+            <i class="fas fa-plus-circle"></i>
+            <span>Deposit</span>
+          </a>
+          <a href="cards.html" class="mobile-nav-item-card">
+            <i class="fas fa-credit-card"></i>
+            <span>Cards</span>
+          </a>
+        </div>
+      </div>
+
       <!-- Welcome Banner -->
       <div class="welcome-banner">
         <div class="welcome-content">
@@ -1892,24 +1988,22 @@
       });
     });
     
-    // Add this to your existing script in the dashboard page
-const notificationBell = document.getElementById('notificationBell');
-const notificationDropdown = document.getElementById('notificationDropdown');
+    // Notification bell functionality
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
 
-// Toggle notification dropdown
-notificationBell.addEventListener('click', (e) => {
-  e.stopPropagation();
-  notificationDropdown.classList.toggle('active');
-  userMenu.classList.remove('active');
-  mobileNavMenu.classList.remove('active');
-});
+    // Toggle notification dropdown
+    notificationBell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('active');
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+    });
 
-// Close dropdown when clicking outside
-document.addEventListener('click', () => {
-  notificationDropdown.classList.remove('active');
-});
-
-// Remove the notification bell animation code if it exists
+    // Close dropdown when clicking outside
+    document.addEventListener('click', () => {
+      notificationDropdown.classList.remove('active');
+    });
 
     // Initialize all values to 0 when page loads
     document.addEventListener('DOMContentLoaded', initializeZeroValues);
