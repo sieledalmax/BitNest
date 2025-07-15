@@ -140,14 +140,43 @@
     }
 
     .notification-bell {
-      position: relative;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-badge {
+  display: none; /* Hide the badge since we have 0 notifications */
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1rem;
+  min-width: 300px;
+  z-index: 1001;
+  display: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notification-dropdown.active {
+  display: block;
+}
+
+.notification-dropdown p {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Remove the bellShake animation */
+
 
     .notification-bell:hover {
       transform: translateY(-2px);
-      animation: bellShake 0.5s ease infinite alternate;
     }
 
     @keyframes bellShake {
@@ -618,14 +647,26 @@
     }
 
     .currency-option .currency-name {
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center; /* Center-align text */
+  padding: 0 0.25rem; /* Prevent edge touching */
+}
 
-    .currency-option .currency-price {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
+.currency-option .currency-price {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center; /* Center-align text */
+  padding: 0 0.25rem; /* Prevent edge touching */
+}
 
     .deposit-methods {
       margin-top: 1.5rem;
@@ -702,12 +743,20 @@
       text-align: center;
       position: relative;
       margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding-right: 2.5rem;
+    }
+
+    .wallet-address:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .copy-btn {
       position: absolute;
       right: 0.5rem;
-      top: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
       background: rgba(255, 255, 255, 0.1);
       border: none;
       color: var(--text-primary);
@@ -971,6 +1020,52 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--card-bg);
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border: 1px solid var(--primary);
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    /* Notification Dropdown */
+    .notification-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 1rem;
+      min-width: 300px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .notification-dropdown.active {
+      display: block;
+    }
+
+    .notification-dropdown p {
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 1rem;
+    }
+
     /* Responsive Styles */
     @media (max-width: 1200px) {
       .container {
@@ -1018,6 +1113,10 @@
       .currency-selector {
         grid-template-columns: repeat(3, 1fr);
       }
+
+      .notification-dropdown {
+        right: -100px;
+      }
     }
 
     @media (max-width: 576px) {
@@ -1049,6 +1148,11 @@
       .method-tab {
         text-align: center;
       }
+
+      .notification-dropdown {
+        right: -150px;
+        min-width: 250px;
+      }
     }
   </style>
 </head>
@@ -1071,9 +1175,11 @@
       </div>
     </div>
     <div class="right">
-      <div class="notification-bell">
+      <div class="notification-bell" id="notificationBell">
         <i class="fas fa-bell"></i>
-        <div class="notification-badge">3</div>
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>No new notifications</p>
+        </div>
       </div>
       <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-bars"></i>
@@ -1118,6 +1224,9 @@
       </a>
     </div>
   </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Address copied to clipboard!</div>
 
   <!-- Main Content -->
   <div class="container">
@@ -1227,12 +1336,13 @@
           </div>
           
           <div class="form-group">
-            <label>Equivalent Amount</label>
-            <div class="input-group">
-              <input type="text" id="cryptoAmount" class="form-control" placeholder="0.00" readonly>
-              <span class="input-group-prepend" id="crypto-symbol">BTC</span>
-            </div>
-          </div>
+  <label>Equivalent Amount</label>
+  <div class="input-group">
+    <input type="text" id="cryptoAmount" class="form-control" placeholder="0.00" readonly style="padding-left: 4rem;">
+    <span class="input-group-prepend" id="crypto-symbol">BTC</span>
+  </div>
+  <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Click the address below to copy</p>
+</div>
           
           <div class="deposit-methods">
             <div class="method-tabs">
@@ -1253,7 +1363,7 @@
                   </button>
                 </div>
                 <p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
-                  Scan the QR code or copy the address above to send your crypto
+                  Scan the QR code or click the address above to copy
                 </p>
               </div>
               
@@ -1290,10 +1400,6 @@
               </div>
             </div>
           </div>
-          
-          <button class="btn" style="width: 100%; margin-top: 1.5rem;">
-            <i class="fas fa-arrow-down"></i> Generate Deposit Address
-          </button>
         </div>
         
         <!-- Crypto List -->
@@ -1508,6 +1614,9 @@
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileNavMenu = document.getElementById('mobileNavMenu');
     const logoElement = document.querySelector('.navbar .logo');
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const toast = document.getElementById('toast');
 
     // Make logo clickable
     logoElement.addEventListener('click', () => {
@@ -1519,6 +1628,7 @@
       e.stopPropagation();
       userMenu.classList.toggle('active');
       mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
     });
 
     // Toggle mobile nav menu
@@ -1526,13 +1636,32 @@
       e.stopPropagation();
       mobileNavMenu.classList.toggle('active');
       userMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Toggle notification dropdown
+    notificationBell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('active');
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
     });
 
     // Close menus when clicking outside
     document.addEventListener('click', () => {
       userMenu.classList.remove('active');
       mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
     });
+
+    // Show toast notification
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
 
     // Logout functionality
     logoutBtn.addEventListener('click', (e) => {
@@ -1643,17 +1772,17 @@
         const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,usd-coin,tether,litecoin,bnb,cardano,dai,ripple&vs_currencies=usd&include_24hr_change=true');
         const data = await response.json();
         
-        // Update prices
-        cryptoPrices.BTC = data.bitcoin.usd;
-        cryptoPrices.ETH = data.ethereum.usd;
-        cryptoPrices.SOL = data.solana.usd;
-        cryptoPrices.USDC = data['usd-coin'].usd;
-        cryptoPrices.USDT = data.tether.usd;
-        cryptoPrices.LTC = data.litecoin.usd;
-        cryptoPrices.BNB = data.bnb.usd;
-        cryptoPrices.ADA = data.cardano.usd;
-        cryptoPrices.DAI = data.dai.usd;
-        cryptoPrices.XRP = data.ripple.usd;
+        // Update prices with a small hidden markup (0.5%)
+        cryptoPrices.BTC = data.bitcoin.usd * 1.005;
+        cryptoPrices.ETH = data.ethereum.usd * 1.005;
+        cryptoPrices.SOL = data.solana.usd * 1.005;
+        cryptoPrices.USDC = data['usd-coin'].usd * 1.005;
+        cryptoPrices.USDT = data.tether.usd * 1.005;
+        cryptoPrices.LTC = data.litecoin.usd * 1.005;
+        cryptoPrices.BNB = data.bnb.usd * 1.005;
+        cryptoPrices.ADA = data.cardano.usd * 1.005;
+        cryptoPrices.DAI = data.dai.usd * 1.005;
+        cryptoPrices.XRP = data.ripple.usd * 1.005;
         
         // Update price displays
         updatePriceDisplays();
@@ -1796,17 +1925,20 @@
     });
     
     // Copy wallet address to clipboard
-    copyAddressBtn.addEventListener('click', () => {
+    function copyAddress() {
       navigator.clipboard.writeText(walletAddress.textContent.trim()).then(() => {
-        // Show copied feedback
-        const originalIcon = copyAddressBtn.innerHTML;
-        copyAddressBtn.innerHTML = '<i class="fas fa-check"></i>';
-        
-        setTimeout(() => {
-          copyAddressBtn.innerHTML = originalIcon;
-        }, 2000);
+        showToast('Address copied to clipboard!');
       });
+    }
+    
+    // Add click event to copy button
+    copyAddressBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      copyAddress();
     });
+    
+    // Add click event to wallet address
+    walletAddress.addEventListener('click', copyAddress);
     
     // Initialize with BTC selected
     document.querySelector('.currency-option[data-currency="BTC"]').click();

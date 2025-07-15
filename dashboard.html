@@ -149,36 +149,71 @@
     }
 
     .notification-bell {
-      position: relative;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-badge {
+  display: none; /* Hide the badge since we have 0 notifications */
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1rem;
+  min-width: 300px;
+  z-index: 1001;
+  display: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notification-dropdown.active {
+  display: block;
+}
+
+.notification-dropdown p {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Remove the bellShake animation */
 
     .notification-bell:hover {
       transform: translateY(-2px);
-      animation: bellShake 0.5s ease infinite alternate;
     }
+
+    .notification-dropdown {
+  /* Same styles as in your deposit page */
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 0.5rem 0;
+  min-width: 240px;
+  z-index: 1001;
+  display: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.notification-dropdown.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
 
     @keyframes bellShake {
       0% { transform: rotate(-5deg); }
       100% { transform: rotate(5deg); }
-    }
-
-    .notification-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: var(--danger);
-      color: white;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 600;
-      animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
@@ -1264,10 +1299,13 @@
       <button class="install-btn" id="installBtn">
         <i class="fas fa-download"></i> Install App
       </button>
-      <div class="notification-bell">
-        <i class="fas fa-bell"></i>
-        <div class="notification-badge">3</div>
-      </div>
+      <!-- Replace the notification bell section with this: -->
+<div class="notification-bell" id="notificationBell">
+  <i class="fas fa-bell"></i>
+  <div class="notification-dropdown" id="notificationDropdown">
+    <p>No new notifications</p>
+  </div>
+</div>
       <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-bars"></i>
       </button>
@@ -1854,15 +1892,24 @@
       });
     });
     
-    // Notification bell animation
-    const notificationBell = document.querySelector('.notification-bell');
-    notificationBell.addEventListener('click', () => {
-      notificationBell.style.animation = 'bellRing 0.5s ease';
-      setTimeout(() => {
-        notificationBell.style.animation = '';
-      }, 500);
-      alert("You have 3 new notifications!");
-    });
+    // Add this to your existing script in the dashboard page
+const notificationBell = document.getElementById('notificationBell');
+const notificationDropdown = document.getElementById('notificationDropdown');
+
+// Toggle notification dropdown
+notificationBell.addEventListener('click', (e) => {
+  e.stopPropagation();
+  notificationDropdown.classList.toggle('active');
+  userMenu.classList.remove('active');
+  mobileNavMenu.classList.remove('active');
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', () => {
+  notificationDropdown.classList.remove('active');
+});
+
+// Remove the notification bell animation code if it exists
 
     // Initialize all values to 0 when page loads
     document.addEventListener('DOMContentLoaded', initializeZeroValues);

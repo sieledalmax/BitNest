@@ -140,14 +140,42 @@
     }
 
     .notification-bell {
-      position: relative;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-badge {
+  display: none; /* Hide the badge since we have 0 notifications */
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1rem;
+  min-width: 300px;
+  z-index: 1001;
+  display: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notification-dropdown.active {
+  display: block;
+}
+
+.notification-dropdown p {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Remove the bellShake animation */
 
     .notification-bell:hover {
       transform: translateY(-2px);
-      animation: bellShake 0.5s ease infinite alternate;
     }
 
     @keyframes bellShake {
@@ -1276,10 +1304,13 @@
       </div>
     </div>
     <div class="right">
-      <div class="notification-bell">
-        <i class="fas fa-bell"></i>
-        <div class="notification-badge">3</div>
-      </div>
+     <!-- Replace the notification bell section with this: -->
+<div class="notification-bell" id="notificationBell">
+  <i class="fas fa-bell"></i>
+  <div class="notification-dropdown" id="notificationDropdown">
+    <p>No new notifications</p>
+  </div>
+</div>
       <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-bars"></i>
       </button>

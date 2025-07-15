@@ -378,7 +378,7 @@
 
     .verification-message p {
       color: #aaa;
-      margin-bottom: 25px;
+      margin-bottom: 15px;
     }
 
     .verification-success {
@@ -575,16 +575,20 @@
         </div>
         
         <div class="verification-message" id="verificationMessage">
-          <i class="fas fa-envelope"></i>
-          <h3>Verify Your Email</h3>
-          <p id="verificationEmailText"></p>
-          <p style="color: #666; font-size: 0.9rem;">
-            Didn't receive the email? <a href="#" id="resendLink" style="color: #1ed3c6; text-decoration: none;">Resend verification</a>
-          </p>
-          <p style="color: #666; font-size: 0.9rem; margin-top: 20px;">
-            <a href="#" id="signOutLink" style="color: #666; text-decoration: none;">Sign out and use different email</a>
-          </p>
-        </div>
+  <i class="fas fa-envelope"></i>
+  <h3>Verify Your Email</h3>
+  <p id="verificationEmailText"></p>
+  <p style="color: #d40808; font-size: 0.9rem; margin-top: 10px; display: flex; align-items: center; gap: 6px;">
+  <i class="fas fa-info-circle" style="font-size: 2rem;"></i>
+  <span>Can't find the email? Please check your spam or junk folder.</span>
+</p>
+  <p style="color: #666; font-size: 0.9rem;">
+    Didn't receive the email? <a href="#" id="resendLink" style="color: #1ed3c6; text-decoration: none;">Resend verification</a>
+  </p>
+  <p style="color: #666; font-size: 0.9rem; margin-top: 20px;">
+    <a href="#" id="signOutLink" style="color: #666; text-decoration: none;">Sign out and use different email</a>
+  </p>
+</div>
         
         <div class="verification-success" id="verificationSuccess">
           <i class="fas fa-check-circle"></i>
@@ -854,7 +858,7 @@
     function showVerificationMessage(email) {
       signupFormContainer.style.display = 'none';
       verificationMessage.style.display = 'block';
-      verificationEmailText.innerHTML = `We've sent a verification link to <strong>${email}</strong>. Please check your inbox and click the link to verify your email address.`;
+      verificationEmailText.innerHTML = `We've sent a verification link to <strong>${email}</strong>. Please check your inbox (and spam folder) and click the link to verify your email address.`;
 
       resendLink.addEventListener('click', async (e) => {
         e.preventDefault();
