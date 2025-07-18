@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="icons/icon.192.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --primary: #1ed3c6;
@@ -140,70 +141,40 @@
     }
 
     .notification-bell {
-  position: relative;
-  cursor: pointer;
-}
-
-.notification-badge {
-  display: none; /* Hide the badge since we have 0 notifications */
-}
-
-.notification-dropdown {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  background: var(--card-bg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  padding: 1rem;
-  min-width: 300px;
-  z-index: 1001;
-  display: none;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.notification-dropdown.active {
-  display: block;
-}
-
-.notification-dropdown p {
-  color: var(--text-secondary);
-  text-align: center;
-  padding: 1rem;
-}
-
-/* Remove the bellShake animation */
-
-    .notification-bell:hover {
-      transform: translateY(-2px);
-    }
-
-    @keyframes bellShake {
-      0% { transform: rotate(-5deg); }
-      100% { transform: rotate(5deg); }
+      position: relative;
+      cursor: pointer;
     }
 
     .notification-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: var(--danger);
-      color: white;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 600;
-      animation: pulse 2s infinite;
+      display: none;
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+    .notification-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 1rem;
+      min-width: 300px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .notification-dropdown.active {
+      display: block;
+    }
+
+    .notification-dropdown p {
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .notification-bell:hover {
+      transform: translateY(-2px);
     }
 
     .user-profile {
@@ -353,9 +324,75 @@
       padding-left: 2rem;
     }
 
+    /* PWA Install Button */
+    .pwa-install-container {
+      grid-column: span 12;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .pwa-install-btn {
+      background: linear-gradient(135deg, var(--accent-orange), #ff6b35);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(255, 123, 37, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    .pwa-install-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 123, 37, 0.4);
+    }
+
+    .pwa-install-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      transition: all 0.3s;
+    }
+
+    .pwa-install-btn:hover::after {
+      left: 100%;
+    }
+
+    .pwa-install-btn i {
+      transition: transform 0.3s ease;
+    }
+
+    .pwa-install-btn:hover i {
+      transform: translateX(5px);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
     /* Enhanced Main Content */
     .container {
-      padding: 2rem 1.5rem;
+      padding: 1.5rem;
       max-width: 1800px;
       margin: 0 auto;
       animation: fadeIn 0.5s ease;
@@ -369,7 +406,7 @@
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     /* Assets Header */
@@ -378,26 +415,39 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .section-title {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 600;
       display: flex;
       align-items: center;
       gap: 0.75rem;
       color: var(--text-primary);
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .section-title {
+        font-size: 1.5rem;
+      }
     }
 
     .section-title::before {
       content: '';
       display: block;
-      width: 5px;
-      height: 20px;
+      width: 4px;
+      height: 18px;
       background: linear-gradient(var(--primary), var(--accent-blue));
       border-radius: 3px;
-      animation: pulse 2s infinite;
+    }
+
+    @media (min-width: 768px) {
+      .section-title::before {
+        width: 5px;
+        height: 20px;
+      }
     }
 
     .action-buttons {
@@ -409,14 +459,20 @@
     .total-value-card {
       grid-column: span 12;
       background-color: var(--card-bg);
-      padding: 1.75rem;
+      padding: 1.5rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .total-value-card {
+        padding: 1.75rem;
+      }
     }
 
     .total-value-card:hover {
@@ -426,32 +482,80 @@
 
     .total-value-content {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .total-value-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
 
     .total-value-text h2 {
-      font-size: 1.2rem;
+      font-size: 1rem;
       color: var(--text-secondary);
       margin-bottom: 0.5rem;
     }
 
+    @media (min-width: 768px) {
+      .total-value-text h2 {
+        font-size: 1.2rem;
+      }
+    }
+
     .total-value-amount {
-      font-size: 2.5rem;
+      font-size: 1.75rem;
       font-weight: 700;
       color: var(--primary);
       transition: all 0.3s ease;
+      margin-bottom: 0.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .total-value-amount {
+        font-size: 2.5rem;
+        margin-bottom: 0;
+      }
     }
 
     .total-value-card:hover .total-value-amount {
       transform: scale(1.02);
     }
 
+    .portfolio-stats {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .portfolio-stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .stat-value {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
     .portfolio-change {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 1.1rem;
+      font-size: 0.95rem;
+    }
+
+    @media (min-width: 768px) {
+      .portfolio-change {
+        font-size: 1.1rem;
+      }
     }
 
     .positive {
@@ -462,16 +566,46 @@
       color: var(--danger);
     }
 
+    .deposit-promo {
+      background: linear-gradient(135deg, rgba(131, 56, 236, 0.1), rgba(255, 123, 37, 0.1));
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin-top: 1rem;
+      border-left: 3px solid var(--accent-purple);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .deposit-promo i {
+      color: var(--accent-purple);
+      font-size: 1.25rem;
+    }
+
+    .deposit-promo-text {
+      font-size: 0.85rem;
+    }
+
+    .deposit-promo-text strong {
+      color: var(--primary);
+    }
+
     /* Asset Details Table */
     .asset-details {
       grid-column: span 12;
       background-color: var(--card-bg);
-      padding: 1.75rem;
+      padding: 1.25rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .asset-details {
+        padding: 1.75rem;
+      }
     }
 
     .asset-details:hover {
@@ -486,10 +620,18 @@
 
     .asset-table thead th {
       text-align: left;
-      padding: 1rem;
+      padding: 0.75rem;
       color: var(--text-secondary);
       font-weight: 500;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.85rem;
+    }
+
+    @media (min-width: 768px) {
+      .asset-table thead th {
+        padding: 1rem;
+        font-size: 0.9rem;
+      }
     }
 
     .asset-table tbody tr {
@@ -501,19 +643,33 @@
     }
 
     .asset-table td {
-      padding: 1rem;
+      padding: 0.75rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.85rem;
+    }
+
+    @media (min-width: 768px) {
+      .asset-table td {
+        padding: 1rem;
+        font-size: 0.9rem;
+      }
     }
 
     .asset-cell {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 768px) {
+      .asset-cell {
+        gap: 1rem;
+      }
     }
 
     .asset-icon {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -522,15 +678,29 @@
       transition: all 0.3s ease;
     }
 
+    @media (min-width: 768px) {
+      .asset-icon {
+        width: 36px;
+        height: 36px;
+      }
+    }
+
     .asset-table tbody tr:hover .asset-icon {
       transform: rotate(15deg) scale(1.1);
       box-shadow: 0 0 15px rgba(30, 211, 198, 0.3);
     }
 
     .asset-icon img {
-      width: 24px;
-      height: 24px;
+      width: 18px;
+      height: 18px;
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .asset-icon img {
+        width: 24px;
+        height: 24px;
+      }
     }
 
     .asset-table tbody tr:hover .asset-icon img {
@@ -543,7 +713,13 @@
 
     .asset-symbol {
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+    }
+
+    @media (min-width: 768px) {
+      .asset-symbol {
+        font-size: 0.9rem;
+      }
     }
 
     .asset-price {
@@ -558,7 +734,7 @@
     .price-change {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.25rem;
       transition: all 0.3s ease;
     }
 
@@ -567,7 +743,7 @@
     }
 
     .price-change i {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
     }
 
     .asset-balance {
@@ -593,16 +769,24 @@
     }
 
     .asset-btn-table {
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 0.75rem;
       border-radius: 6px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       border: none;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .asset-btn-table {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        gap: 0.5rem;
+      }
     }
 
     .asset-btn-table:hover {
@@ -624,12 +808,18 @@
     .asset-chart {
       grid-column: span 12;
       background-color: var(--card-bg);
-      padding: 1.75rem;
+      padding: 1.25rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .asset-chart {
+        padding: 1.75rem;
+      }
     }
 
     .asset-chart:hover {
@@ -637,33 +827,47 @@
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
     }
 
-    .chart-placeholder {
-      height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 8px;
-      color: var(--text-secondary);
+    .chart-container {
+      height: 250px;
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 300px;
+      }
     }
 
     /* Quick Actions */
     .quick-actions {
       grid-column: span 12;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .quick-actions {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+      }
     }
 
     .action-card {
       background-color: var(--card-bg);
-      padding: 1.5rem;
+      padding: 1.25rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .action-card {
+        padding: 1.5rem;
+      }
     }
 
     .action-card::after {
@@ -689,7 +893,7 @@
     }
 
     .action-card h3 {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       margin-bottom: 0.75rem;
       font-weight: 600;
       display: flex;
@@ -698,22 +902,34 @@
       transition: all 0.3s ease;
     }
 
+    @media (min-width: 768px) {
+      .action-card h3 {
+        font-size: 1.2rem;
+      }
+    }
+
     .action-card:hover h3 {
       transform: translateX(5px);
     }
 
     .action-card p {
       color: var(--text-secondary);
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       margin-bottom: 1.25rem;
       line-height: 1.5;
+    }
+
+    @media (min-width: 768px) {
+      .action-card p {
+        font-size: 0.95rem;
+      }
     }
 
     /* Enhanced Buttons */
     .btn {
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       border: none;
-      padding: 0.75rem 1.75rem;
+      padding: 0.6rem 1.25rem;
       color: #000;
       font-weight: 600;
       cursor: pointer;
@@ -721,11 +937,18 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .btn {
+        padding: 0.75rem 1.75rem;
+        font-size: 0.95rem;
+      }
     }
 
     .btn::before {
@@ -753,6 +976,15 @@
       color: var(--text-primary);
       border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    @media (min-width: 768px) {
+      .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+      }
     }
 
     .btn-secondary:hover {
@@ -760,6 +992,18 @@
       border-color: var(--primary);
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .btn-sm {
+        width: auto;
+      }
     }
 
     /* Modal Backdrop */
@@ -787,7 +1031,7 @@
       max-width: 500px;
       max-height: 90vh;
       border-radius: var(--border-radius);
-      padding: 2rem;
+      padding: 1.5rem;
       box-shadow: var(--box-shadow);
       position: relative;
       transform: scale(0.95);
@@ -795,6 +1039,12 @@
       animation: modalAppear 0.3s ease forwards;
       overflow-y: auto;
       margin: auto;
+    }
+
+    @media (min-width: 768px) {
+      .modal-content {
+        padding: 2rem;
+      }
     }
 
     @keyframes modalAppear {
@@ -822,13 +1072,20 @@
     }
 
     .modal-title {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
       font-weight: 600;
     }
 
+    @media (min-width: 768px) {
+      .modal-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+    }
+
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .form-group label {
@@ -859,7 +1116,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 0.75rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .currency-option {
@@ -892,7 +1149,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .withdraw-option {
@@ -950,7 +1207,7 @@
 
     .option-details {
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-top: 0.5rem;
       padding-left: 2.75rem;
       text-align: left;
@@ -960,18 +1217,18 @@
       background: rgba(255, 82, 82, 0.1);
       padding: 1rem;
       border-radius: 8px;
-      margin: 1.5rem 0;
+      margin: 1.25rem 0;
       border-left: 3px solid var(--danger);
     }
 
     .min-amount-notice h4 {
-      font-size: 1rem;
+      font-size: 0.95rem;
       margin-bottom: 0.5rem;
       color: var(--danger);
     }
 
     .min-amount-notice p {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
     }
 
@@ -979,25 +1236,13 @@
       display: flex;
       justify-content: flex-end;
       gap: 1rem;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
 
     /* Responsive Styles */
     @media (max-width: 1200px) {
       .quick-actions {
         grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 992px) {
-      .container {
-        padding: 1.5rem;
-      }
-      
-      .total-value-content {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
       }
     }
 
@@ -1051,8 +1296,12 @@
         width: 100%;
       }
       
-      .quick-actions {
-        grid-template-columns: 1fr;
+      .user-name {
+        display: none;
+      }
+      
+      .action-card .btn-sm {
+        width: 100%;
       }
     }
 
@@ -1061,32 +1310,14 @@
         padding: 1rem;
       }
       
-      .asset-chart {
-        padding: 1rem;
-      }
-      
-      .chart-placeholder {
-        height: 200px;
-      }
-      
       .mobile-nav-menu {
         right: 5%;
         width: 90%;
       }
       
-      .modal-content {
-        padding: 1.5rem;
-      }
-      
-      .withdraw-option .option-header {
+      .portfolio-stats {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-      }
-      
-      .withdraw-option .option-details {
-        padding-left: 0;
-        padding-top: 0.5rem;
+        gap: 0.75rem;
       }
       
       .currency-select {
@@ -1114,13 +1345,12 @@
       </div>
     </div>
     <div class="right">
-      <!-- Replace the notification bell section with this: -->
-<div class="notification-bell" id="notificationBell">
-  <i class="fas fa-bell"></i>
-  <div class="notification-dropdown" id="notificationDropdown">
-    <p>No new notifications</p>
-  </div>
-</div>
+      <div class="notification-bell" id="notificationBell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>No new notifications</p>
+        </div>
+      </div>
       <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-bars"></i>
       </button>
@@ -1128,38 +1358,38 @@
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
         <span class="user-name" id="userName">Loading...</span>
         <div class="user-menu" id="userMenu">
-          <a href="profile.html" class="user-menu-item" style="padding-left: 20px;">
+          <a href="profile.html" class="user-menu-item">
             <i class="fas fa-user"></i> Profile
           </a>
-          <a href="settings.html" class="user-menu-item" style="padding-left: 20px;">
+          <a href="settings.html" class="user-menu-item">
             <i class="fas fa-cog"></i> Settings
           </a>
-          <a href="index.html" class="user-menu-item" id="logoutBtn" style="padding-left: 20px;">
+          <a href="index.html" class="user-menu-item" id="logoutBtn">
             <i class="fas fa-sign-out-alt"></i> Logout
           </a>
         </div>
       </div>
     </div>
     <div class="mobile-nav-menu" id="mobileNavMenu">
-      <a href="dashboard.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="dashboard.html" class="mobile-nav-item">
         <i class="fas fa-tachometer-alt"></i> Dashboard
       </a>
-      <a href="#" class="mobile-nav-item active" style="padding-left: 20px;">
+      <a href="#" class="mobile-nav-item active">
         <i class="fas fa-wallet"></i> Assets
       </a>
-      <a href="earn.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="earn.html" class="mobile-nav-item">
         <i class="fas fa-percentage"></i> Earn
       </a>
-      <a href="trading_view.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="trading_view.html" class="mobile-nav-item">
         <i class="fas fa-exchange-alt"></i> Trade
       </a>
-      <a href="P2P.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="P2P.html" class="mobile-nav-item">
         <i class="fas fa-users"></i> P2P
       </a>
-      <a href="deposit.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="deposit.html" class="mobile-nav-item">
         <i class="fas fa-plus-circle"></i> Deposit
       </a>
-      <a href="cards.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="cards.html" class="mobile-nav-item">
         <i class="fas fa-credit-card"></i> Cards
       </a>
     </div>
@@ -1168,6 +1398,13 @@
   <!-- Main Content -->
   <div class="container">
     <div class="dashboard-grid">
+      <!-- PWA Install Button -->
+      <div class="pwa-install-container">
+        <button id="installBtn" class="pwa-install-btn">
+          <i class="fas fa-download"></i> Get App + 500 SATS
+        </button>
+      </div>
+
       <!-- Assets Header -->
       <div class="assets-header">
         <h2 class="section-title">My Assets</h2>
@@ -1176,21 +1413,41 @@
             <i class="fas fa-plus-circle"></i> Deposit
           </button>
           <button class="btn btn-secondary" id="withdrawBtn">
-            <i class="fas fa-download"></i> Withdraw
+            <i class="fas fa-arrow-up"></i> Withdraw
           </button>
         </div>
       </div>
       
-      <!-- Total Value Card -->
+      <!-- Total Value Card - Enhanced -->
       <div class="total-value-card">
         <div class="total-value-content">
           <div class="total-value-text">
             <h2>Total Portfolio Value</h2>
             <div class="total-value-amount" id="totalPortfolioValue">$0.00</div>
+            <div class="portfolio-change">
+              <span id="portfolioChange24h">0.0%</span>
+              <span>24h change</span>
+            </div>
           </div>
-          <div class="portfolio-change">
-            <span id="portfolioChange24h">0.0%</span>
-            <span>24h change</span>
+          <div class="portfolio-stats">
+            <div class="portfolio-stat">
+              <div class="stat-label">Available</div>
+              <div class="stat-value">$0.00</div>
+            </div>
+            <div class="portfolio-stat">
+              <div class="stat-label">Staked</div>
+              <div class="stat-value">$0.00</div>
+            </div>
+            <div class="portfolio-stat">
+              <div class="stat-label">In Orders</div>
+              <div class="stat-value">$0.00</div>
+            </div>
+          </div>
+        </div>
+        <div class="deposit-promo">
+          <i class="fas fa-gift"></i>
+          <div class="deposit-promo-text">
+            <strong>Special offer:</strong> Deposit $100+ and get $10 bonus in BTC!
           </div>
         </div>
       </div>
@@ -1368,11 +1625,11 @@
         </table>
       </div>
       
-      <!-- Asset Chart -->
+      <!-- Asset Chart with Real Chart -->
       <div class="asset-chart">
         <h3 class="section-title">Portfolio Allocation</h3>
-        <div class="chart-placeholder">
-          <p>Portfolio allocation chart will be displayed here</p>
+        <div class="chart-container">
+          <canvas id="portfolioChart"></canvas>
         </div>
       </div>
       
@@ -1381,21 +1638,21 @@
         <div class="action-card">
           <h3><i class="fas fa-exchange-alt"></i> Quick Swap</h3>
           <p>Instantly exchange one cryptocurrency for another with low fees.</p>
-          <button class="btn btn-secondary" onclick="window.location.href='trading_view.html'">
+          <button class="btn btn-secondary btn-sm" onclick="window.location.href='trading_view.html'">
             <i class="fas fa-sync-alt"></i> Swap Now
           </button>
         </div>
         <div class="action-card">
           <h3><i class="fas fa-percentage"></i> Earn Interest</h3>
           <p>Start earning daily compound interest on your crypto assets.</p>
-          <button class="btn btn-secondary" onclick="window.location.href='earn.html'">
+          <button class="btn btn-secondary btn-sm" onclick="window.location.href='earn.html'">
             <i class="fas fa-chart-line"></i> Start Earning
           </button>
         </div>
         <div class="action-card">
-          <h3><i class="fas fa-download"></i> Withdraw</h3>
+          <h3><i class="fas fa-arrow-up"></i> Withdraw</h3>
           <p>Withdraw your funds to an external wallet or bank account.</p>
-          <button class="btn btn-secondary" id="quickWithdrawBtn">
+          <button class="btn btn-secondary btn-sm" id="quickWithdrawBtn">
             <i class="fas fa-arrow-up"></i> Withdraw
           </button>
         </div>
@@ -1594,6 +1851,9 @@
     const closeDepositModal = document.getElementById('closeDepositModal');
     const closeWithdrawModal = document.getElementById('closeWithdrawModal');
     const proceedWithdrawBtn = document.getElementById('proceedWithdrawBtn');
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const installBtn = document.getElementById('installBtn');
 
     // Initialize all values to 0
     const initializeZeroValues = () => {
@@ -1622,11 +1882,57 @@
       document.getElementById('usdc-value').textContent = '$0.00';
     };
 
+    // Initialize Portfolio Chart
+    const initPortfolioChart = () => {
+      const ctx = document.getElementById('portfolioChart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Bitcoin', 'Ethereum', 'BNB', 'Solana', 'USDC'],
+          datasets: [{
+            data: [0, 0, 0, 0, 0],
+            backgroundColor: [
+              '#f7931a',
+              '#627eea',
+              '#f3ba2f',
+              '#00ffa3',
+              '#2775ca'
+            ],
+            borderWidth: 0,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '70%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#b0b3b8',
+                padding: 20,
+                font: {
+                  size: 12
+                },
+                usePointStyle: true,
+                pointStyle: 'circle'
+              }
+            }
+          },
+          animation: {
+            animateScale: true,
+            animateRotate: true
+          }
+        }
+      });
+    };
+
     // Toggle user menu
     userProfileElement.addEventListener('click', (e) => {
       e.stopPropagation();
       userMenu.classList.toggle('active');
       mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
     });
 
     // Toggle mobile nav menu
@@ -1634,12 +1940,22 @@
       e.stopPropagation();
       mobileNavMenu.classList.toggle('active');
       userMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Toggle notification dropdown
+    notificationBell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('active');
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
     });
 
     // Close menus when clicking outside
     document.addEventListener('click', () => {
       userMenu.classList.remove('active');
       mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
     });
 
     // Logout functionality
@@ -1719,24 +2035,45 @@
       });
     });
 
-    // Add this to your existing script in the dashboard page
-const notificationBell = document.getElementById('notificationBell');
-const notificationDropdown = document.getElementById('notificationDropdown');
+    // PWA Installation
+    let deferredPrompt;
 
-// Toggle notification dropdown
-notificationBell.addEventListener('click', (e) => {
-  e.stopPropagation();
-  notificationDropdown.classList.toggle('active');
-  userMenu.classList.remove('active');
-  mobileNavMenu.classList.remove('active');
-});
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+      
+      installBtn.addEventListener('click', () => {
+        installBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
+        installBtn.disabled = true;
+        deferredPrompt.prompt();
+        
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User installed the PWA');
+            // Trigger your 500 SATS reward here
+            installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
+            setTimeout(() => {
+              installBtn.style.display = 'none';
+            }, 3000);
+          } else {
+            installBtn.innerHTML = '<i class="fas fa-download"></i> Get App + 500 SATS';
+            installBtn.disabled = false;
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
 
-// Close dropdown when clicking outside
-document.addEventListener('click', () => {
-  notificationDropdown.classList.remove('active');
-});
-
-// Remove the notification bell animation code if it exists
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA was installed');
+      if (installBtn) {
+        installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
+        setTimeout(() => {
+          installBtn.style.display = 'none';
+        }, 2000);
+      }
+    });
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
@@ -1820,6 +2157,7 @@ document.addEventListener('click', () => {
     document.addEventListener('DOMContentLoaded', () => {
       initializeZeroValues();
       fetchCryptoPrices();
+      initPortfolioChart();
       
       // Refresh prices every 60 seconds
       setInterval(fetchCryptoPrices, 60000);
