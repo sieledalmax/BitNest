@@ -44,7 +44,7 @@
       overflow-x: hidden;
     }
 
-    /* Navbar */
+    /* Navbar - Same as before */
     .navbar {
       background-color: var(--glass-effect);
       padding: 1rem 5%;
@@ -323,9 +323,9 @@
       padding-left: 2rem;
     }
 
-    /* Main Content */
+    /* Main Content - Optimized for Mobile */
     .container {
-      padding: 2rem 1.5rem;
+      padding: 1.5rem;
       max-width: 1800px;
       margin: 0 auto;
       animation: fadeIn 0.5s ease;
@@ -339,23 +339,31 @@
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     /* Welcome Banner - Enhanced */
     .welcome-banner {
       grid-column: span 12;
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
-      padding: 2.5rem;
+      padding: 1.5rem;
       border-radius: var(--border-radius);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: var(--box-shadow);
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
       position: relative;
       overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-banner {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 2rem;
+      }
     }
 
     .welcome-banner::before {
@@ -383,20 +391,34 @@
     }
 
     .welcome-content {
-      max-width: 60%;
+      width: 100%;
       position: relative;
       z-index: 1;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-content {
+        max-width: 60%;
+        text-align: left;
+      }
     }
 
     .welcome-content h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       animation: textGlow 2s ease-in-out infinite alternate;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-content h1 {
+        font-size: 2rem;
+      }
     }
 
     @keyframes textGlow {
@@ -406,30 +428,63 @@
 
     .welcome-content p {
       color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      font-size: 1.05rem;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-content p {
+        font-size: 1.05rem;
+      }
     }
 
     .welcome-stats {
-      display: flex;
-      gap: 2rem;
-      margin-bottom: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (min-width: 480px) {
+      .welcome-stats {
+        display: flex;
+        gap: 1.5rem;
+      }
     }
 
     .welcome-stat {
       display: flex;
       flex-direction: column;
+      align-items: center;
+    }
+
+    @media (min-width: 480px) {
+      .welcome-stat {
+        align-items: flex-start;
+      }
     }
 
     .welcome-stat-value {
-      font-size: 1.5rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--text-primary);
     }
 
+    @media (min-width: 768px) {
+      .welcome-stat-value {
+        font-size: 1.3rem;
+      }
+    }
+
     .welcome-stat-label {
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       color: var(--text-secondary);
+    }
+
+    @media (min-width: 768px) {
+      .welcome-stat-label {
+        font-size: 0.85rem;
+      }
     }
 
     .promo-badge {
@@ -438,26 +493,47 @@
       color: white;
       padding: 0.5rem 1rem;
       border-radius: 20px;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       box-shadow: 0 4px 15px rgba(131, 56, 236, 0.3);
+    }
+
+    @media (min-width: 768px) {
+      .promo-badge {
+        font-size: 0.9rem;
+      }
     }
 
     .welcome-image {
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 0.75rem;
       justify-content: center;
       align-items: center;
       position: relative;
       z-index: 1;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-image {
+        margin-top: 0;
+        gap: 1rem;
+      }
     }
 
     .welcome-image .crypto-icon {
-      width: 50px;
-      height: 50px;
+      width: 36px;
+      height: 36px;
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-image .crypto-icon {
+        width: 50px;
+        height: 50px;
+      }
     }
 
     .welcome-image .crypto-icon:hover {
@@ -469,22 +545,37 @@
     .portfolio-overview {
       grid-column: span 12;
       background-color: var(--card-bg);
-      padding: 1.75rem;
+      padding: 1.25rem;
       border-radius: var(--border-radius);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
     }
 
+    @media (min-width: 768px) {
+      .portfolio-overview {
+        padding: 1.75rem;
+      }
+    }
+
     .section-header {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .section-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0;
+      }
     }
 
     .section-title {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 600;
       display: flex;
       align-items: center;
@@ -493,22 +584,41 @@
       position: relative;
     }
 
+    @media (min-width: 768px) {
+      .section-title {
+        font-size: 1.5rem;
+      }
+    }
+
     .section-title::before {
       content: '';
       display: block;
-      width: 5px;
-      height: 20px;
+      width: 4px;
+      height: 18px;
       background: linear-gradient(var(--primary), var(--accent-blue));
       border-radius: 3px;
     }
 
+    @media (min-width: 768px) {
+      .section-title::before {
+        width: 5px;
+        height: 20px;
+      }
+    }
+
     .portfolio-chart {
-      height: 200px;
+      height: 150px;
       background: rgba(255, 255, 255, 0.03);
       border-radius: var(--border-radius);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       position: relative;
       overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .portfolio-chart {
+        height: 200px;
+      }
     }
 
     .chart-line {
@@ -526,24 +636,39 @@
       left: 50%;
       transform: translate(-50%, -50%);
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       text-align: center;
+      width: 100%;
+      padding: 0 1rem;
     }
 
     .portfolio-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .portfolio-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.25rem;
+      }
     }
 
     .portfolio-card {
       background: rgba(255, 255, 255, 0.05);
       border-radius: var(--border-radius);
-      padding: 1.5rem;
+      padding: 1rem;
       border: 1px solid rgba(255, 255, 255, 0.05);
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .portfolio-card {
+        padding: 1.25rem;
+      }
     }
 
     .portfolio-card::before {
@@ -565,7 +690,7 @@
 
     .portfolio-label {
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       margin-bottom: 0.5rem;
       display: flex;
       align-items: center;
@@ -574,22 +699,40 @@
       z-index: 1;
     }
 
+    @media (min-width: 768px) {
+      .portfolio-label {
+        font-size: 0.9rem;
+      }
+    }
+
     .portfolio-value {
-      font-size: 1.8rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--text-primary);
       position: relative;
       z-index: 1;
     }
 
+    @media (min-width: 768px) {
+      .portfolio-value {
+        font-size: 1.5rem;
+      }
+    }
+
     .portfolio-change {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       margin-top: 0.5rem;
       display: flex;
       align-items: center;
       gap: 0.25rem;
       position: relative;
       z-index: 1;
+    }
+
+    @media (min-width: 768px) {
+      .portfolio-change {
+        font-size: 0.9rem;
+      }
     }
 
     .change-positive {
@@ -604,22 +747,28 @@
       color: var(--text-secondary);
     }
 
-    /* Navigation Card - Mobile Only */
+    /* Mobile Navigation Card - Only shows on mobile */
     .mobile-nav-card {
       display: none;
       grid-column: span 12;
       background-color: var(--card-bg);
-      padding: 1.5rem;
+      padding: 1rem;
       border-radius: var(--border-radius);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
+    }
+
+    @media (max-width: 768px) {
+      .mobile-nav-card {
+        display: block;
+      }
     }
 
     .mobile-nav-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     .mobile-nav-btn {
@@ -629,7 +778,7 @@
       justify-content: center;
       background: rgba(255, 255, 255, 0.05);
       border-radius: 12px;
-      padding: 1rem;
+      padding: 0.75rem;
       text-decoration: none;
       color: var(--text-primary);
       transition: all 0.3s ease;
@@ -643,35 +792,48 @@
     }
 
     .mobile-nav-icon {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       margin-bottom: 0.5rem;
       color: var(--primary);
     }
 
     .mobile-nav-label {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: 500;
       text-align: center;
     }
 
-    /* Feature Cards */
+    /* Feature Cards - Compact on Mobile */
     .feature-cards {
       grid-column: span 12;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .feature-cards {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+      }
     }
 
     .feature-card {
       background: var(--card-bg);
       border-radius: var(--border-radius);
-      padding: 1.75rem;
+      padding: 1.25rem;
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .feature-card {
+        padding: 1.5rem;
+      }
     }
 
     .feature-card::before {
@@ -691,59 +853,233 @@
     }
 
     .feature-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
       color: var(--primary);
       position: relative;
       z-index: 1;
     }
 
+    @media (min-width: 768px) {
+      .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+    }
+
     .feature-title {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
       position: relative;
       z-index: 1;
+    }
+
+    @media (min-width: 768px) {
+      .feature-title {
+        font-size: 1.2rem;
+        margin-bottom: 0.75rem;
+      }
     }
 
     .feature-desc {
       color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
       position: relative;
       z-index: 1;
     }
 
-    /* Crypto Market Section - New */
+    @media (min-width: 768px) {
+      .feature-desc {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+      }
+    }
+
+    /* Feature Carousel - Replaces News Section */
+    .feature-carousel {
+      grid-column: span 12;
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+      height: 280px;
+    }
+
+    @media (min-width: 768px) {
+      .feature-carousel {
+        padding: 1.75rem;
+        height: 320px;
+      }
+    }
+
+    .carousel-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 1.25rem;
+      opacity: 0;
+      transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .carousel-slide {
+        padding: 2rem;
+      }
+    }
+
+    .carousel-slide.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .carousel-slide.next {
+      transform: translateX(100%);
+    }
+
+    .carousel-slide.prev {
+      transform: translateX(-100%);
+    }
+
+    .carousel-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      animation: bounce 2s infinite;
+    }
+
+    @media (min-width: 768px) {
+      .carousel-icon {
+        font-size: 3rem;
+      }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-20px); }
+      60% { transform: translateY(-10px); }
+    }
+
+    .carousel-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    @media (min-width: 768px) {
+      .carousel-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    .carousel-desc {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      max-width: 600px;
+    }
+
+    @media (min-width: 768px) {
+      .carousel-desc {
+        font-size: 1.05rem;
+      }
+    }
+
+    .carousel-indicators {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      z-index: 10;
+    }
+
+    .carousel-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-secondary);
+      opacity: 0.5;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .carousel-indicator.active {
+      background: var(--primary);
+      opacity: 1;
+      transform: scale(1.2);
+    }
+
+    /* Market Overview - Optimized for Mobile */
     .market-section {
       grid-column: span 12;
       background-color: var(--card-bg);
-      padding: 1.75rem;
+      padding: 1.25rem;
       border-radius: var(--border-radius);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
+      overflow-x: auto;
+    }
+
+    @media (min-width: 768px) {
+      .market-section {
+        padding: 1.75rem;
+      }
     }
 
     .market-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
+      min-width: 600px;
     }
 
     .market-table th {
       text-align: left;
-      padding: 1rem;
+      padding: 0.75rem;
       background: rgba(255, 255, 255, 0.05);
       color: var(--text-secondary);
       font-weight: 500;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+    }
+
+    @media (min-width: 768px) {
+      .market-table th {
+        padding: 1rem;
+        font-size: 0.9rem;
+      }
     }
 
     .market-table td {
-      padding: 1rem;
+      padding: 0.75rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+    }
+
+    @media (min-width: 768px) {
+      .market-table td {
+        padding: 1rem;
+        font-size: 0.9rem;
+      }
     }
 
     .market-table tr:last-child td {
@@ -757,29 +1093,56 @@
     .crypto-info {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     .crypto-icon-small {
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .crypto-icon-small {
+        width: 24px;
+        height: 24px;
+      }
     }
 
     .crypto-name {
       font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    @media (min-width: 768px) {
+      .crypto-name {
+        font-size: 0.9rem;
+      }
     }
 
     .crypto-symbol {
       color: var(--text-secondary);
-      font-size: 0.85rem;
+      font-size: 0.75rem;
+    }
+
+    @media (min-width: 768px) {
+      .crypto-symbol {
+        font-size: 0.85rem;
+      }
     }
 
     .price-change {
       display: inline-block;
-      padding: 0.25rem 0.75rem;
+      padding: 0.25rem 0.5rem;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       font-weight: 600;
+    }
+
+    @media (min-width: 768px) {
+      .price-change {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.85rem;
+      }
     }
 
     .price-up {
@@ -792,86 +1155,11 @@
       color: var(--danger);
     }
 
-    /* News Section - New */
-    .news-section {
-      grid-column: span 12;
-      background-color: var(--card-bg);
-      padding: 1.75rem;
-      border-radius: var(--border-radius);
-      margin-bottom: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: var(--box-shadow);
-    }
-
-    .news-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .news-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .news-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    }
-
-    .news-image {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-
-    .news-content {
-      padding: 1.25rem;
-    }
-
-    .news-source {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--text-secondary);
-      font-size: 0.8rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .news-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-      line-height: 1.4;
-    }
-
-    .news-desc {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .news-time {
-      color: var(--text-secondary);
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    /* Enhanced Buttons */
+    /* Enhanced Buttons - Smaller on Mobile */
     .btn {
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       border: none;
-      padding: 0.75rem 1.75rem;
+      padding: 0.6rem 1.25rem;
       color: #000;
       font-weight: 600;
       cursor: pointer;
@@ -879,11 +1167,18 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .btn {
+        padding: 0.75rem 1.75rem;
+        font-size: 0.95rem;
+      }
     }
 
     .btn::before {
@@ -911,6 +1206,15 @@
       color: var(--text-primary);
       border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+    }
+
+    @media (min-width: 768px) {
+      .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+      }
     }
 
     .btn-secondary:hover {
@@ -922,41 +1226,26 @@
 
     .btn-sm {
       padding: 0.5rem 1rem;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+    }
+
+    @media (min-width: 768px) {
+      .btn-sm {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.85rem;
+      }
     }
 
     /* Responsive Styles */
     @media (max-width: 1200px) {
-      .news-grid {
+      .feature-cards {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
     @media (max-width: 992px) {
       .container {
-        padding: 1.5rem;
-      }
-      
-      .welcome-banner {
-        flex-direction: column;
-        text-align: center;
-      }
-      
-      .welcome-content {
-        max-width: 100%;
-        margin-bottom: 1.5rem;
-      }
-      
-      .welcome-stats {
-        justify-content: center;
-      }
-      
-      .welcome-image {
-        margin-top: 1rem;
-      }
-      
-      .feature-cards {
-        grid-template-columns: repeat(2, 1fr);
+        padding: 1.25rem;
       }
     }
 
@@ -969,57 +1258,32 @@
         display: block;
       }
       
-      .portfolio-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .feature-cards {
+        grid-template-columns: 1fr;
       }
       
-      .mobile-nav-card {
-        display: block;
-      }
-      
-      .welcome-content h1 {
-        font-size: 1.8rem;
-      }
-
-      .portfolio-value {
-        font-size: 1.5rem;
-      }
-
       .user-name {
         display: none;
-      }
-      
-      .news-grid {
-        grid-template-columns: 1fr;
       }
     }
 
     @media (max-width: 576px) {
       .welcome-banner {
-        padding: 1.5rem;
+        padding: 1.25rem;
       }
       
       .welcome-stats {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      .feature-cards {
-        grid-template-columns: 1fr;
-      }
-      
-      .mobile-nav-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
       }
       
       .promo-badge {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         padding: 0.4rem 0.8rem;
       }
       
       .welcome-image .crypto-icon {
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
       }
 
       .mobile-nav-menu {
@@ -1034,12 +1298,16 @@
       }
       
       .btn {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
       }
       
       .portfolio-grid {
         grid-template-columns: 1fr;
+      }
+      
+      .mobile-nav-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -1273,83 +1541,98 @@
         </div>
       </div>
 
-      <!-- Crypto Market Section - New -->
+      <!-- Market Overview - Optimized for Mobile -->
       <div class="market-section">
         <div class="section-header">
           <h2 class="section-title">Market Overview</h2>
-          <button class="btn-secondary">
+          <button class="btn-secondary" id="refreshMarketData">
             <i class="fas fa-sync-alt"></i> Refresh
           </button>
         </div>
-        <table class="market-table">
-          <thead>
-            <tr>
-              <th>Asset</th>
-              <th>Price</th>
-              <th>24h Change</th>
-              <th>Market Cap</th>
-            </tr>
-          </thead>
-          <tbody id="marketData">
-            <tr>
-              <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-                Loading market data...
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div style="overflow-x: auto;">
+          <table class="market-table">
+            <thead>
+              <tr>
+                <th>Asset</th>
+                <th>Price</th>
+                <th>24h Change</th>
+                <th>Market Cap</th>
+              </tr>
+            </thead>
+            <tbody id="marketData">
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                  Loading market data...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <!-- News Section - New -->
-      <div class="news-section">
-        <div class="section-header">
-          <h2 class="section-title">Crypto News</h2>
-          <button class="btn-secondary">
-            <i class="fas fa-newspaper"></i> More News
+      <!-- Feature Carousel - Replaces News Section -->
+      <div class="feature-carousel">
+        <div class="carousel-slide active" data-index="0">
+          <div class="carousel-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+          <h3 class="carousel-title">Earn Up To 67% APR</h3>
+          <p class="carousel-desc">Lock your crypto assets and earn industry-leading interest rates with our flexible staking options. The longer you lock, the higher your rewards!</p>
+          <button class="btn" onclick="window.location.href='earn.html'">
+            <i class="fas fa-percentage"></i> Start Earning
           </button>
         </div>
-        <div class="news-grid" id="newsGrid">
-          <div class="news-card">
-            <img src="https://images.unsplash.com/photo-1639762681057-408e52192e55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Crypto News" class="news-image">
-            <div class="news-content">
-              <div class="news-source">
-                <i class="fas fa-globe"></i> CryptoNews
-              </div>
-              <h3 class="news-title">Bitcoin Surges Past $30,000 Amid Institutional Interest</h3>
-              <p class="news-desc">Bitcoin has broken through the $30,000 resistance level as institutional investors continue to show strong interest in the cryptocurrency market.</p>
-              <div class="news-time">
-                <i class="far fa-clock"></i> 2 hours ago
-              </div>
-            </div>
+        
+        <div class="carousel-slide" data-index="1">
+          <div class="carousel-icon">
+            <i class="fas fa-credit-card"></i>
           </div>
-          
-          <div class="news-card">
-            <img src="https://images.unsplash.com/photo-1621761191319-c6fb62004040?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Crypto News" class="news-image">
-            <div class="news-content">
-              <div class="news-source">
-                <i class="fas fa-globe"></i> CoinDesk
-              </div>
-              <h3 class="news-title">Ethereum 2.0 Upgrade Nears Completion</h3>
-              <p class="news-desc">The final phase of Ethereum's transition to proof-of-stake is expected to be completed by Q4 2023, bringing scalability improvements.</p>
-              <div class="news-time">
-                <i class="far fa-clock"></i> 5 hours ago
-              </div>
-            </div>
+          <h3 class="carousel-title">Crypto Visa Card</h3>
+          <p class="carousel-desc">Spend your crypto anywhere Visa is accepted. Get 5% cashback on all purchases for the first 3 months and enjoy zero foreign transaction fees.</p>
+          <button class="btn" onclick="window.location.href='cards.html'">
+            <i class="fas fa-credit-card"></i> Get Your Card
+          </button>
+        </div>
+        
+        <div class="carousel-slide" data-index="2">
+          <div class="carousel-icon">
+            <i class="fas fa-exchange-alt"></i>
           </div>
-          
-          <div class="news-card">
-            <img src="https://images.unsplash.com/photo-1639762681057-408e52192e55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Crypto News" class="news-image">
-            <div class="news-content">
-              <div class="news-source">
-                <i class="fas fa-globe"></i> Decrypt
-              </div>
-              <h3 class="news-title">Regulatory Changes Coming to Crypto Markets</h3>
-              <p class="news-desc">Global regulators are working on new frameworks to govern cryptocurrency markets while balancing innovation and investor protection.</p>
-              <div class="news-time">
-                <i class="far fa-clock"></i> 1 day ago
-              </div>
-            </div>
+          <h3 class="carousel-title">Advanced Trading</h3>
+          <p class="carousel-desc">Access professional trading tools with our advanced platform. Enjoy low fees, high liquidity, and real-time market data for all your trading needs.</p>
+          <button class="btn" onclick="window.location.href='trading_view.html'">
+            <i class="fas fa-chart-line"></i> Start Trading
+          </button>
+        </div>
+        
+        <div class="carousel-slide" data-index="3">
+          <div class="carousel-icon">
+            <i class="fas fa-users"></i>
           </div>
+          <h3 class="carousel-title">P2P Marketplace</h3>
+          <p class="carousel-desc">Buy and sell crypto directly with other users at rates you choose. Our escrow system ensures safe and secure transactions every time.</p>
+          <button class="btn" onclick="window.location.href='P2P.html'">
+            <i class="fas fa-handshake"></i> Explore P2P
+          </button>
+        </div>
+        
+        <div class="carousel-slide" data-index="4">
+          <div class="carousel-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3 class="carousel-title">Bank-Level Security</h3>
+          <p class="carousel-desc">Your assets are protected with multi-signature cold storage, 2FA, and biometric authentication. We prioritize security above all else.</p>
+          <button class="btn" onclick="window.location.href='security.html'">
+            <i class="fas fa-lock"></i> Learn More
+          </button>
+        </div>
+        
+        <div class="carousel-indicators">
+          <div class="carousel-indicator active" data-index="0"></div>
+          <div class="carousel-indicator" data-index="1"></div>
+          <div class="carousel-indicator" data-index="2"></div>
+          <div class="carousel-indicator" data-index="3"></div>
+          <div class="carousel-indicator" data-index="4"></div>
         </div>
       </div>
     </div>
@@ -1396,6 +1679,13 @@
     const notificationBell = document.getElementById('notificationBell');
     const notificationDropdown = document.getElementById('notificationDropdown');
     const marketDataElement = document.getElementById('marketData');
+    const refreshMarketDataBtn = document.getElementById('refreshMarketData');
+
+    // Carousel Elements
+    const carouselSlides = document.querySelectorAll('.carousel-slide');
+    const carouselIndicators = document.querySelectorAll('.carousel-indicator');
+    let currentSlide = 0;
+    let slideInterval;
 
     // Toggle user menu
     userProfileElement.addEventListener('click', (e) => {
@@ -1484,6 +1774,75 @@
         `;
       }
     }
+
+    // Refresh market data button
+    refreshMarketDataBtn.addEventListener('click', () => {
+      marketDataElement.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+            Loading market data...
+          </td>
+        </tr>
+      `;
+      fetchMarketData();
+    });
+
+    // Carousel functionality
+    function showSlide(index) {
+      // Hide all slides
+      carouselSlides.forEach(slide => {
+        slide.classList.remove('active', 'next', 'prev');
+      });
+      
+      // Update indicators
+      carouselIndicators.forEach(indicator => {
+        indicator.classList.remove('active');
+      });
+      
+      // Show new slide
+      carouselSlides[index].classList.add('active');
+      carouselIndicators[index].classList.add('active');
+      
+      // Set next and previous slides for animation
+      const nextIndex = (index + 1) % carouselSlides.length;
+      const prevIndex = (index - 1 + carouselSlides.length) % carouselSlides.length;
+      
+      carouselSlides[nextIndex].classList.add('next');
+      carouselSlides[prevIndex].classList.add('prev');
+      
+      currentSlide = index;
+    }
+
+    function nextSlide() {
+      const newIndex = (currentSlide + 1) % carouselSlides.length;
+      showSlide(newIndex);
+    }
+
+    function startCarousel() {
+      slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+    }
+
+    function stopCarousel() {
+      clearInterval(slideInterval);
+    }
+
+    // Initialize carousel
+    carouselIndicators.forEach(indicator => {
+      indicator.addEventListener('click', () => {
+        const index = parseInt(indicator.dataset.index);
+        showSlide(index);
+        stopCarousel();
+        startCarousel();
+      });
+    });
+
+    // Start carousel on page load
+    showSlide(0);
+    startCarousel();
+
+    // Pause carousel on hover
+    document.querySelector('.feature-carousel').addEventListener('mouseenter', stopCarousel);
+    document.querySelector('.feature-carousel').addEventListener('mouseleave', startCarousel);
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
