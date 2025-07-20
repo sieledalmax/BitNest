@@ -6,6 +6,7 @@
   <title>BitNest | Crypto Cards</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="icons/icon.192.png" type="image/png">
   <style>
     :root {
@@ -140,70 +141,40 @@
     }
 
     .notification-bell {
-  position: relative;
-  cursor: pointer;
-}
-
-.notification-badge {
-  display: none; /* Hide the badge since we have 0 notifications */
-}
-
-.notification-dropdown {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  background: var(--card-bg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  padding: 1rem;
-  min-width: 300px;
-  z-index: 1001;
-  display: none;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.notification-dropdown.active {
-  display: block;
-}
-
-.notification-dropdown p {
-  color: var(--text-secondary);
-  text-align: center;
-  padding: 1rem;
-}
-
-/* Remove the bellShake animation */
-
-    .notification-bell:hover {
-      transform: translateY(-2px);
-    }
-
-    @keyframes bellShake {
-      0% { transform: rotate(-5deg); }
-      100% { transform: rotate(5deg); }
+      position: relative;
+      cursor: pointer;
     }
 
     .notification-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: var(--danger);
-      color: white;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 600;
-      animation: pulse 2s infinite;
+      display: none;
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+    .notification-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 1rem;
+      min-width: 300px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .notification-dropdown.active {
+      display: block;
+    }
+
+    .notification-dropdown p {
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .notification-bell:hover {
+      transform: translateY(-2px);
     }
 
     .user-profile {
@@ -353,9 +324,75 @@
       padding-left: 2rem;
     }
 
+    /* PWA Install Button */
+    .pwa-install-container {
+      grid-column: span 12;
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .pwa-install-btn {
+      background: linear-gradient(135deg, var(--accent-orange), #ff6b35);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(255, 123, 37, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    .pwa-install-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 123, 37, 0.4);
+    }
+
+    .pwa-install-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      transition: all 0.3s;
+    }
+
+    .pwa-install-btn:hover::after {
+      left: 100%;
+    }
+
+    .pwa-install-btn i {
+      transition: transform 0.3s ease;
+    }
+
+    .pwa-install-btn:hover i {
+      transform: translateX(5px);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
     /* Enhanced Main Content */
     .container {
-      padding: 2rem 1.5rem;
+      padding: 1rem 1.5rem;
       max-width: 1800px;
       margin: 0 auto;
       animation: fadeIn 0.5s ease;
@@ -369,23 +406,31 @@
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     /* Enhanced Welcome Banner */
     .welcome-banner {
       grid-column: span 12;
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
-      padding: 2.5rem;
+      padding: 1.5rem;
       border-radius: var(--border-radius);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: var(--box-shadow);
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
       position: relative;
       overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-banner {
+        padding: 2rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
 
     .welcome-banner::before {
@@ -413,20 +458,33 @@
     }
 
     .welcome-content {
-      max-width: 60%;
+      width: 100%;
       position: relative;
       z-index: 1;
     }
 
+    @media (min-width: 768px) {
+      .welcome-content {
+        max-width: 60%;
+      }
+    }
+
     .welcome-content h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       animation: textGlow 2s ease-in-out infinite alternate;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-content h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
     }
 
     @keyframes textGlow {
@@ -436,27 +494,49 @@
 
     .welcome-content p {
       color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      font-size: 1.05rem;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-content p {
+        font-size: 1.05rem;
+        margin-bottom: 1.5rem;
+      }
     }
 
     .welcome-stats {
       display: flex;
-      gap: 2rem;
-      margin-top: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-stats {
+        gap: 2rem;
+        margin-top: 1.5rem;
+      }
     }
 
     .stat-item {
       display: flex;
       flex-direction: column;
+      min-width: 100px;
     }
 
     .stat-value {
-      font-size: 1.8rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 0.25rem;
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .stat-value {
+        font-size: 1.8rem;
+      }
     }
 
     .stat-value:hover {
@@ -465,24 +545,45 @@
     }
 
     .stat-label {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       color: var(--text-secondary);
+    }
+
+    @media (min-width: 768px) {
+      .stat-label {
+        font-size: 0.9rem;
+      }
     }
 
     .welcome-image {
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 0.75rem;
       justify-content: center;
       align-items: center;
       position: relative;
       z-index: 1;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-image {
+        margin-top: 0;
+        gap: 1rem;
+      }
     }
 
     .welcome-image .crypto-icon {
-      width: 50px;
-      height: 50px;
+      width: 30px;
+      height: 30px;
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .welcome-image .crypto-icon {
+        width: 40px;
+        height: 40px;
+      }
     }
 
     .welcome-image .crypto-icon:hover {
@@ -490,16 +591,56 @@
       filter: drop-shadow(0 5px 15px rgba(30, 211, 198, 0.4));
     }
 
+    /* Special Offer Banner */
+    .special-offer {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(131, 56, 236, 0.1), rgba(255, 123, 37, 0.1));
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin-top: 1rem;
+      border-left: 3px solid var(--accent-purple);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .special-offer i {
+      color: var(--accent-purple);
+      font-size: 1.25rem;
+    }
+
+    .special-offer-text {
+      font-size: 0.85rem;
+    }
+
+    @media (min-width: 768px) {
+      .special-offer-text {
+        font-size: 0.95rem;
+      }
+    }
+
+    .special-offer-text strong {
+      color: var(--primary);
+    }
+
     /* Section Header */
     .section-header {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .section-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
 
     .section-title {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 600;
       display: flex;
       align-items: center;
@@ -507,14 +648,27 @@
       color: var(--text-primary);
     }
 
+    @media (min-width: 768px) {
+      .section-title {
+        font-size: 1.5rem;
+      }
+    }
+
     .section-title::before {
       content: '';
       display: block;
-      width: 5px;
-      height: 20px;
+      width: 4px;
+      height: 18px;
       background: linear-gradient(var(--primary), var(--accent-blue));
       border-radius: 3px;
       animation: pulse 2s infinite;
+    }
+
+    @media (min-width: 768px) {
+      .section-title::before {
+        width: 5px;
+        height: 20px;
+      }
     }
 
     /* Card Customization Section */
@@ -522,13 +676,13 @@
       grid-column: span 12;
       display: grid;
       grid-template-columns: repeat(12, 1fr);
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     .card-preview {
-      grid-column: span 5;
+      grid-column: span 12;
       background-color: var(--card-bg);
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
@@ -539,7 +693,15 @@
       justify-content: center;
       position: relative;
       overflow: hidden;
-      min-height: 300px;
+      min-height: 250px;
+    }
+
+    @media (min-width: 768px) {
+      .card-preview {
+        grid-column: span 5;
+        padding: 2rem;
+        min-height: 300px;
+      }
     }
 
     .card-preview:hover {
@@ -552,7 +714,7 @@
       max-width: 400px;
       aspect-ratio: 1.586 / 1;
       border-radius: 16px;
-      padding: 1.5rem;
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -561,6 +723,12 @@
       background: linear-gradient(135deg, #3a86ff, #8338ec);
       box-shadow: 0 10px 30px rgba(58, 134, 255, 0.3);
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .virtual-card {
+        padding: 1.5rem;
+      }
     }
 
     .virtual-card.purple {
@@ -587,16 +755,30 @@
     }
 
     .card-logo img {
-      height: 24px;
+      height: 18px;
       width: auto;
+    }
+
+    @media (min-width: 768px) {
+      .card-logo img {
+        height: 24px;
+      }
     }
 
     .card-number {
       font-family: 'Courier New', monospace;
-      font-size: 1.2rem;
-      letter-spacing: 2px;
-      margin: 1rem 0;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      margin: 0.75rem 0;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (min-width: 768px) {
+      .card-number {
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        margin: 1rem 0;
+      }
     }
 
     .card-details {
@@ -606,22 +788,34 @@
     }
 
     .card-name {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
+    @media (min-width: 768px) {
+      .card-name {
+        font-size: 0.9rem;
+      }
+    }
+
     .card-expiry {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       letter-spacing: 1px;
+    }
+
+    @media (min-width: 768px) {
+      .card-expiry {
+        font-size: 0.9rem;
+      }
     }
 
     .card-chip {
       position: absolute;
-      top: 1.5rem;
-      left: 1.5rem;
-      width: 40px;
-      height: 30px;
+      top: 1rem;
+      left: 1rem;
+      width: 30px;
+      height: 25px;
       background: rgba(255, 255, 255, 0.2);
       border-radius: 5px;
       display: flex;
@@ -629,18 +823,41 @@
       justify-content: center;
     }
 
+    @media (min-width: 768px) {
+      .card-chip {
+        top: 1.5rem;
+        left: 1.5rem;
+        width: 40px;
+        height: 30px;
+      }
+    }
+
     .card-chip i {
       color: rgba(255, 255, 255, 0.7);
+      font-size: 0.8rem;
+    }
+
+    @media (min-width: 768px) {
+      .card-chip i {
+        font-size: 1rem;
+      }
     }
 
     .card-customization-options {
-      grid-column: span 7;
+      grid-column: span 12;
       background-color: var(--card-bg);
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .card-customization-options {
+        grid-column: span 7;
+        padding: 2rem;
+      }
     }
 
     .card-customization-options:hover {
@@ -649,28 +866,50 @@
     }
 
     .card-option-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .card-option-group h3 {
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
       color: var(--text-primary);
+    }
+
+    @media (min-width: 768px) {
+      .card-option-group h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+      }
     }
 
     .color-options {
       display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .color-options {
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
     }
 
     .color-option {
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       border-radius: 8px;
       cursor: pointer;
       border: 2px solid transparent;
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .color-option {
+        width: 50px;
+        height: 50px;
+      }
     }
 
     .color-option:hover {
@@ -703,7 +942,7 @@
     }
 
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .form-group label {
@@ -711,6 +950,13 @@
       margin-bottom: 0.5rem;
       font-weight: 500;
       color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    @media (min-width: 768px) {
+      .form-group label {
+        font-size: 1rem;
+      }
     }
 
     .form-control {
@@ -720,8 +966,14 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       color: var(--text-primary);
-      font-size: 1rem;
+      font-size: 0.95rem;
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .form-control {
+        font-size: 1rem;
+      }
     }
 
     .form-control:focus {
@@ -734,67 +986,124 @@
     .order-summary {
       grid-column: span 12;
       background-color: var(--card-bg);
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
-      margin-top: 1.5rem;
+      margin-top: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .order-summary {
+        padding: 2rem;
+      }
     }
 
     .order-details {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .order-details {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
 
     .order-price {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: var(--primary);
     }
 
+    @media (min-width: 768px) {
+      .order-price {
+        font-size: 1.8rem;
+      }
+    }
+
     .order-features {
-      margin-top: 1.5rem;
+      margin-top: 1.25rem;
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 768px) {
+      .order-features {
+        gap: 1rem;
+      }
     }
 
     .feature-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 0.75rem;
       background: rgba(30, 211, 198, 0.1);
       border-radius: 20px;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+    }
+
+    @media (min-width: 768px) {
+      .feature-badge {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
     }
 
     .order-actions {
       display: flex;
-      justify-content: flex-end;
-      margin-top: 2rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .order-actions {
+        justify-content: flex-end;
+        margin-top: 2rem;
+      }
     }
 
     /* Card Benefits Section */
     .card-benefits {
       grid-column: span 12;
-      margin-top: 1.5rem;
+      margin-top: 1.25rem;
     }
 
     .benefits-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .benefits-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
     }
 
     .benefit-card {
       background-color: var(--card-bg);
-      padding: 1.75rem;
+      padding: 1.25rem;
       border-radius: var(--border-radius);
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: var(--box-shadow);
       transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .benefit-card {
+        padding: 1.75rem;
+      min-height: 180px;
+      display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
     }
 
     .benefit-card:hover {
@@ -804,26 +1113,40 @@
     }
 
     .benefit-card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
       color: var(--text-primary);
+    }
+
+    @media (min-width: 768px) {
+      .benefit-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.75rem;
+        gap: 0.75rem;
+      }
     }
 
     .benefit-card p {
       color: var(--text-secondary);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       line-height: 1.5;
+    }
+
+    @media (min-width: 768px) {
+      .benefit-card p {
+        font-size: 0.95rem;
+      }
     }
 
     /* Enhanced Buttons */
     .btn {
       background: linear-gradient(90deg, var(--primary), var(--accent-blue));
       border: none;
-      padding: 0.75rem 1.75rem;
+      padding: 0.6rem 1.25rem;
       color: #000;
       font-weight: 600;
       cursor: pointer;
@@ -831,11 +1154,18 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .btn {
+        padding: 0.75rem 1.75rem;
+        font-size: 0.95rem;
+      }
     }
 
     .btn::before {
@@ -863,6 +1193,15 @@
       color: var(--text-primary);
       border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    @media (min-width: 768px) {
+      .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+      }
     }
 
     .btn-secondary:hover {
@@ -885,19 +1224,31 @@
       align-items: center;
       justify-content: center;
       animation: fadeIn 0.3s ease;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
     }
 
     .modal-content {
       background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
-      width: 90%;
+      width: 100%;
       max-width: 500px;
+      max-height: 90vh;
       border-radius: var(--border-radius);
-      padding: 2rem;
+      padding: 1.5rem;
       box-shadow: var(--box-shadow);
       position: relative;
       transform: scale(0.95);
       opacity: 0;
       animation: modalAppear 0.3s ease forwards;
+      overflow-y: auto;
+      margin: auto;
+    }
+
+    @media (min-width: 768px) {
+      .modal-content {
+        padding: 2rem;
+      }
     }
 
     @keyframes modalAppear {
@@ -925,16 +1276,31 @@
     }
 
     .modal-title {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
       font-weight: 600;
+    }
+
+    @media (min-width: 768px) {
+      .modal-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
     }
 
     .modal-footer {
       display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-      margin-top: 2rem;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .modal-footer {
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
     }
 
     /* Responsive Styles */
@@ -1073,13 +1439,12 @@
       </div>
     </div>
     <div class="right">
-      <!-- Replace the notification bell section with this: -->
-<div class="notification-bell" id="notificationBell">
-  <i class="fas fa-bell"></i>
-  <div class="notification-dropdown" id="notificationDropdown">
-    <p>No new notifications</p>
-  </div>
-</div>
+      <div class="notification-bell" id="notificationBell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>No new notifications</p>
+        </div>
+      </div>
       <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-bars"></i>
       </button>
@@ -1087,38 +1452,38 @@
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
         <span class="user-name" id="userName">Loading...</span>
         <div class="user-menu" id="userMenu">
-          <a href="profile.html" class="user-menu-item" style="padding-left: 20px;">
+          <a href="profile.html" class="user-menu-item">
             <i class="fas fa-user"></i> Profile
           </a>
-          <a href="settings.html" class="user-menu-item" style="padding-left: 20px;">
+          <a href="settings.html" class="user-menu-item">
             <i class="fas fa-cog"></i> Settings
           </a>
-          <a href="index.html" class="user-menu-item" id="logoutBtn" style="padding-left: 20px;">
+          <a href="index.html" class="user-menu-item" id="logoutBtn">
             <i class="fas fa-sign-out-alt"></i> Logout
           </a>
         </div>
       </div>
     </div>
     <div class="mobile-nav-menu" id="mobileNavMenu">
-      <a href="dashboard.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="dashboard.html" class="mobile-nav-item">
         <i class="fas fa-tachometer-alt"></i> Dashboard
       </a>
-      <a href="assets.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="assets.html" class="mobile-nav-item">
         <i class="fas fa-wallet"></i> Assets
       </a>
-      <a href="earn.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="earn.html" class="mobile-nav-item">
         <i class="fas fa-percentage"></i> Earn
       </a>
-      <a href="trading_view.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="trading_view.html" class="mobile-nav-item">
         <i class="fas fa-exchange-alt"></i> Trade
       </a>
-      <a href="P2P.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="P2P.html" class="mobile-nav-item">
         <i class="fas fa-users"></i> P2P
       </a>
-      <a href="deposit.html" class="mobile-nav-item" style="padding-left: 20px;">
+      <a href="deposit.html" class="mobile-nav-item">
         <i class="fas fa-plus-circle"></i> Deposit
       </a>
-      <a href="#" class="mobile-nav-item active" style="padding-left: 20px;">
+      <a href="#" class="mobile-nav-item active">
         <i class="fas fa-credit-card"></i> Cards
       </a>
     </div>
@@ -1127,6 +1492,13 @@
   <!-- Main Content -->
   <div class="container">
     <div class="dashboard-grid">
+      <!-- PWA Install Button -->
+      <div class="pwa-install-container">
+        <button id="installBtn" class="pwa-install-btn" style="display: none;">
+          <i class="fas fa-download"></i> Get App + 500 SATS
+        </button>
+      </div>
+
       <!-- Welcome Banner -->
       <div class="welcome-banner">
         <div class="welcome-content">
@@ -1149,6 +1521,13 @@
           <button class="btn" id="orderCardBtn">
             <i class="fas fa-credit-card"></i> Order Your Card Now
           </button>
+          <!-- Special Offer Banner -->
+          <div class="special-offer">
+            <i class="fas fa-gift"></i>
+            <div class="special-offer-text">
+              <strong>Special offer:</strong> Order your first card today and get $10 bonus in BTC after your first transaction!
+            </div>
+          </div>
         </div>
         <div class="welcome-image">
           <img src="crypto-logos/bitcoin.svg" alt="Bitcoin" class="crypto-icon">
@@ -1360,6 +1739,9 @@
     const closeInsufficientModal = document.getElementById('closeInsufficientModal');
     const cancelOrderBtn = document.getElementById('cancelOrderBtn');
     const proceedToDepositBtn = document.getElementById('proceedToDepositBtn');
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const installBtn = document.getElementById('installBtn');
 
     // Card color selection
     const colorOptions = document.querySelectorAll('.color-option');
@@ -1378,6 +1760,56 @@
         cardPreview.className = 'virtual-card ' + color;
       });
     });
+
+    // PWA Installation
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+      
+      installBtn.addEventListener('click', () => {
+        installBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
+        installBtn.disabled = true;
+        deferredPrompt.prompt();
+        
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User installed the PWA');
+            // Trigger your 500 SATS reward here
+            installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
+            setTimeout(() => {
+              installBtn.style.display = 'none';
+            }, 3000);
+          } else {
+            installBtn.innerHTML = '<i class="fas fa-download"></i> Get App + 500 SATS';
+            installBtn.disabled = false;
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA was installed');
+      if (installBtn) {
+        installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
+        setTimeout(() => {
+          installBtn.style.display = 'none';
+        }, 2000);
+      }
+    });
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registered');
+          });
+      });
+    }
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
@@ -1421,6 +1853,7 @@
       e.stopPropagation();
       userMenu.classList.toggle('active');
       mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
     });
 
     // Toggle mobile nav menu
@@ -1428,12 +1861,22 @@
       e.stopPropagation();
       mobileNavMenu.classList.toggle('active');
       userMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Toggle notification dropdown
+    notificationBell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('active');
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
     });
 
     // Close menus when clicking outside
     document.addEventListener('click', () => {
       userMenu.classList.remove('active');
       mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
     });
 
     // Logout functionality
@@ -1476,25 +1919,6 @@
     proceedToDepositBtn.addEventListener('click', () => {
       window.location.href = 'deposit.html';
     });
-
-    // Add this to your existing script in the dashboard page
-const notificationBell = document.getElementById('notificationBell');
-const notificationDropdown = document.getElementById('notificationDropdown');
-
-// Toggle notification dropdown
-notificationBell.addEventListener('click', (e) => {
-  e.stopPropagation();
-  notificationDropdown.classList.toggle('active');
-  userMenu.classList.remove('active');
-  mobileNavMenu.classList.remove('active');
-});
-
-// Close dropdown when clicking outside
-document.addEventListener('click', () => {
-  notificationDropdown.classList.remove('active');
-});
-
-// Remove the notification bell animation code if it exists
   </script>
 </body>
 </html>

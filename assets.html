@@ -6,6 +6,7 @@
   <title>BitNest | My Assets</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="icons/icon.192.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -1400,7 +1401,7 @@
     <div class="dashboard-grid">
       <!-- PWA Install Button -->
       <div class="pwa-install-container">
-        <button id="installBtn" class="pwa-install-btn">
+        <button id="installBtn" class="pwa-install-btn" style="display: none;">
           <i class="fas fa-download"></i> Get App + 500 SATS
         </button>
       </div>
@@ -1413,7 +1414,7 @@
             <i class="fas fa-plus-circle"></i> Deposit
           </button>
           <button class="btn btn-secondary" id="withdrawBtn">
-            <i class="fas fa-arrow-up"></i> Withdraw
+            <i class="fas fa-download"></i> Withdraw
           </button>
         </div>
       </div>
@@ -1650,10 +1651,10 @@
           </button>
         </div>
         <div class="action-card">
-          <h3><i class="fas fa-arrow-up"></i> Withdraw</h3>
+          <h3><i class="fas fa-download"></i> Withdraw</h3>
           <p>Withdraw your funds to an external wallet or bank account.</p>
           <button class="btn btn-secondary btn-sm" id="quickWithdrawBtn">
-            <i class="fas fa-arrow-up"></i> Withdraw
+            <i class="fas fa-download"></i> Withdraw
           </button>
         </div>
       </div>
@@ -1798,7 +1799,7 @@
       <div class="modal-footer">
         <button class="btn btn-secondary">Cancel</button>
         <button class="btn" id="proceedWithdrawBtn">
-          <i class="fas fa-arrow-up"></i> Proceed Withdrawal
+          <i class="fas fa-download"></i> Proceed Withdrawal
         </button>
       </div>
     </div>
@@ -2074,6 +2075,16 @@
         }, 2000);
       }
     });
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registered');
+          });
+      });
+    }
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
