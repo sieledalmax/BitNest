@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>BitNest | Earn Crypto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="icons/icon.192.png" type="image/png">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1ed3c6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BitNest">
+  
+  <style>
+    :root {
+      --primary: #1ed3c6;
+      --primary-dark: #17b3a8;
+      --dark-bg: #0a0b0e;
+      --card-bg: #16181d;
+      --card-hover: #1e2128;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b3b8;
+      --accent-blue: #3a86ff;
+      --accent-green: #4cc9f0;
+      --accent-purple: #8338ec;
+      --accent-orange: #ff7b25;
+      --accent-pink: #ff006e;
+      --success: #00e676;
+      --warning: #ffab00;
+      --danger: #ff5252;
+      --border-radius: 16px;
+      --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      --glass-effect: rgba(16, 18, 22, 0.8);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-bottom: 80px; /* Space for bottom nav */
+    }
+
+    /* Mobile-First Navbar */
+    .navbar {
+      background-color: var(--glass-effect);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .navbar .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: none; /* Hidden on mobile */
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .notification-bell, .mobile-menu-btn {
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .notification-bell:hover, .mobile-menu-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .profile-pic {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .user-name {
+      display: none; /* Hidden on mobile */
+    }
+
+    /* Dropdown Menus */
+    .notification-dropdown, .user-menu, .mobile-nav-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      min-width: 280px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .notification-dropdown.active, .user-menu.active, .mobile-nav-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .notification-dropdown {
+      padding: 1rem;
+    }
+
+    .notification-dropdown p {
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .user-menu-item, .mobile-nav-item {
+      padding: 0.75rem 1.5rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .user-menu-item:hover, .mobile-nav-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    /* PWA Install Button - Match Dashboard */
+    .pwa-install-container {
+      grid-column: span 12;
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .pwa-install-btn {
+      background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+      color: black;
+      border: none;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(249, 212, 35, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    .pwa-install-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(249, 212, 35, 0.4);
+    }
+
+    .pwa-install-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      transition: all 0.3s;
+    }
+
+    .pwa-install-btn:hover::after {
+      left: 100%;
+    }
+
+    .pwa-install-btn i {
+      transition: transform 0.3s ease;
+    }
+
+    .pwa-install-btn:hover i {
+      transform: translateX(5px);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Main Content */
+    .container {
+      padding: 1rem;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .dashboard-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Welcome Banner - Mobile Optimized */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .welcome-content h1 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .welcome-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .welcome-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .welcome-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .welcome-stat-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .welcome-stat-label {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    .promo-badge {
+      display: block;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-orange));
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(131, 56, 236, 0.3);
+      width: 100%;
+    }
+
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.5rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      transition: all 0.3s ease;
+      width: 100%;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(30, 211, 198, 0.4);
+    }
+
+    .welcome-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .crypto-icon {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s ease;
+    }
+
+    .crypto-icon:hover {
+      transform: scale(1.1);
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary);
+    }
+
+    /* Earn Grid */
+    .earn-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    /* Lock Period Cards */
+    .lock-period-card {
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      transition: all 0.3s ease;
+    }
+
+    .lock-period-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .lock-period-card.selected {
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 0 4px rgba(30, 211, 198, 0.2);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: 15px;
+      right: -30px;
+      background: var(--primary);
+      color: #000;
+      padding: 0.25rem 2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      transform: rotate(45deg);
+    }
+
+    .lock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .lock-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .lock-duration {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    .lock-rate {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lock-rate span {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .lock-features {
+      margin: 1.25rem 0;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .feature-item i {
+      color: var(--primary);
+    }
+
+    .lock-form {
+      margin-top: 1.25rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
+    }
+
+    .input-prefix {
+      position: absolute;
+      left: 1rem;
+      top: 2.6rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .error-message {
+      color: var(--danger);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .asset-selector {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .asset-option {
+      padding: 0.5rem 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .asset-option img {
+      width: 14px;
+      height: 14px;
+    }
+
+    .asset-option.active {
+      background: rgba(30, 211, 198, 0.1);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Calculator Section */
+    .calculator-section {
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      margin-top: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .calculator-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .calculator-result {
+      background: rgba(30, 211, 198, 0.05);
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      border: 1px solid var(--primary);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .result-label {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .result-value {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .total-earnings {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-top: 1rem;
+      color: var(--primary);
+    }
+
+    /* Active Locks Section */
+    .active-locks {
+      margin-top: 1.5rem;
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+    }
+
+    .locks-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .locks-table th {
+      text-align: left;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    .locks-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.85rem;
+    }
+
+    .locks-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .lock-status {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-active {
+      background: rgba(0, 230, 118, 0.1);
+      color: var(--success);
+    }
+
+    .status-pending {
+      background: rgba(255, 171, 0, 0.1);
+      color: var(--warning);
+    }
+
+    /* Enhanced Buttons */
+    .btn-sm {
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      width: 100%;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      width: 90%;
+      max-width: 400px;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--box-shadow);
+      position: relative;
+      border: 2px solid var(--danger);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .modal-message {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+      padding: 0 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Bottom Navigation - Mobile Only */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--glass-effect);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem 0.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.65rem;
+      gap: 0.25rem;
+      transition: all 0.3s ease;
+      padding: 0.25rem;
+      border-radius: 8px;
+      min-width: 50px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      background: rgba(30, 211, 198, 0.1);
+    }
+
+    .nav-icon {
+      font-size: 1.1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-item:hover .nav-icon {
+      transform: scale(1.1);
+    }
+
+    /* Desktop Styles */
+    @media (min-width: 768px) {
+      body {
+        padding-bottom: 0;
+      }
+      
+      .container {
+        padding: 1.5rem 2rem;
+        max-width: 1400px;
+      }
+      
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1.5rem;
+      }
+      
+      .welcome-banner {
+        grid-column: span 12;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2rem;
+      }
+      
+      .welcome-content {
+        flex: 2;
+      }
+      
+      .welcome-content .btn {
+        width: auto;
+        max-width: 200px;
+      }
+      
+      .welcome-image {
+        display: flex;
+        gap: 0.75rem;
+        flex: 1;
+        justify-content: flex-end;
+        margin-top: 0;
+      }
+      
+      .crypto-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .user-name {
+        display: block;
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.9rem;
+      }
+      
+      .earn-grid {
+        grid-column: span 12;
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .calculator-section {
+        grid-column: span 12;
+      }
+      
+      .calculator-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .active-locks {
+        grid-column: span 12;
+      }
+      
+      .bottom-nav {
+        display: none;
+      }
+      
+      .navbar {
+        padding: 1rem 2rem;
+      }
+
+      .navbar .logo {
+        font-size: 1.5rem;
+      }
+      
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      
+      .navbar a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 0.5rem 0;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .navbar a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--primary);
+        transition: width 0.3s ease;
+      }
+
+      .navbar a:hover {
+        color: var(--text-primary);
+      }
+
+      .navbar a:hover::after {
+        width: 100%;
+      }
+      
+      .navbar a.active {
+        color: var(--primary);
+      }
+
+      .navbar a.active::after {
+        width: 100%;
+      }
+
+      .section-title {
+        font-size: 1.2rem;
+      }
+
+      .section-title::before {
+        content: '';
+        display: block;
+        width: 4px;
+        height: 18px;
+        background: linear-gradient(var(--primary), var(--accent-blue));
+        border-radius: 3px;
+        margin-right: 0.5rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .earn-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0.75rem;
+      }
+      
+      .welcome-banner {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo" onclick="window.location.href='dashboard.html'">
+      <span>BitNest</span>
+    </div>
+    
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="assets.html">Assets</a>
+      <a href="earn.html" class="active">Earn</a>
+      <a href="trading_view.html">Trade</a>
+      <a href="P2P.html">P2P</a>
+      <a href="deposit.html">Deposit</a>
+    </div>
+    
+    <div class="navbar-actions">
+      <div class="notification-bell" id="notificationBell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>No new notifications</p>
+        </div>
+      </div>
+      <div class="user-profile" id="userProfile">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
+        <span class="user-name" id="userName">Loading...</span>
+        <div class="user-menu" id="userMenu">
+          <a href="profile.html" class="user-menu-item">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="settings.html" class="user-menu-item">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="index.html" class="user-menu-item" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+        <div class="mobile-nav-menu" id="mobileNavMenu">
+          <a href="dashboard.html" class="mobile-nav-item">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+          <a href="assets.html" class="mobile-nav-item">
+            <i class="fas fa-wallet"></i> Assets
+          </a>
+          <a href="earn.html" class="mobile-nav-item active">
+            <i class="fas fa-percentage"></i> Earn
+          </a>
+          <a href="trading_view.html" class="mobile-nav-item">
+            <i class="fas fa-exchange-alt"></i> Trade
+          </a>
+          <a href="P2P.html" class="mobile-nav-item">
+            <i class="fas fa-users"></i> P2P
+          </a>
+          <a href="deposit.html" class="mobile-nav-item">
+            <i class="fas fa-plus-circle"></i> Deposit
+          </a>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="dashboard-grid">
+      <!-- PWA Install Button -->
+      <div class="pwa-install-container">
+        <button id="installBtn" class="pwa-install-btn" style="display: none;">
+          <i class="fas fa-download"></i> Get App + 500 SATS
+        </button>
+      </div>
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-content">
+          <h1 id="welcomeTitle">Earn Crypto Rewards</h1>
+          <p>Lock your assets to earn competitive interest rates. The longer you lock, the higher your rewards.</p>
+          
+          <div class="welcome-stats">
+            <div class="welcome-stat">
+              <div class="welcome-stat-value">$0.00</div>
+              <div class="welcome-stat-label">Total Earnings</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-value">0</div>
+              <div class="welcome-stat-label">Active Locks</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-value">$0.00</div>
+              <div class="welcome-stat-label">Available Balance</div>
+            </div>
+          </div>
+          
+          <div class="promo-badge">
+            <i class="fas fa-gift"></i> Special offer: Deposit $100+ and get $100 bonus in BTC!
+          </div>
+          <button class="btn" onclick="window.location.href='deposit.html'">
+            <i class="fas fa-arrow-down"></i> Deposit to Start Earning
+          </button>
+        </div>
+        <div class="welcome-image">
+          <img src="crypto-logos/bitcoin.svg" alt="Bitcoin" class="crypto-icon">
+          <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum" class="crypto-icon">
+          <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC" class="crypto-icon">
+          <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" class="crypto-icon">
+          <img src="crypto-logos/polkadot-new-dot-logo.svg" alt="Polkadot" class="crypto-icon">
+        </div>
+      </div>
+
+      <!-- Lock Period Options -->
+      <div class="section-header">
+        <h2 class="section-title"><i class="fas fa-lock"></i> Lock & Earn</h2>
+        <button class="btn-secondary" onclick="window.location.href='deposit.html'">
+          <i class="fas fa-arrow-down"></i> Deposit Funds
+        </button>
+      </div>
+      
+      <div class="earn-grid">
+        <!-- 2 Weeks -->
+        <div class="lock-period-card">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Short Term</div>
+              <div class="lock-duration">14 days lock</div>
+            </div>
+            <i class="fas fa-clock" style="font-size: 1.5rem; color: var(--accent-blue);"></i>
+          </div>
+          <div class="lock-rate">10.5% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Flexible withdrawal after period ends</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>No penalty for early unlock</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
+            </div>
+            <button class="btn btn-sm lock-btn" data-duration="14 days" data-apr="10.5%">
+              <i class="fas fa-lock"></i> Lock for 14 Days
+            </button>
+          </div>
+        </div>
+
+        <!-- 1 Month (Selected by default) -->
+        <div class="lock-period-card selected">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Starter</div>
+              <div class="lock-duration">1 month lock</div>
+            </div>
+            <i class="fas fa-star" style="font-size: 1.5rem; color: var(--primary);"></i>
+          </div>
+          <div class="lock-rate">15% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Best for beginners</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>10% penalty for early unlock</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
+            </div>
+            <button class="btn btn-sm lock-btn" data-duration="1 month" data-apr="15%">
+              <i class="fas fa-lock"></i> Lock for 1 Month
+            </button>
+          </div>
+        </div>
+
+        <!-- 3 Months -->
+        <div class="lock-period-card">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Medium Term</div>
+              <div class="lock-duration">3 months lock</div>
+            </div>
+            <i class="fas fa-calendar-alt" style="font-size: 1.5rem; color: var(--accent-purple);"></i>
+          </div>
+          <div class="lock-rate">29% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Higher yields</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>15% penalty for early unlock</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
+            </div>
+            <button class="btn btn-sm lock-btn" data-duration="3 months" data-apr="29%">
+              <i class="fas fa-lock"></i> Lock for 3 Months
+            </button>
+          </div>
+        </div>
+
+        <!-- 6 Months -->
+        <div class="lock-period-card">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Long Term</div>
+              <div class="lock-duration">6 months lock</div>
+            </div>
+            <i class="fas fa-calendar-check" style="font-size: 1.5rem; color: var(--success);"></i>
+          </div>
+          <div class="lock-rate">43% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Premium yields</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>20% penalty for early unlock</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
+            </div>
+            <button class="btn btn-sm lock-btn" data-duration="6 months" data-apr="43%">
+              <i class="fas fa-lock"></i> Lock for 6 Months
+            </button>
+          </div>
+        </div>
+
+        <!-- 12 Months -->
+        <div class="lock-period-card">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Max Yield</div>
+              <div class="lock-duration">12 months lock</div>
+            </div>
+            <i class="fas fa-gem" style="font-size: 1.5rem; color: var(--accent-orange);"></i>
+          </div>
+          <div class="lock-rate">67% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Maximum yields</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>30% penalty for early unlock</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
+            </div>
+            <button class="btn btn-sm lock-btn" data-duration="12 months" data-apr="67%">
+              <i class="fas fa-lock"></i> Lock for 12 Months
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Period -->
+        <div class="lock-period-card">
+          <div class="lock-header">
+            <div>
+              <div class="lock-title">Custom Term</div>
+              <div class="lock-duration">Choose your duration</div>
+            </div>
+            <i class="fas fa-sliders-h" style="font-size: 1.5rem; color: var(--text-secondary);"></i>
+          </div>
+          <div class="lock-rate">Up to 67% <span>APR</span></div>
+          <div class="lock-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Flexible duration from 1-24 months</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Daily compounding</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Penalty based on duration</span>
+            </div>
+          </div>
+          <div class="lock-form">
+            <div class="asset-selector">
+              <div class="asset-option active">
+                <img src="crypto-logos/bitcoin.svg" alt="BTC"> BTC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH"> ETH
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC"> USDC
+              </div>
+              <div class="asset-option">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT"> USDT
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Lock Duration</label>
+              <select class="form-control">
+                <option>2 weeks (10.5% APR)</option>
+                <option selected>1 month (15% APR)</option>
+                <option>3 months (29% APR)</option>
+                <option>6 months (43% APR)</option>
+                <option>12 months (67% APR)</option>
+                <option>24 months (67% APR)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control lock-amount" placeholder="0.00">
+              <div class="error-message">Minimum lock amount is $30</div>
+            </div>
+            <button class="btn btn-sm lock-btn" data-duration="Custom" data-apr="Up to 67%">
+              <i class="fas fa-lock"></i> Lock Custom Amount
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calculator Section -->
+      <div class="calculator-section">
+        <h2 class="section-title"><i class="fas fa-calculator"></i> Earnings Calculator</h2>
+        <div class="calculator-grid">
+          <div class="calculator-form">
+            <div class="form-group">
+              <label>Select Asset</label>
+              <select class="form-control" id="calcAsset">
+                <option>Bitcoin (BTC)</option>
+                <option>Ethereum (ETH)</option>
+                <option>USDC</option>
+                <option>USDT</option>
+                <option>BNB</option>
+                <option>Solana (SOL)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Lock Duration</label>
+              <select class="form-control" id="calcDuration">
+                <option value="0.105">2 weeks (10.5% APR)</option>
+                <option value="0.15" selected>1 month (15% APR)</option>
+                <option value="0.29">3 months (29% APR)</option>
+                <option value="0.43">6 months (43% APR)</option>
+                <option value="0.67">12 months (67% APR)</option>
+                <option value="0.67">24 months (67% APR)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount to Lock</label>
+              <span class="input-prefix">$</span>
+              <input type="text" class="form-control" id="calcAmount" placeholder="0.00" value="1000.00">
+            </div>
+            <button class="btn" onclick="window.location.href='deposit.html'">
+              <i class="fas fa-arrow-down"></i> Deposit to Start Earning
+            </button>
+          </div>
+          <div class="calculator-result">
+            <div class="result-item">
+              <span class="result-label">Duration</span>
+              <span class="result-value" id="calcDurationDisplay">1 month</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Interest Rate</span>
+              <span class="result-value" id="calcRate">15% APR</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Daily Earnings</span>
+              <span class="result-value" id="calcDaily">$0.41</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Monthly Earnings</span>
+              <span class="result-value" id="calcMonthly">$12.50</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Yearly Earnings</span>
+              <span class="result-value" id="calcYearly">$150.00</span>
+            </div>
+            <div class="total-earnings" id="calcTotal">Total After 1 Month: $1,012.50</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Locks Section -->
+      <div class="active-locks">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-lock-open"></i> Your Active Locks</h2>
+          <button class="btn-secondary">
+            <i class="fas fa-history"></i> View History
+          </button>
+        </div>
+        <table class="locks-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Amount</th>
+              <th>Duration</th>
+              <th>APR</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Earned</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                No active locks found. Lock your assets to start earning.
+                <button class="btn" onclick="window.location.href='deposit.html'" style="margin-top: 1rem;">
+                  <i class="fas fa-arrow-down"></i> Deposit Now
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deposit Required Modal -->
+  <div class="modal" id="depositModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeModal">&times;</button>
+      <h2 class="modal-title"><i class="fas fa-exclamation-circle"></i> Insufficient Balance</h2>
+      <p class="modal-message">You need at least $30 in your available balance to lock funds. Your current available balance is $0.00.</p>
+      <p class="modal-message">Would you like to make a deposit now?</p>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelDeposit">Cancel</button>
+        <button class="btn" id="goToDeposit">
+          <i class="fas fa-arrow-down"></i> Deposit Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation - Mobile Only -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <i class="fas fa-home nav-icon"></i>
+      <span>Dashboard</span>
+    </a>
+    <a href="assets.html" class="nav-item">
+      <i class="fas fa-wallet nav-icon"></i>
+      <span>Assets</span>
+    </a>
+    <a href="earn.html" class="nav-item active">
+      <i class="fas fa-percentage nav-icon"></i>
+      <span>Earn</span>
+    </a>
+    <a href="trading_view.html" class="nav-item">
+      <i class="fas fa-exchange-alt nav-icon"></i>
+      <span>Trade</span>
+    </a>
+    <a href="deposit.html" class="nav-item">
+      <i class="fas fa-plus-circle nav-icon"></i>
+      <span>Deposit</span>
+    </a>
+  </div>
+
+  <!-- Firebase and App Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged,
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.appspot.com",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // DOM Elements
+    const userNameElement = document.getElementById('userName');
+    const userProfilePicElement = document.getElementById('userProfilePic');
+    const welcomeTitleElement = document.getElementById('welcomeTitle');
+    const userProfileElement = document.getElementById('userProfile');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavMenu = document.getElementById('mobileNavMenu');
+    const depositModal = document.getElementById('depositModal');
+    const closeModal = document.getElementById('closeModal');
+    const cancelDeposit = document.getElementById('cancelDeposit');
+    const goToDeposit = document.getElementById('goToDeposit');
+    const lockCards = document.querySelectorAll('.lock-period-card');
+    const lockBtns = document.querySelectorAll('.lock-btn');
+    const assetOptions = document.querySelectorAll('.asset-option');
+    const calcAmount = document.getElementById('calcAmount');
+    const calcDuration = document.getElementById('calcDuration');
+    const calcDurationDisplay = document.getElementById('calcDurationDisplay');
+    const calcRate = document.getElementById('calcRate');
+    const calcDaily = document.getElementById('calcDaily');
+    const calcMonthly = document.getElementById('calcMonthly');
+    const calcYearly = document.getElementById('calcYearly');
+    const calcTotal = document.getElementById('calcTotal');
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const installBtn = document.getElementById('installBtn');
+
+    // Toggle user menu
+    userProfileElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.classList.toggle('active');
+      mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Toggle mobile nav menu
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileNavMenu.classList.toggle('active');
+      userMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Toggle notification dropdown
+    notificationBell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('active');
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Close menus when clicking outside
+    document.addEventListener('click', () => {
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        console.error('Sign out error:', error);
+      });
+    });
+
+    // Lock card selection
+    lockCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        // Don't select if clicking on form elements
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT' || e.target.closest('.asset-option')) {
+          return;
+        }
+        
+        lockCards.forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+      });
+    });
+
+    // Asset selection
+    assetOptions.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const parent = option.closest('.asset-selector');
+        parent.querySelectorAll('.asset-option').forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+      });
+    });
+
+    // Lock button functionality
+    lockBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const amountInput = btn.closest('.lock-form').querySelector('.lock-amount');
+        const errorMessage = btn.closest('.lock-form').querySelector('.error-message');
+        const amount = parseFloat(amountInput.value) || 0;
+        
+        // Validate amount is at least $30
+        if (amount < 30) {
+          amountInput.focus();
+          amountInput.style.borderColor = 'var(--danger)';
+          amountInput.style.boxShadow = '0 0 0 2px rgba(255, 82, 82, 0.2)';
+          errorMessage.style.display = 'block';
+          setTimeout(() => {
+            amountInput.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            amountInput.style.boxShadow = 'none';
+            errorMessage.style.display = 'none';
+          }, 3000);
+          return;
+        }
+        
+        // Check if user has sufficient balance
+        const balance = 0; // This would come from user data
+        if (balance < 30) {
+          depositModal.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        } else {
+          alert(`Success! You've locked $${amount.toFixed(2)} for ${btn.dataset.duration} at ${btn.dataset.apr} APR.`);
+        }
+      });
+    });
+
+    // Deposit modal handling
+    closeModal.addEventListener('click', () => {
+      depositModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    cancelDeposit.addEventListener('click', () => {
+      depositModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    goToDeposit.addEventListener('click', () => {
+      window.location.href = 'deposit.html';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === depositModal) {
+        depositModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    // Calculator functionality
+    function updateCalculator() {
+      const amount = parseFloat(calcAmount.value) || 0;
+      const apr = parseFloat(calcDuration.value);
+      const durationText = calcDuration.options[calcDuration.selectedIndex].text.split(' (')[0];
+      
+      // Calculate earnings
+      const dailyEarnings = (amount * apr) / 365;
+      const monthlyEarnings = (amount * apr) / 12;
+      const yearlyEarnings = amount * apr;
+      
+      // Update results
+      calcDurationDisplay.textContent = durationText;
+      calcRate.textContent = `${(apr * 100).toFixed(0)}% APR`;
+      calcDaily.textContent = `$${dailyEarnings.toFixed(2)}`;
+      calcMonthly.textContent = `$${monthlyEarnings.toFixed(2)}`;
+      calcYearly.textContent = `$${yearlyEarnings.toFixed(2)}`;
+      
+      // Update total based on duration
+      let totalAmount = amount;
+      if (durationText.includes('month')) {
+        totalAmount += monthlyEarnings;
+      } else if (durationText.includes('year') || durationText.includes('24 months')) {
+        totalAmount += yearlyEarnings;
+      } else {
+        // For weeks, calculate proportion
+        const weeks = parseInt(durationText) || 2;
+        totalAmount += (yearlyEarnings * weeks) / 52;
+      }
+      
+      calcTotal.textContent = `Total After ${durationText}: $${totalAmount.toFixed(2)}`;
+    }
+
+    // Initialize calculator
+    calcAmount.addEventListener('input', updateCalculator);
+    calcDuration.addEventListener('change', updateCalculator);
+    updateCalculator();
+
+    // PWA Installation
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+      
+      installBtn.addEventListener('click', () => {
+        installBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
+        installBtn.disabled = true;
+        deferredPrompt.prompt();
+        
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User installed the PWA');
+            installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
+            setTimeout(() => {
+              installBtn.style.display = 'none';
+            }, 3000);
+          } else {
+            installBtn.innerHTML = '<i class="fas fa-download"></i> Get App + 500 SATS';
+            installBtn.disabled = false;
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA was installed');
+      if (installBtn) {
+        installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
+        setTimeout(() => {
+          installBtn.style.display = 'none';
+        }, 2000);
+      }
+    });
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is signed in:", user);
+        
+        // Get user data from Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          console.log("User data:", userData);
+          
+          // Update UI with user data
+          const displayName = userData.name || user.displayName || "User";
+          // Show only first name if available
+          const firstName = displayName.split(' ')[0];
+          userNameElement.textContent = firstName;
+          welcomeTitleElement.textContent = `Earn Crypto Rewards, ${firstName}!`;
+          
+          // Update profile picture if available
+          if (user.photoURL) {
+            userProfilePicElement.src = user.photoURL;
+          }
+        } else {
+          console.log("No user data found in Firestore");
+        }
+        
+      } else {
+        // User is signed out
+        console.log("User is signed out");
+        window.location.href = 'login.html';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>BitNest | Crypto Cards</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="icons/icon.192.png" type="image/png">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1ed3c6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BitNest">
+  
+  <style>
+    :root {
+      --primary: #1ed3c6;
+      --primary-dark: #17b3a8;
+      --dark-bg: #0a0b0e;
+      --card-bg: #16181d;
+      --card-hover: #1e2128;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b3b8;
+      --accent-blue: #3a86ff;
+      --accent-green: #4cc9f0;
+      --accent-purple: #8338ec;
+      --accent-orange: #ff7b25;
+      --accent-pink: #ff006e;
+      --success: #00e676;
+      --warning: #ffab00;
+      --danger: #ff5252;
+      --border-radius: 16px;
+      --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      --glass-effect: rgba(16, 18, 22, 0.8);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-bottom: 80px; /* Space for bottom nav */
+    }
+
+    /* Mobile-First Navbar */
+    .navbar {
+      background-color: var(--glass-effect);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .navbar .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: none; /* Hidden on mobile */
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .notification-bell, .mobile-menu-btn {
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .notification-bell:hover, .mobile-menu-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .profile-pic {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .user-name {
+      display: none; /* Hidden on mobile */
+    }
+
+    /* Dropdown Menus - Fixed background color */
+    .notification-dropdown, .user-menu, .mobile-nav-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      min-width: 280px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .notification-dropdown.active, .user-menu.active, .mobile-nav-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .notification-dropdown {
+      padding: 1rem;
+    }
+
+    .notification-dropdown p {
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .user-menu-item, .mobile-nav-item {
+      padding: 0.75rem 1.5rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .user-menu-item:hover, .mobile-nav-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    /* PWA Install Button - Match Dashboard */
+    .pwa-install-container {
+      grid-column: span 12;
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .pwa-install-btn {
+      background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+      color: black;
+      border: none;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(249, 212, 35, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    .pwa-install-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(249, 212, 35, 0.4);
+    }
+
+    .pwa-install-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      transition: all 0.3s;
+    }
+
+    .pwa-install-btn:hover::after {
+      left: 100%;
+    }
+
+    .pwa-install-btn i {
+      transition: transform 0.3s ease;
+    }
+
+    .pwa-install-btn:hover i {
+      transform: translateX(5px);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Main Content */
+    .container {
+      padding: 1rem;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .dashboard-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Welcome Banner - Mobile Optimized */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .welcome-content h1 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .welcome-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .welcome-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .welcome-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .welcome-stat-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .welcome-stat-label {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    .promo-badge {
+      display: block;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-orange));
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(131, 56, 236, 0.3);
+      width: 100%;
+    }
+
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.5rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      transition: all 0.3s ease;
+      width: 100%;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(30, 211, 198, 0.4);
+    }
+
+    .welcome-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .crypto-icon {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s ease;
+    }
+
+    .crypto-icon:hover {
+      transform: scale(1.1);
+    }
+
+    /* Card Customization Section */
+    .card-customization {
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+    }
+
+    .card-preview {
+      background: linear-gradient(135deg, #3a86ff, #8338ec);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      aspect-ratio: 1.586 / 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(58, 134, 255, 0.3);
+    }
+
+    .card-chip {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      width: 36px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-chip i {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    .card-logo {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    .card-logo img {
+      height: 22px;
+      width: auto;
+    }
+
+    .card-number {
+      font-family: 'Courier New', monospace;
+      font-size: 1.1rem;
+      letter-spacing: 1.5px;
+      margin: 0.75rem 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .card-name {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .card-expiry {
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    .color-options {
+      display: flex;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .color-option {
+      width: 45px;
+      height: 45px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .color-option:hover {
+      transform: scale(1.05);
+    }
+
+    .color-option.selected {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(30, 211, 198, 0.3);
+    }
+
+    .color-option.blue {
+      background: linear-gradient(135deg, #3a86ff, #8338ec);
+    }
+
+    .color-option.purple {
+      background: linear-gradient(135deg, #8338ec, #3a0ca3);
+    }
+
+    .color-option.green {
+      background: linear-gradient(135deg, #4cc9f0, #4895ef);
+    }
+
+    .color-option.orange {
+      background: linear-gradient(135deg, #ff7b25, #ff9e00);
+    }
+
+    .color-option.black {
+      background: linear-gradient(135deg, #212529, #343a40);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 211, 198, 0.2);
+    }
+
+    /* Order Summary */
+    .order-summary {
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      margin-top: 1rem;
+    }
+
+    .order-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .order-price {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .order-features {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .feature-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.9rem;
+      background: rgba(30, 211, 198, 0.1);
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    .order-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+
+    /* Card Benefits Section */
+    .card-benefits {
+      margin-top: 1rem;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .benefit-card {
+      background-color: var(--card-bg);
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      transition: all 0.3s ease;
+    }
+
+    .benefit-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .benefit-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .benefit-card p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary);
+    }
+
+    /* Bottom Navigation - Mobile Only */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--glass-effect);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem 0.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.65rem;
+      gap: 0.25rem;
+      transition: all 0.3s ease;
+      padding: 0.25rem;
+      border-radius: 8px;
+      min-width: 50px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      background: rgba(30, 211, 198, 0.1);
+    }
+
+    .nav-icon {
+      font-size: 1.1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-item:hover .nav-icon {
+      transform: scale(1.1);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      width: 100%;
+      max-width: 450px;
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      box-shadow: var(--box-shadow);
+      position: relative;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .close-modal:hover {
+      color: var(--primary);
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .modal-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    /* Desktop Styles */
+    @media (min-width: 768px) {
+      body {
+        padding-bottom: 0;
+      }
+      
+      .container {
+        padding: 1.5rem 2rem;
+        max-width: 1400px;
+      }
+      
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1.5rem;
+      }
+      
+      .welcome-banner {
+        grid-column: span 12;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2rem;
+      }
+      
+      .welcome-content {
+        flex: 2;
+      }
+      
+      .welcome-content .btn {
+        width: auto;
+        max-width: 200px;
+      }
+      
+      .welcome-image {
+        display: flex;
+        gap: 0.75rem;
+        flex: 1;
+        justify-content: flex-end;
+        margin-top: 0;
+      }
+      
+      .crypto-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .user-name {
+        display: block;
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.9rem;
+      }
+      
+      .card-customization {
+        grid-column: span 8;
+      }
+      
+      .order-summary {
+        grid-column: span 4;
+      }
+      
+      .card-benefits {
+        grid-column: span 12;
+      }
+      
+      .benefits-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .bottom-nav {
+        display: none;
+      }
+      
+      .navbar {
+        padding: 1rem 2rem;
+      }
+
+      .navbar .logo {
+        font-size: 1.5rem;
+      }
+      
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      
+      .navbar a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 0.5rem 0;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .navbar a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--primary);
+        transition: width 0.3s ease;
+      }
+
+      .navbar a:hover {
+        color: var(--text-primary);
+      }
+
+      .navbar a:hover::after {
+        width: 100%;
+      }
+      
+      .navbar a.active {
+        color: var(--primary);
+      }
+
+      .navbar a.active::after {
+        width: 100%;
+      }
+
+      .section-title {
+        font-size: 1.2rem;
+      }
+
+      .section-title::before {
+        content: '';
+        display: block;
+        width: 4px;
+        height: 18px;
+        background: linear-gradient(var(--primary), var(--accent-blue));
+        border-radius: 3px;
+        margin-right: 0.5rem;
+      }
+
+      .modal-footer {
+        flex-direction: row;
+        justify-content: flex-end;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .benefits-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0.75rem;
+      }
+      
+      .welcome-banner {
+        padding: 1.25rem;
+      }
+      
+      .order-features {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo" onclick="window.location.href='dashboard.html'">
+      <span>BitNest</span>
+    </div>
+    
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="assets.html">Assets</a>
+      <a href="earn.html">Earn</a>
+      <a href="trading_view.html">Trade</a>
+      <a href="P2P.html">P2P</a>
+      <a href="deposit.html">Deposit</a>
+      <a href="#" class="active">Cards</a>
+    </div>
+    
+    <div class="navbar-actions">
+      <div class="notification-bell" id="notificationBell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>No new notifications</p>
+        </div>
+      </div>
+      <div class="user-profile" id="userProfile">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
+        <span class="user-name" id="userName">Loading...</span>
+        <div class="user-menu" id="userMenu">
+          <a href="profile.html" class="user-menu-item">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="settings.html" class="user-menu-item">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="index.html" class="user-menu-item" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+        <div class="mobile-nav-menu" id="mobileNavMenu">
+          <a href="dashboard.html" class="mobile-nav-item">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+          <a href="assets.html" class="mobile-nav-item">
+            <i class="fas fa-wallet"></i> Assets
+          </a>
+          <a href="earn.html" class="mobile-nav-item">
+            <i class="fas fa-percentage"></i> Earn
+          </a>
+          <a href="trading_view.html" class="mobile-nav-item">
+            <i class="fas fa-exchange-alt"></i> Trade
+          </a>
+          <a href="P2P.html" class="mobile-nav-item">
+            <i class="fas fa-users"></i> P2P
+          </a>
+          <a href="deposit.html" class="mobile-nav-item">
+            <i class="fas fa-plus-circle"></i> Deposit
+          </a>
+          <a href="#" class="mobile-nav-item active">
+            <i class="fas fa-credit-card"></i> Cards
+          </a>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="dashboard-grid">
+      <!-- PWA Install Button -->
+      <div class="pwa-install-container">
+        <button id="installBtn" class="pwa-install-btn" style="display: none;">
+          <i class="fas fa-download"></i> Get App + 500 SATS
+        </button>
+      </div>
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-content">
+          <h1 id="welcomeTitle">Your BitNest Card</h1>
+          <p>Spend your crypto anywhere in the world with our virtual and physical cards. Only $5 to order with no minimum balance requirements.</p>
+          
+          <div class="welcome-stats">
+            <div class="welcome-stat">
+              <div class="welcome-stat-value">$5</div>
+              <div class="welcome-stat-label">Card Cost</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-value change-neutral">0%</div>
+              <div class="welcome-stat-label">FX Fees</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-value">Global</div>
+              <div class="welcome-stat-label">Acceptance</div>
+            </div>
+          </div>
+          
+          <div class="promo-badge">
+            <i class="fas fa-gift"></i> Order your first card today and get $10 bonus in BTC after your first transaction!
+          </div>
+          <button class="btn" id="orderCardBtn">
+            <i class="fas fa-credit-card"></i> Order Your Card Now
+          </button>
+        </div>
+        <div class="welcome-image">
+          <img src="crypto-logos/bitcoin.svg" alt="Bitcoin" class="crypto-icon">
+          <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum" class="crypto-icon">
+          <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC" class="crypto-icon">
+          <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" class="crypto-icon">
+          <img src="crypto-logos/polkadot-new-dot-logo.svg" alt="Polkadot" class="crypto-icon">
+        </div>
+      </div>
+
+      <!-- Card Customization -->
+      <div class="card-customization">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-palette"></i> Customize Your Card</h2>
+        </div>
+        
+        <div class="card-preview" id="cardPreview">
+          <div class="card-chip">
+            <i class="fas fa-microchip"></i>
+          </div>
+          <div class="card-logo">
+            <img src="crypto-logos/bitcoin.svg" alt="Bitcoin">
+            <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum">
+            <img src="crypto-logos/solana-sol-logo.svg" alt="Solana">
+          </div>
+          <div class="card-number">•••• •••• •••• ••••</div>
+          <div class="card-details">
+            <div class="card-name" id="cardNamePreview">JOHN DOE</div>
+            <div class="card-expiry">••/••</div>
+          </div>
+        </div>
+        
+        <h3>Card Color</h3>
+        <div class="color-options">
+          <div class="color-option blue selected" data-color="blue"></div>
+          <div class="color-option purple" data-color="purple"></div>
+          <div class="color-option green" data-color="green"></div>
+          <div class="color-option orange" data-color="orange"></div>
+          <div class="color-option black" data-color="black"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="cardType">Card Type</label>
+          <select id="cardType" class="form-control">
+            <option value="virtual">Virtual Card (Instant)</option>
+            <option value="physical">Physical Card (7-10 business days)</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="baseCurrency">Base Currency</label>
+          <select id="baseCurrency" class="form-control">
+            <option value="usd">USD (Default)</option>
+            <option value="eur">EUR</option>
+            <option value="gbp">GBP</option>
+            <option value="btc">BTC</option>
+            <option value="eth">ETH</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="cardDesign">Card Design</label>
+          <select id="cardDesign" class="form-control">
+            <option value="standard">Standard Design</option>
+            <option value="crypto">Crypto Theme</option>
+            <option value="premium">Premium Black</option>
+            <option value="custom">Custom Image (Coming Soon)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-receipt"></i> Order Summary</h2>
+        </div>
+        
+        <div class="order-details">
+          <div class="order-price">$5.00</div>
+          <p style="color: var(--text-secondary);">One-time card issuance fee</p>
+        </div>
+        
+        <div class="order-features">
+          <div class="feature-badge">
+            <i class="fas fa-check-circle"></i>
+            <span>Virtual Card Included</span>
+          </div>
+          <div class="feature-badge">
+            <i class="fas fa-check-circle"></i>
+            <span>No Annual Fees</span>
+          </div>
+          <div class="feature-badge">
+            <i class="fas fa-check-circle"></i>
+            <span>0% Foreign Transaction Fees</span>
+          </div>
+          <div class="feature-badge">
+            <i class="fas fa-check-circle"></i>
+            <span>Instant Freeze/Unfreeze</span>
+          </div>
+        </div>
+        
+        <div class="order-actions">
+          <button class="btn" id="orderCardBtn">
+            <i class="fas fa-credit-card"></i> Order Your Card Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- Card Benefits -->
+      <div class="card-benefits">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-star"></i> Card Benefits</h2>
+        </div>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <h3><i class="fas fa-globe"></i> Global Acceptance</h3>
+            <p>Use your BitNest Card anywhere Visa is accepted worldwide, online and offline.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-exchange-alt"></i> Instant Conversion</h3>
+            <p>Automatically convert your crypto to fiat at the point of sale with competitive rates.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-wallet"></i> Spend Balance Easily</h3>
+            <p>Access and spend your crypto balance anywhere without needing to manually convert.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-percentage"></i> Low Fees</h3>
+            <p>Enjoy 0% foreign transaction fees and minimal conversion fees compared to competitors.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-shield-alt"></i> Enhanced Security</h3>
+            <p>Freeze/unfreeze your card instantly, set spending limits, and enable 2FA protection.</p>
+          </div>
+          <div class="benefit-card">
+            <h3><i class="fas fa-coins"></i> Crypto Rewards</h3>
+            <p>Earn up to 5% back in Bitcoin on all your purchases with our premium card tier.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Insufficient Balance Modal -->
+  <div class="modal" id="insufficientBalanceModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeInsufficientModal">&times;</button>
+      <h2 class="modal-title">Insufficient Balance</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">You don't have enough funds to order the card. Please deposit at least $10 to your account.</p>
+      
+      <div style="background: rgba(30, 211, 198, 0.1); padding: 1rem; border-radius: 8px; margin: 1.25rem 0; border-left: 3px solid var(--primary);">
+        <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--primary);">Card Order Fee: $5</h4>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">The $5 card fee will be deducted from your account balance after successful deposit.</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelOrderBtn">Cancel</button>
+        <button class="btn" id="proceedToDepositBtn">
+          <i class="fas fa-arrow-right"></i> Proceed to Deposit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation - Mobile Only -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <i class="fas fa-home nav-icon"></i>
+      <span>Dashboard</span>
+    </a>
+    <a href="assets.html" class="nav-item">
+      <i class="fas fa-wallet nav-icon"></i>
+      <span>Assets</span>
+    </a>
+    <a href="earn.html" class="nav-item">
+      <i class="fas fa-percentage nav-icon"></i>
+      <span>Earn</span>
+    </a>
+    <a href="trading_view.html" class="nav-item">
+      <i class="fas fa-exchange-alt nav-icon"></i>
+      <span>Trade</span>
+    </a>
+    <a href="deposit.html" class="nav-item">
+      <i class="fas fa-plus-circle nav-icon"></i>
+      <span>Deposit</span>
+    </a>
+  </div>
+
+  <!-- Firebase and App Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged,
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.appspot.com",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // DOM Elements
+    const userNameElement = document.getElementById('userName');
+    const userProfilePicElement = document.getElementById('userProfilePic');
+    const welcomeTitleElement = document.getElementById('welcomeTitle');
+    const cardNamePreview = document.getElementById('cardNamePreview');
+    const userProfileElement = document.getElementById('userProfile');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavMenu = document.getElementById('mobileNavMenu');
+    const orderCardBtn = document.getElementById('orderCardBtn');
+    const insufficientBalanceModal = document.getElementById('insufficientBalanceModal');
+    const closeInsufficientModal = document.getElementById('closeInsufficientModal');
+    const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+    const proceedToDepositBtn = document.getElementById('proceedToDepositBtn');
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const installBtn = document.getElementById('installBtn');
+
+    // Card color selection
+    const colorOptions = document.querySelectorAll('.color-option');
+    const cardPreview = document.getElementById('cardPreview');
+
+    colorOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        // Remove selected class from all options
+        colorOptions.forEach(opt => opt.classList.remove('selected'));
+        
+        // Add selected class to clicked option
+        option.classList.add('selected');
+        
+        // Update card preview color
+        const color = option.getAttribute('data-color');
+        cardPreview.style.background = window.getComputedStyle(option).backgroundImage;
+      });
+    });
+
+    // PWA Installation
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+      
+      installBtn.addEventListener('click', () => {
+        installBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
+        installBtn.disabled = true;
+        deferredPrompt.prompt();
+        
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User installed the PWA');
+            installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
+            setTimeout(() => {
+              installBtn.style.display = 'none';
+            }, 3000);
+          } else {
+            installBtn.innerHTML = '<i class="fas fa-download"></i> Get App + 500 SATS';
+            installBtn.disabled = false;
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA was installed');
+      if (installBtn) {
+        installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
+        setTimeout(() => {
+          installBtn.style.display = 'none';
+        }, 2000);
+      }
+    });
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is signed in:", user);
+        
+        // Get user data from Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          console.log("User data:", userData);
+          
+          // Update UI with user data
+          const displayName = userData.name || user.displayName || "User";
+          // Show only first name if available
+          const firstName = displayName.split(' ')[0];
+          userNameElement.textContent = firstName;
+          welcomeTitleElement.textContent = `Your BitNest Card, ${firstName}!`;
+          cardNamePreview.textContent = displayName.toUpperCase();
+          
+          // Update profile picture if available
+          if (user.photoURL) {
+            userProfilePicElement.src = user.photoURL;
+          }
+        } else {
+          console.log("No user data found in Firestore");
+        }
+        
+      } else {
+        // User is signed out
+        console.log("User is signed out");
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Toggle user menu
+    userProfileElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.classList.toggle('active');
+      mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Toggle mobile nav menu
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileNavMenu.classList.toggle('active');
+      userMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Toggle notification dropdown
+    notificationBell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('active');
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Close menus when clicking outside
+    document.addEventListener('click', () => {
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        console.error('Sign out error:', error);
+      });
+    });
+
+    // Order card button click - shows insufficient balance modal
+    orderCardBtn.addEventListener('click', () => {
+      insufficientBalanceModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Close insufficient balance modal
+    closeInsufficientModal.addEventListener('click', () => {
+      insufficientBalanceModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === insufficientBalanceModal) {
+        insufficientBalanceModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    // Cancel order button
+    cancelOrderBtn.addEventListener('click', () => {
+      insufficientBalanceModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    // Proceed to deposit button
+    proceedToDepositBtn.addEventListener('click', () => {
+      window.location.href = 'deposit.html';
+    });
+  </script>
+</body>
+</html>

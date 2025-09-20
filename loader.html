@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firestore Vendor Loader</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0b0e;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    button {
+      background: #1ed3c6;
+      color: black;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 1rem;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(30, 211, 198, 0.5);
+    }
+    #status {
+      margin-top: 2rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+    .success {
+      color: #00e676;
+    }
+    .error {
+      color: #ff5252;
+    }
+    .vendor-card {
+      background: rgba(255,255,255,0.05);
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      text-align: left;
+    }
+    .sort-controls {
+      margin: 1rem 0;
+    }
+    .sort-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      margin: 0.25rem;
+      background: rgba(255,255,255,0.1);
+    }
+    .sort-btn.active {
+      background: #1ed3c6;
+    }
+  </style>
+</head>
+<body>
+  <h1>Firestore Vendor Loader</h1>
+  <p>This will generate P2P vendors with premium percentages</p>
+  
+  <div class="sort-controls">
+    <button id="sortAscBtn" class="sort-btn">Sort by Premium (Low to High)</button>
+    <button id="sortDescBtn" class="sort-btn">Sort by Premium (High to Low)</button>
+    <button id="sortDefaultBtn" class="sort-btn active">Default Sort</button>
+  </div>
+  
+  <button id="generateBtn">Generate 100 Vendors</button>
+  <button id="clearBtn" style="background: #ff5252;">Clear All Vendors</button>
+  <div id="status">Ready to generate...</div>
+  <div id="vendorPreviews"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc,
+      getDocs,
+      deleteDoc,
+      doc,
+      query,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.appspot.com",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
+      measurementId: "G-PGJNHTL03J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const statusEl = document.getElementById('status');
+    const generateBtn = document.getElementById('generateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const vendorPreviews = document.getElementById('vendorPreviews');
+    const sortAscBtn = document.getElementById('sortAscBtn');
+    const sortDescBtn = document.getElementById('sortDescBtn');
+    const sortDefaultBtn = document.getElementById('sortDefaultBtn');
+
+    // Realistic first and last names for traders
+    const firstNames = [
+      'Alex', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Jamie', 'Riley', 'Quinn', 'Avery', 'Peyton',
+      'Cameron', 'Dakota', 'Skyler', 'Devin', 'Blake', 'Hayden', 'Reese', 'Sage', 'Rowan', 'Elliot',
+      'Charlie', 'Finley', 'Emerson', 'River', 'Kai', 'Phoenix', 'Drew', 'Kendall', 'Harley', 'Remington'
+    ];
+    
+    const lastNames = [
+      'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
+      'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
+      'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson'
+    ];
+    
+    const traderAliases = [
+      'CryptoKing', 'BitTrader', 'CoinMaster', 'DigitalDealer', 'BlockBroker', 'TokenTrader', 'BitBaron', 'CryptoCount',
+      'CoinDuke', 'DigitalDuke', 'BlockBaron', 'TokenKing', 'BitLord', 'CryptoChief', 'CoinCaptain', 'DigitalDon',
+      'BlockBoss', 'TokenTycoon', 'BitBoss', 'CryptoCaptain', 'CoinChief', 'DigitalDuke', 'BlockDon', 'TokenTrader',
+      'BitDealer', 'CryptoMaster', 'CoinBroker', 'DigitalKing', 'BlockTrader', 'TokenMaster'
+    ];
+
+    // Payment methods by country with weighted probabilities
+    const paymentMethodsByCountry = {
+      US: ["Bank Transfer", "Bank Transfer", "Bank Transfer", "PayPal", "PayPal", "PayPal", "Zelle", "Venmo", "Cash App", "Cash"],
+      CA: ["Bank Transfer", "Bank Transfer", "Bank Transfer", "PayPal", "PayPal", "Interac e-Transfer", "Cash"],
+      GB: ["Bank Transfer", "Bank Transfer", "Bank Transfer", "Faster Payments", "Revolut", "Wise", "PayPal", "Cash"],
+      EU: ["Bank Transfer", "Bank Transfer", "Bank Transfer", "SEPA", "Revolut", "Wise", "PayPal", "Cash"],
+      AU: ["Bank Transfer", "Bank Transfer", "Bank Transfer", "PayID", "PayPal", "PayPal", "Cash"],
+      NG: ["Bank Transfer", "Bank Transfer", "Bank Transfer", "Mobile Money", "Cash Deposit"],
+      GH: ["Bank Transfer", "Bank Transfer", "Bank Transfer", "Mobile Money", "Cash Deposit"],
+      CM: ["Bank Transfer", "Bank Transfer", "Bank Transfer", "Mobile Money", "Cash Deposit"],
+      KE: ["Bank Transfer", "Bank Transfer", "Bank Transfer", "M-Pesa", "Cash Deposit"]
+    };
+
+    function generateVendor(index) {
+      const cryptos = ["BTC", "ETH", "USDT", "USDC"];
+      const fiats = ["USD", "EUR", "GBP", "CAD", "AUD", "NGN", "GHS", "XAF", "KES"];
+      const countries = ["US", "CA", "GB", "EU", "AU", "NG", "GH", "CM", "KE"];
+      
+      const country = countries[Math.floor(Math.random() * countries.length)];
+      const crypto = cryptos[Math.floor(Math.random() * cryptos.length)];
+      const fiat = getFiatForCountry(country);
+      
+      // Generate random name (mix of real names and aliases)
+      const useAlias = Math.random() > 0.7; // 30% chance to use an alias
+      let name;
+      if (useAlias) {
+        name = traderAliases[Math.floor(Math.random() * traderAliases.length)];
+      } else {
+        name = `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
+      }
+      
+      // Generate premium with specific distribution
+      let premium;
+      if (index < 2) {
+        // First 2 vendors have negative premiums (-1% to 0%)
+        premium = -(Math.random() * 1).toFixed(2);
+      } else if (index < 20) {
+        // Next 18 vendors have high premiums (20% to 60%)
+        premium = (Math.random() * 40 + 20).toFixed(2);
+      } else {
+        // Remaining vendors have normal premiums (0% to 20%)
+        premium = (Math.random() * 20).toFixed(2);
+      }
+      
+      // Generate rating with specific distribution
+      let rating;
+      const ratingRand = Math.random();
+      if (ratingRand < 0.05) {
+        // 5% chance for 1 star
+        rating = (Math.random() * 0.5 + 1).toFixed(1);
+      } else if (ratingRand < 0.15) {
+        // 10% chance for 2 stars
+        rating = (Math.random() * 0.5 + 2).toFixed(1);
+      } else if (ratingRand < 0.25) {
+        // 10% chance for 5 stars
+        rating = (Math.random() * 0.5 + 4.5).toFixed(1);
+      } else {
+        // 75% chance for 3-4 stars
+        rating = (Math.random() * 1 + 3).toFixed(1);
+      }
+      
+      // Generate trades with specific distribution
+      let trades;
+      const tradesRand = Math.random();
+      if (tradesRand < 0.1) {
+        // 10% below 20 trades (0-20)
+        trades = Math.floor(Math.random() * 20);
+      } else if (tradesRand < 0.6) {
+        // 50% between 20-400 trades
+        trades = Math.floor(Math.random() * 380) + 20;
+      } else if (tradesRand < 0.9) {
+        // 30% between 400-1000 trades
+        trades = Math.floor(Math.random() * 600) + 400;
+      } else {
+        // 10% above 1000 trades
+        trades = Math.floor(Math.random() * 5000) + 1000;
+      }
+      
+      // Calculate rate based on premium (for internal use)
+      const marketRate = getMarketRate(crypto, fiat);
+      const rate = (marketRate * (1 + parseFloat(premium)/100)).toFixed(2);
+      
+      return {
+        name: name,
+        avatar: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${index % 100}.jpg`,
+        trades: trades,
+        rating: parseFloat(rating),
+        crypto: crypto,
+        fiat: fiat,
+        country: country,
+        rate: rate,
+        premium: parseFloat(premium), // Store as number for sorting
+        limits: generateLimits(crypto, rate),
+        payments: getRandomPaymentMethods(country),
+        createdAt: new Date()
+      };
+    }
+
+    function getFiatForCountry(country) {
+      const countryToFiat = {
+        US: "USD", CA: "CAD", GB: "GBP", EU: "EUR", AU: "AUD",
+        NG: "NGN", GH: "GHS", CM: "XAF", KE: "KES"
+      };
+      return countryToFiat[country];
+    }
+
+    function getMarketRate(crypto, fiat) {
+      // Simplified market rates (in reality you'd fetch these from an API)
+      const cryptoRates = {
+        BTC: { USD: 60000, EUR: 55000, GBP: 48000, CAD: 80000, AUD: 90000, NGN: 90000000, GHS: 750000, XAF: 36000000, KES: 9000000 },
+        ETH: { USD: 3000, EUR: 2800, GBP: 2500, CAD: 4000, AUD: 4500, NGN: 4500000, GHS: 37500, XAF: 1800000, KES: 450000 },
+        USDT: { USD: 1, EUR: 0.92, GBP: 0.79, CAD: 1.36, AUD: 1.51, NGN: 1500, GHS: 12.5, XAF: 600, KES: 150 },
+        USDC: { USD: 1, EUR: 0.92, GBP: 0.79, CAD: 1.36, AUD: 1.51, NGN: 1500, GHS: 12.5, XAF: 600, KES: 150 }
+      };
+      return cryptoRates[crypto][fiat] || 1;
+    }
+
+    function generateLimits(crypto, rate) {
+      // Generate USD limits first (whole numbers)
+      const minUSD = Math.floor(Math.random() * 41 + 10); // 10-50 USD
+      const maxUSD = Math.floor(Math.random() * 1971 + 30); // 30-2000 USD
+      
+      // Convert to crypto amounts based on rate
+      const cryptoMin = (minUSD / rate).toFixed(6);
+      const cryptoMax = (maxUSD / rate).toFixed(6);
+      
+      return {
+        cryptoMin: cryptoMin,
+        cryptoMax: cryptoMax,
+        fiatMin: minUSD.toFixed(2),
+        fiatMax: maxUSD.toFixed(2)
+      };
+    }
+
+    function getRandomPaymentMethods(country) {
+      const methods = paymentMethodsByCountry[country];
+      
+      // Determine number of payment methods (weighted toward more methods)
+      let count;
+      const rand = Math.random();
+      if (rand < 0.1) {
+        count = 1;
+      } else if (rand < 0.7) {
+        count = 2;
+      } else {
+        count = 3;
+      }
+      
+      // Shuffle and select methods
+      const shuffled = [...methods];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      
+      return shuffled.slice(0, count);
+    }
+
+    async function generateVendors() {
+      generateBtn.disabled = true;
+      clearBtn.disabled = true;
+      vendorPreviews.innerHTML = '';
+      statusEl.textContent = "Starting generation...";
+      
+      try {
+        const vendorsToGenerate = 100;
+        for (let i = 0; i < vendorsToGenerate; i++) {
+          const vendor = generateVendor(i);
+          
+          const preview = document.createElement('div');
+          preview.className = 'vendor-card';
+          preview.textContent = `Trader: ${vendor.name}
+Crypto: ${vendor.crypto}
+Fiat: ${vendor.fiat}
+Premium: ${vendor.premium}%
+Rate: ${vendor.rate} ${vendor.fiat}/${vendor.crypto}
+Rating: ${vendor.rating} ★
+Trades: ${vendor.trades}
+Payments: ${vendor.payments.join(', ')}
+Limits: ${vendor.limits.fiatMin} - ${vendor.limits.fiatMax} ${vendor.fiat}`;
+          vendorPreviews.appendChild(preview);
+          
+          await addDoc(collection(db, "vendors"), vendor);
+          statusEl.textContent = `Adding vendor ${i + 1}/${vendorsToGenerate}: ${vendor.name} (${vendor.premium}%)`;
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        statusEl.innerHTML = `<span class="success">✓ Generated ${vendorsToGenerate} vendors with premium percentages!</span>`;
+        
+      } catch (error) {
+        console.error(error);
+        statusEl.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+      } finally {
+        generateBtn.disabled = false;
+        clearBtn.disabled = false;
+      }
+    }
+
+    async function clearVendors() {
+      if (!confirm('Delete ALL vendors? This cannot be undone.')) return;
+      
+      clearBtn.disabled = true;
+      statusEl.textContent = "Deleting all vendors...";
+      
+      try {
+        const querySnapshot = await getDocs(collection(db, "vendors"));
+        const deletePromises = [];
+        
+        querySnapshot.forEach((doc) => {
+          deletePromises.push(deleteDoc(doc.ref));
+        });
+        
+        await Promise.all(deletePromises);
+        statusEl.innerHTML = `<span class="success">✓ Deleted ${deletePromises.length} vendors</span>`;
+        
+      } catch (error) {
+        console.error(error);
+        statusEl.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+      } finally {
+        clearBtn.disabled = false;
+      }
+    }
+
+    // Sorting functionality
+    async function loadAndDisplayVendors(sortDirection = null) {
+      vendorPreviews.innerHTML = '';
+      statusEl.textContent = "Loading vendors...";
+      
+      try {
+        let q;
+        if (sortDirection === 'asc') {
+          q = query(collection(db, "vendors"), orderBy("premium", "asc"));
+        } else if (sortDirection === 'desc') {
+          q = query(collection(db, "vendors"), orderBy("premium", "desc"));
+        } else {
+          q = query(collection(db, "vendors"));
+        }
+        
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+          statusEl.textContent = "No vendors found";
+          return;
+        }
+        
+        querySnapshot.forEach((doc) => {
+          const vendor = doc.data();
+          const preview = document.createElement('div');
+          preview.className = 'vendor-card';
+          preview.textContent = `Trader: ${vendor.name}
+Crypto: ${vendor.crypto}
+Fiat: ${vendor.fiat}
+Premium: ${vendor.premium}%
+Rate: ${vendor.rate} ${vendor.fiat}/${vendor.crypto}
+Rating: ${vendor.rating} ★
+Trades: ${vendor.trades}
+Payments: ${vendor.payments.join(', ')}
+Limits: ${vendor.limits.fiatMin} - ${vendor.limits.fiatMax} ${vendor.fiat}`;
+          vendorPreviews.appendChild(preview);
+        });
+        
+        statusEl.innerHTML = `<span class="success">✓ Displaying ${querySnapshot.size} vendors</span>`;
+        
+      } catch (error) {
+        console.error(error);
+        statusEl.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+      }
+    }
+
+    // Event listeners
+    generateBtn.addEventListener('click', generateVendors);
+    clearBtn.addEventListener('click', clearVendors);
+    sortAscBtn.addEventListener('click', () => {
+      sortAscBtn.classList.add('active');
+      sortDescBtn.classList.remove('active');
+      sortDefaultBtn.classList.remove('active');
+      loadAndDisplayVendors('asc');
+    });
+    sortDescBtn.addEventListener('click', () => {
+      sortDescBtn.classList.add('active');
+      sortAscBtn.classList.remove('active');
+      sortDefaultBtn.classList.remove('active');
+      loadAndDisplayVendors('desc');
+    });
+    sortDefaultBtn.addEventListener('click', () => {
+      sortDefaultBtn.classList.add('active');
+      sortAscBtn.classList.remove('active');
+      sortDescBtn.classList.remove('active');
+      loadAndDisplayVendors();
+    });
+
+    // Initial load
+    loadAndDisplayVendors();
+  </script>
+</body>
+</html>

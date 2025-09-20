@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>BitNest | Trading</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="icons/icon.192.png" type="image/png">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1ed3c6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BitNest">
+  
+  <style>
+    :root {
+      --primary: #1ed3c6;
+      --primary-dark: #17b3a8;
+      --dark-bg: #0a0b0e;
+      --card-bg: #16181d;
+      --card-hover: #1e2128;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b3b8;
+      --accent-blue: #3a86ff;
+      --accent-green: #4cc9f0;
+      --accent-purple: #8338ec;
+      --accent-orange: #ff7b25;
+      --accent-pink: #ff006e;
+      --success: #00e676;
+      --warning: #ffab00;
+      --danger: #ff5252;
+      --border-radius: 16px;
+      --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      --glass-effect: rgba(16, 18, 22, 0.8);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-bottom: 80px; /* Space for bottom nav */
+    }
+
+    /* Mobile-First Navbar */
+    .navbar {
+      background-color: var(--glass-effect);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .navbar .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: none; /* Hidden on mobile */
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .notification-bell, .mobile-menu-btn {
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .notification-bell:hover, .mobile-menu-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .profile-pic {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .user-name {
+      display: none; /* Hidden on mobile */
+    }
+
+    /* Dropdown Menus */
+    .notification-dropdown, .user-menu, .mobile-nav-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      min-width: 280px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .notification-dropdown.active, .user-menu.active, .mobile-nav-menu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .notification-dropdown {
+      padding: 1rem;
+    }
+
+    .notification-dropdown p {
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .user-menu-item, .mobile-nav-item {
+      padding: 0.75rem 1.5rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .user-menu-item:hover, .mobile-nav-item:hover {
+      background: var(--card-hover);
+      padding-left: 2rem;
+    }
+
+    /* PWA Install Button - Match Dashboard */
+    .pwa-install-container {
+      grid-column: span 12;
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .pwa-install-btn {
+      background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+      color: black;
+      border: none;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(249, 212, 35, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    .pwa-install-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(249, 212, 35, 0.4);
+    }
+
+    .pwa-install-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      transition: all 0.3s;
+    }
+
+    .pwa-install-btn:hover::after {
+      left: 100%;
+    }
+
+    .pwa-install-btn i {
+      transition: transform 0.3s ease;
+    }
+
+    .pwa-install-btn:hover i {
+      transform: translateX(5px);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Main Content */
+    .container {
+      padding: 1rem;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .dashboard-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Welcome Banner - Mobile Optimized */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .welcome-content h1 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .welcome-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .welcome-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .welcome-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .welcome-stat-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .welcome-stat-label {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    .promo-badge {
+      display: block;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-orange));
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(131, 56, 236, 0.3);
+      width: 100%;
+    }
+
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+      border: none;
+      padding: 0.75rem 1.5rem;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 16px rgba(30, 211, 198, 0.3);
+      transition: all 0.3s ease;
+      width: 100%;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(30, 211, 198, 0.4);
+    }
+
+    .welcome-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .crypto-icon {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s ease;
+    }
+
+    .crypto-icon:hover {
+      transform: scale(1.1);
+    }
+
+    /* Trading View Specific Styles */
+    .trading-header {
+      background-color: var(--card-bg);
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 1rem;
+    }
+
+    .pair-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .pair-selector .pair {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .pair-selector img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .pair-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 200px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .pair-dropdown.active {
+      display: block;
+    }
+
+    .pair-option {
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .pair-option:hover {
+      background: var(--card-hover);
+    }
+
+    .pair-option img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .price-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .current-price {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .price-change {
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .positive {
+      background: rgba(0, 230, 118, 0.1);
+      color: var(--success);
+    }
+
+    .negative {
+      background: rgba(255, 82, 82, 0.1);
+      color: var(--danger);
+    }
+
+    .neutral {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+    }
+
+    /* Trading Layout */
+    .trading-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .trade-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .card-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .trade-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .form-input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      color: white;
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .amount-controls {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .amount-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .amount-btn:hover {
+      background: rgba(30, 211, 198, 0.1);
+      color: var(--primary);
+    }
+
+    /* Enhanced Buttons */
+    .buy-btn {
+      background: linear-gradient(90deg, var(--success), #00c968);
+    }
+
+    .buy-btn:hover {
+      box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4);
+    }
+
+    .sell-btn {
+      background: linear-gradient(90deg, var(--danger), #e64848);
+    }
+
+    .sell-btn:hover {
+      box-shadow: 0 6px 20px rgba(255, 82, 82, 0.4);
+    }
+
+    /* Asset Balances */
+    .asset-balances {
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+    }
+
+    .balances-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .balance-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .balance-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(30, 211, 198, 0.2);
+    }
+
+    .balance-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .balance-header img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .balance-amount {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .balance-value {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    /* Swap Interface */
+    .swap-interface {
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+    }
+
+    .swap-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .swap-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .swap-input-group {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .swap-input-group:focus-within {
+      border-color: var(--primary);
+    }
+
+    .swap-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      padding: 0.5rem 0;
+    }
+
+    .swap-input:focus {
+      outline: none;
+    }
+
+    .token-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .token-selector:hover {
+      background: rgba(30, 211, 198, 0.1);
+    }
+
+    .token-selector img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .token-dropdown {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 0.5rem 0;
+      min-width: 200px;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .token-dropdown.active {
+      display: block;
+    }
+
+    .token-option {
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .token-option:hover {
+      background: var(--card-hover);
+    }
+
+    .token-option img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .swap-arrow {
+      display: flex;
+      justify-content: center;
+      margin: -0.5rem 0;
+    }
+
+    .swap-arrow i {
+      background: var(--card-bg);
+      border: 4px solid var(--dark-bg);
+      border-radius: 50%;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .swap-arrow i:hover {
+      color: var(--primary);
+      transform: rotate(180deg);
+      background: rgba(30, 211, 198, 0.1);
+    }
+
+    /* Market Overview */
+    .market-section {
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--box-shadow);
+    }
+
+    .market-table-container {
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
+
+    .market-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 500px;
+    }
+
+    .market-table th {
+      text-align: left;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .market-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .market-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .market-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .crypto-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 120px;
+    }
+
+    .crypto-icon-small {
+      width: 24px;
+      height: 24px;
+    }
+
+    .crypto-symbol {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      display: block;
+    }
+
+    .price-up {
+      background: rgba(0, 230, 118, 0.1);
+      color: var(--success);
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .price-down {
+      background: rgba(255, 82, 82, 0.1);
+      color: var(--danger);
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .price-neutral {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary);
+    }
+
+    /* Bottom Navigation - Mobile Only */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--glass-effect);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem 0.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.65rem;
+      gap: 0.25rem;
+      transition: all 0.3s ease;
+      padding: 0.25rem;
+      border-radius: 8px;
+      min-width: 50px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      background: rgba(30, 211, 198, 0.1);
+    }
+
+    .nav-icon {
+      font-size: 1.1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-item:hover .nav-icon {
+      transform: scale(1.1);
+    }
+
+    /* Desktop Styles */
+    @media (min-width: 768px) {
+      body {
+        padding-bottom: 0;
+      }
+      
+      .container {
+        padding: 1.5rem 2rem;
+        max-width: 1400px;
+      }
+      
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1.5rem;
+      }
+      
+      .welcome-banner {
+        grid-column: span 12;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2rem;
+      }
+      
+      .welcome-content {
+        flex: 2;
+      }
+      
+      .welcome-content .btn {
+        width: auto;
+        max-width: 200px;
+      }
+      
+      .welcome-image {
+        display: flex;
+        gap: 0.75rem;
+        flex: 1;
+        justify-content: flex-end;
+        margin-top: 0;
+      }
+      
+      .crypto-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .user-name {
+        display: block;
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.9rem;
+      }
+      
+      .trading-header {
+        grid-column: span 12;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .pair-selector {
+        margin-bottom: 0;
+      }
+      
+      .trading-layout {
+        grid-column: span 12;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+      
+      .asset-balances {
+        grid-column: span 12;
+      }
+      
+      .balances-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .swap-interface {
+        grid-column: span 12;
+      }
+      
+      .market-section {
+        grid-column: span 12;
+      }
+      
+      .bottom-nav {
+        display: none;
+      }
+      
+      .navbar {
+        padding: 1rem 2rem;
+      }
+
+      .navbar .logo {
+        font-size: 1.5rem;
+      }
+      
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      
+      .navbar a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 0.5rem 0;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .navbar a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--primary);
+        transition: width 0.3s ease;
+      }
+
+      .navbar a:hover {
+        color: var(--text-primary);
+      }
+
+      .navbar a:hover::after {
+        width: 100%;
+      }
+      
+      .navbar a.active {
+        color: var(--primary);
+      }
+
+      .navbar a.active::after {
+        width: 100%;
+      }
+
+      .section-title {
+        font-size: 1.2rem;
+      }
+
+      .section-title::before {
+        content: '';
+        display: block;
+        width: 4px;
+        height: 18px;
+        background: linear-gradient(var(--primary), var(--accent-blue));
+        border-radius: 3px;
+        margin-right: 0.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0.75rem;
+      }
+      
+      .welcome-banner {
+        padding: 1.25rem;
+      }
+      
+      .balances-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo" onclick="window.location.href='dashboard.html'">
+      <span>BitNest</span>
+    </div>
+    
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="assets.html">Assets</a>
+      <a href="earn.html">Earn</a>
+      <a href="trading_view.html" class="active">Trade</a>
+      <a href="P2P.html">P2P</a>
+      <a href="deposit.html">Deposit</a>
+    </div>
+    
+    <div class="navbar-actions">
+      <div class="notification-bell" id="notificationBell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>No new notifications</p>
+        </div>
+      </div>
+      <div class="user-profile" id="userProfile">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="profile-pic" id="userProfilePic">
+        <span class="user-name" id="userName">Loading...</span>
+        <div class="user-menu" id="userMenu">
+          <a href="profile.html" class="user-menu-item">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="settings.html" class="user-menu-item">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="index.html" class="user-menu-item" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+        <div class="mobile-nav-menu" id="mobileNavMenu">
+          <a href="dashboard.html" class="mobile-nav-item">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+          <a href="assets.html" class="mobile-nav-item">
+            <i class="fas fa-wallet"></i> Assets
+          </a>
+          <a href="earn.html" class="mobile-nav-item">
+            <i class="fas fa-percentage"></i> Earn
+          </a>
+          <a href="trading_view.html" class="mobile-nav-item active">
+            <i class="fas fa-exchange-alt"></i> Trade
+          </a>
+          <a href="P2P.html" class="mobile-nav-item">
+            <i class="fas fa-users"></i> P2P
+          </a>
+          <a href="deposit.html" class="mobile-nav-item">
+            <i class="fas fa-plus-circle"></i> Deposit
+          </a>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="dashboard-grid">
+      <!-- PWA Install Button -->
+      <div class="pwa-install-container">
+        <button id="installBtn" class="pwa-install-btn" style="display: none;">
+          <i class="fas fa-download"></i> Get App + 500 SATS
+        </button>
+      </div>
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-content">
+          <h1 id="welcomeTitle">Trade Crypto Assets</h1>
+          <p>Buy, sell and trade cryptocurrencies with low fees and real-time market data. Start trading today!</p>
+          
+          <div class="welcome-stats">
+            <div class="welcome-stat">
+              <div class="welcome-stat-value" id="totalBalance">$0.00</div>
+              <div class="welcome-stat-label">Total Balance</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-value" id="activeTrades">0</div>
+              <div class="welcome-stat-label">Active Trades</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-value" id="tradingVolume">$0.00</div>
+              <div class="welcome-stat-label">24h Volume</div>
+            </div>
+          </div>
+          
+          <div class="promo-badge">
+            <i class="fas fa-gift"></i> Special offer: Deposit $100+ and get $100 bonus in BTC!
+          </div>
+          <button class="btn" onclick="window.location.href='deposit.html'">
+            <i class="fas fa-arrow-down"></i> Deposit Now
+          </button>
+        </div>
+        <div class="welcome-image">
+          <img src="crypto-logos/bitcoin.svg" alt="Bitcoin" class="crypto-icon">
+          <img src="crypto-logos/ethereum-eth-logo.svg" alt="Ethereum" class="crypto-icon">
+          <img src="crypto-logos/usd-coin-usdc-logo.svg" alt="USDC" class="crypto-icon">
+          <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" class="crypto-icon">
+          <img src="crypto-logos/polkadot-new-dot-logo.svg" alt="Polkadot" class="crypto-icon">
+        </div>
+      </div>
+
+      <!-- Trading Header -->
+      <div class="trading-header">
+        <div class="pair-selector">
+          <div class="pair" id="currentPair">
+            <img src="crypto-logos/bitcoin.svg" alt="BTC" id="pairBaseIcon">
+            <span id="pairName">BTC/USDT</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="pair-dropdown" id="pairDropdown">
+            <!-- Pair options will be populated by JavaScript -->
+          </div>
+        </div>
+        <div class="price-info">
+          <div class="current-price" id="currentPrice">$0.00</div>
+          <div class="price-change" id="priceChange">+0.00%</div>
+        </div>
+      </div>
+
+      <!-- Trading Layout -->
+      <div class="trading-layout">
+        <!-- Buy Card -->
+        <div class="trade-card">
+          <div class="card-header">
+            <div class="card-title">Buy <span id="buyAssetName">BTC</span></div>
+          </div>
+          <form class="trade-form">
+            <div class="form-group">
+              <label class="form-label">Amount (<span id="buyAssetSymbol">BTC</span>)</label>
+              <input type="number" class="form-input" id="buyAmount" placeholder="0.00" step="0.000001">
+              <div class="amount-controls">
+                <button type="button" class="amount-btn">25%</button>
+                <button type="button" class="amount-btn">50%</button>
+                <button type="button" class="amount-btn">75%</button>
+                <button type="button" class="amount-btn">100%</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Total (USDT)</label>
+              <input type="number" class="form-input" id="buyTotal" placeholder="0.00" readonly>
+            </div>
+            <button type="button" class="btn buy-btn" id="buyButton">
+              <i class="fas fa-arrow-up"></i> Buy <span id="buyButtonAsset">BTC</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Sell Card -->
+        <div class="trade-card">
+          <div class="card-header">
+            <div class="card-title">Sell <span id="sellAssetName">BTC</span></div>
+          </div>
+          <form class="trade-form">
+            <div class="form-group">
+              <label class="form-label">Amount (<span id="sellAssetSymbol">BTC</span>)</label>
+              <input type="number" class="form-input" id="sellAmount" placeholder="0.00" step="0.000001">
+              <div class="amount-controls">
+                <button type="button" class="amount-btn">25%</button>
+                <button type="button" class="amount-btn">50%</button>
+                <button type="button" class="amount-btn">75%</button>
+                <button type="button" class="amount-btn">100%</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Total (USDT)</label>
+              <input type="number" class="form-input" id="sellTotal" placeholder="0.00" readonly>
+            </div>
+            <button type="button" class="btn sell-btn" id="sellButton">
+              <i class="fas fa-arrow-down"></i> Sell <span id="sellButtonAsset">BTC</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Asset Balances -->
+      <div class="asset-balances">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-wallet"></i> Your Top Assets</h2>
+          <button class="btn-secondary">
+            <i class="fas fa-history"></i> History
+          </button>
+        </div>
+        <div class="balances-grid" id="balancesGrid">
+          <!-- Balances will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Swap Interface -->
+      <div class="swap-interface">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-exchange-alt"></i> Swap Tokens</h2>
+        </div>
+        <div class="swap-container">
+          <div class="swap-row">
+            <label class="form-label">You pay</label>
+            <div class="swap-input-group">
+              <input type="number" class="swap-input" id="swapInputAmount" placeholder="0.0">
+              <div class="token-selector" id="fromTokenSelector">
+                <img src="crypto-logos/tether-usdt-logo.svg" alt="USDT" id="fromTokenIcon">
+                <span id="fromTokenSymbol">USDT</span>
+                <i class="fas fa-chevron-down"></i>
+                <div class="token-dropdown" id="fromTokenDropdown"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="swap-arrow">
+            <i class="fas fa-arrow-down" id="swapDirectionArrow"></i>
+          </div>
+
+          <div class="swap-row">
+            <label class="form-label">You receive</label>
+            <div class="swap-input-group">
+              <input type="number" class="swap-input" id="swapOutputAmount" placeholder="0.0">
+              <div class="token-selector" id="toTokenSelector">
+                <img src="crypto-logos/ethereum-eth-logo.svg" alt="ETH" id="toTokenIcon">
+                <span id="toTokenSymbol">ETH</span>
+                <i class="fas fa-chevron-down"></i>
+                <div class="token-dropdown" id="toTokenDropdown"></div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn swap-btn" id="swapButton">
+            <i class="fas fa-exchange-alt"></i> Swap Tokens
+          </button>
+        </div>
+      </div>
+
+      <!-- Market Overview -->
+      <div class="market-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-globe"></i> Market Overview</h2>
+          <button class="btn-secondary" id="refreshMarketData">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+        <div class="market-table-container">
+          <table class="market-table">
+            <thead>
+              <tr>
+                <th>Asset</th>
+                <th>Price</th>
+                <th>24h Change</th>
+                <th>Volume 24h</th>
+              </tr>
+            </thead>
+            <tbody id="marketData">
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                  Loading market data...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation - Mobile Only -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <i class="fas fa-home nav-icon"></i>
+      <span>Dashboard</span>
+    </a>
+    <a href="assets.html" class="nav-item">
+      <i class="fas fa-wallet nav-icon"></i>
+      <span>Assets</span>
+    </a>
+    <a href="earn.html" class="nav-item">
+      <i class="fas fa-percentage nav-icon"></i>
+      <span>Earn</span>
+    </a>
+    <a href="trading_view.html" class="nav-item active">
+      <i class="fas fa-exchange-alt nav-icon"></i>
+      <span>Trade</span>
+    </a>
+    <a href="deposit.html" class="nav-item">
+      <i class="fas fa-plus-circle nav-icon"></i>
+      <span>Deposit</span>
+    </a>
+  </div>
+
+  <!-- Firebase and App Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged,
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc 
+    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.appspot.com",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // DOM Elements
+    const userNameElement = document.getElementById('userName');
+    const userProfilePicElement = document.getElementById('userProfilePic');
+    const welcomeTitleElement = document.getElementById('welcomeTitle');
+    const totalBalanceElement = document.getElementById('totalBalance');
+    const activeTradesElement = document.getElementById('activeTrades');
+    const tradingVolumeElement = document.getElementById('tradingVolume');
+    const userProfileElement = document.getElementById('userProfile');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavMenu = document.getElementById('mobileNavMenu');
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const installBtn = document.getElementById('installBtn');
+    
+    // Trading elements
+    const currentPairElement = document.getElementById('currentPair');
+    const pairNameElement = document.getElementById('pairName');
+    const pairBaseIconElement = document.getElementById('pairBaseIcon');
+    const currentPriceElement = document.getElementById('currentPrice');
+    const priceChangeElement = document.getElementById('priceChange');
+    const marketDataElement = document.getElementById('marketData');
+    const refreshMarketDataBtn = document.getElementById('refreshMarketData');
+    const balancesGrid = document.getElementById('balancesGrid');
+    const pairDropdown = document.getElementById('pairDropdown');
+    
+    // Form elements
+    const buyAmountInput = document.getElementById('buyAmount');
+    const buyTotalInput = document.getElementById('buyTotal');
+    const sellAmountInput = document.getElementById('sellAmount');
+    const sellTotalInput = document.getElementById('sellTotal');
+    const buyButton = document.getElementById('buyButton');
+    const sellButton = document.getElementById('sellButton');
+    const buyAssetName = document.getElementById('buyAssetName');
+    const buyAssetSymbol = document.getElementById('buyAssetSymbol');
+    const buyButtonAsset = document.getElementById('buyButtonAsset');
+    const sellAssetName = document.getElementById('sellAssetName');
+    const sellAssetSymbol = document.getElementById('sellAssetSymbol');
+    const sellButtonAsset = document.getElementById('sellButtonAsset');
+    
+    // Swap elements
+    const swapInputAmount = document.getElementById('swapInputAmount');
+    const swapOutputAmount = document.getElementById('swapOutputAmount');
+    const fromTokenSelector = document.getElementById('fromTokenSelector');
+    const fromTokenIcon = document.getElementById('fromTokenIcon');
+    const fromTokenSymbol = document.getElementById('fromTokenSymbol');
+    const fromTokenDropdown = document.getElementById('fromTokenDropdown');
+    const toTokenSelector = document.getElementById('toTokenSelector');
+    const toTokenIcon = document.getElementById('toTokenIcon');
+    const toTokenSymbol = document.getElementById('toTokenSymbol');
+    const toTokenDropdown = document.getElementById('toTokenDropdown');
+    const swapButton = document.getElementById('swapButton');
+    const swapDirectionArrow = document.getElementById('swapDirectionArrow');
+
+    // Current trading pair
+    let currentPair = 'BTC/USDT';
+    let currentPrice = 0;
+    let priceChange = 0;
+    let isPositiveChange = true;
+    
+    // Supported cryptocurrencies with their CoinGecko IDs
+    const supportedCryptos = [
+      { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin' },
+      { id: 'ethereum', symbol: 'ETH', name: 'Ethereum' },
+      { id: 'tether', symbol: 'USDT', name: 'Tether' },
+      { id: 'binancecoin', symbol: 'BNB', name: 'Binance Coin' },
+      { id: 'solana', symbol: 'SOL', name: 'Solana' },
+      { id: 'ripple', symbol: 'XRP', name: 'XRP' },
+      { id: 'cardano', symbol: 'ADA', name: 'Cardano' },
+      { id: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin' },
+      { id: 'polkadot', symbol: 'DOT', name: 'Polkadot' },
+      { id: 'matic-network', symbol: 'MATIC', name: 'Polygon' },
+      { id: 'litecoin', symbol: 'LTC', name: 'Litecoin' },
+      { id: 'bitcoin-cash', symbol: 'BCH', name: 'Bitcoin Cash' },
+      { id: 'chainlink', symbol: 'LINK', name: 'Chainlink' },
+      { id: 'stellar', symbol: 'XLM', name: 'Stellar' },
+      { id: 'monero', symbol: 'XMR', name: 'Monero' },
+      { id: 'ethereum-classic', symbol: 'ETC', name: 'Ethereum Classic' },
+      { id: 'filecoin', symbol: 'FIL', name: 'Filecoin' },
+      { id: 'cosmos', symbol: 'ATOM', name: 'Cosmos' },
+      { id: 'uniswap', symbol: 'UNI', name: 'Uniswap' },
+      { id: 'vechain', symbol: 'VET', name: 'VeChain' },
+      { id: 'tron', symbol: 'TRX', name: 'TRON' },
+      { id: 'algorand', symbol: 'ALGO', name: 'Algorand' },
+      { id: 'avalanche-2', symbol: 'AVAX', name: 'Avalanche' },
+      { id: 'sui', symbol: 'SUI', name: 'Sui' },
+      { id: 'usd-coin', symbol: 'USDC', name: 'USD Coin' }
+    ];
+
+    // User balances (all set to 0 initially)
+    const userBalances = {};
+    supportedCryptos.forEach(crypto => {
+      userBalances[crypto.symbol] = { amount: 0, value: 0 };
+    });
+
+    // Initialize all values
+    const initializeValues = () => {
+      totalBalanceElement.textContent = '$0.00';
+      activeTradesElement.textContent = '0';
+      tradingVolumeElement.textContent = '$0.00';
+      
+      // Calculate total balance (will be 0)
+      let totalBalance = 0;
+      Object.values(userBalances).forEach(balance => {
+        totalBalance += balance.value;
+      });
+      totalBalanceElement.textContent = `$${totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      
+      // Set trading volume to 0
+      tradingVolumeElement.textContent = '$0.00';
+    };
+
+    // Fetch crypto prices from CoinGecko
+    const fetchCryptoPrices = async () => {
+      try {
+        const ids = supportedCryptos.map(crypto => crypto.id).join(',');
+        const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h`);
+        const data = await response.json();
+        
+        // Update prices in our supported cryptos
+        data.forEach(coinData => {
+          const crypto = supportedCryptos.find(c => c.id === coinData.id);
+          if (crypto) {
+            crypto.current_price = coinData.current_price;
+            crypto.price_change_percentage_24h = coinData.price_change_percentage_24h;
+          }
+        });
+        
+        updateMarketData();
+        updateCurrentPair();
+        
+      } catch (error) {
+        console.error('Error fetching crypto prices:', error);
+        // Fallback to some default prices if API fails
+        supportedCryptos.forEach(crypto => {
+          crypto.current_price = crypto.current_price || 0;
+          crypto.price_change_percentage_24h = crypto.price_change_percentage_24h || 0;
+        });
+        updateMarketData();
+        updateCurrentPair();
+      }
+    };
+
+    // Update market data display
+    const updateMarketData = () => {
+      let marketHTML = '';
+      
+      // Display top cryptocurrencies
+      supportedCryptos.slice(0, 10).forEach(crypto => {
+        const isPositive = crypto.price_change_percentage_24h >= 0;
+        const changeClass = isPositive ? 'price-up' : 'price-down';
+        const changeSymbol = isPositive ? '+' : '';
+        const volume24h = (crypto.total_volume / 1000000000).toFixed(2) + 'B';
+        
+        marketHTML += `
+          <tr>
+            <td>
+              <div class="crypto-info">
+                <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.name}" class="crypto-icon-small" onerror="this.src='crypto-logos/generic-coin.svg'">
+                <div>
+                  <div>${crypto.name}</div>
+                  <span class="crypto-symbol">${crypto.symbol}</span>
+                </div>
+              </div>
+            </td>
+            <td>$${crypto.current_price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td><span class="${changeClass}">${changeSymbol}${crypto.price_change_percentage_24h.toFixed(2)}%</span></td>
+            <td>${volume24h}</td>
+          </tr>
+        `;
+      });
+      
+      marketDataElement.innerHTML = marketHTML;
+    };
+
+    // Update user balances display
+    const updateBalances = () => {
+      balancesGrid.innerHTML = '';
+      
+      // Only show 4 assets
+      const displayedAssets = supportedCryptos.slice(0, 4);
+      
+      displayedAssets.forEach(crypto => {
+        const balance = userBalances[crypto.symbol] || { amount: 0, value: 0 };
+        
+        const balanceCard = document.createElement('div');
+        balanceCard.className = 'balance-card';
+        balanceCard.innerHTML = `
+          <div class="balance-header">
+            <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+            <span>${crypto.symbol}</span>
+          </div>
+          <div class="balance-amount">${balance.amount.toLocaleString('en-US', { maximumFractionDigits: 6 })}</div>
+          <div class="balance-value">$${balance.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        `;
+        balancesGrid.appendChild(balanceCard);
+      });
+    };
+
+    // Initialize token dropdowns for swap
+    const initializeTokenDropdowns = () => {
+      fromTokenDropdown.innerHTML = '';
+      toTokenDropdown.innerHTML = '';
+      
+      supportedCryptos.forEach(crypto => {
+        // From token options
+        const fromOption = document.createElement('div');
+        fromOption.className = 'token-option';
+        fromOption.innerHTML = `
+          <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+          <span>${crypto.symbol}</span>
+        `;
+        fromOption.addEventListener('click', () => {
+          fromTokenIcon.src = `crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg`;
+          fromTokenIcon.alt = crypto.symbol;
+          fromTokenIcon.onerror = function() { this.src='crypto-logos/generic-coin.svg'; };
+          fromTokenSymbol.textContent = crypto.symbol;
+          fromTokenDropdown.classList.remove('active');
+          swapInputAmount.value = '';
+          swapOutputAmount.value = '';
+        });
+        fromTokenDropdown.appendChild(fromOption);
+        
+        // To token options
+        const toOption = document.createElement('div');
+        toOption.className = 'token-option';
+        toOption.innerHTML = `
+          <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+          <span>${crypto.symbol}</span>
+        `;
+        toOption.addEventListener('click', () => {
+          toTokenIcon.src = `crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg`;
+          toTokenIcon.alt = crypto.symbol;
+          toTokenIcon.onerror = function() { this.src='crypto-logos/generic-coin.svg'; };
+          toTokenSymbol.textContent = crypto.symbol;
+          toTokenDropdown.classList.remove('active');
+          swapInputAmount.value = '';
+          swapOutputAmount.value = '';
+        });
+        toTokenDropdown.appendChild(toOption);
+      });
+    };
+
+    // Select trading pair
+    const selectTradingPair = (pair) => {
+      currentPair = pair;
+      const [baseSymbol] = pair.split('/');
+      const crypto = supportedCryptos.find(c => c.symbol === baseSymbol);
+      
+      if (crypto) {
+        currentPrice = crypto.current_price;
+        priceChange = crypto.price_change_percentage_24h;
+        isPositiveChange = priceChange >= 0;
+        updateCurrentPair();
+      }
+    };
+
+    // Update current trading pair display
+    const updateCurrentPair = () => {
+      const [baseSymbol, quoteSymbol] = currentPair.split('/');
+      const baseCrypto = supportedCryptos.find(c => c.symbol === baseSymbol);
+      
+      if (!baseCrypto) return;
+      
+      pairNameElement.textContent = currentPair;
+      pairBaseIconElement.src = `crypto-logos/${baseCrypto.id}-${baseSymbol.toLowerCase()}-logo.svg`;
+      pairBaseIconElement.alt = baseSymbol;
+      pairBaseIconElement.onerror = function() { this.src='crypto-logos/generic-coin.svg'; };
+      
+      currentPriceElement.textContent = `$${currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      
+      const changeSymbol = isPositiveChange ? '+' : '';
+      priceChangeElement.textContent = `${changeSymbol}${priceChange.toFixed(2)}%`;
+      priceChangeElement.className = `price-change ${isPositiveChange ? 'positive' : 'negative'}`;
+      
+      // Update form labels
+      buyAssetName.textContent = baseCrypto.name;
+      buyAssetSymbol.textContent = baseSymbol;
+      buyButtonAsset.textContent = baseSymbol;
+      sellAssetName.textContent = baseCrypto.name;
+      sellAssetSymbol.textContent = baseSymbol;
+      sellButtonAsset.textContent = baseSymbol;
+      
+      // Clear input fields
+      buyAmountInput.value = '';
+      buyTotalInput.value = '';
+      sellAmountInput.value = '';
+      sellTotalInput.value = '';
+    };
+
+    // Toggle user menu
+    userProfileElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.classList.toggle('active');
+      mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Toggle mobile nav menu
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileNavMenu.classList.toggle('active');
+      userMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Toggle notification dropdown
+    notificationBell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('active');
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+    });
+
+    // Close menus when clicking outside
+    document.addEventListener('click', () => {
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        console.error('Sign out error:', error);
+      });
+    });
+
+    // PWA Installation
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+      
+      installBtn.addEventListener('click', () => {
+        installBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
+        installBtn.disabled = true;
+        deferredPrompt.prompt();
+        
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User installed the PWA');
+            installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
+            setTimeout(() => {
+              installBtn.style.display = 'none';
+            }, 3000);
+          } else {
+            installBtn.innerHTML = '<i class="fas fa-download"></i> Get App + 500 SATS';
+            installBtn.disabled = false;
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA was installed');
+      if (installBtn) {
+        installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
+        setTimeout(() => {
+          installBtn.style.display = 'none';
+        }, 2000);
+      }
+    });
+
+    // Buy/Sell form functionality
+    buyAmountInput.addEventListener('input', () => {
+      const amount = parseFloat(buyAmountInput.value) || 0;
+      buyTotalInput.value = (amount * currentPrice).toFixed(2);
+    });
+
+    sellAmountInput.addEventListener('input', () => {
+      const amount = parseFloat(sellAmountInput.value) || 0;
+      sellTotalInput.value = (amount * currentPrice).toFixed(2);
+    });
+
+    // Percentage buttons
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const percent = parseFloat(this.textContent) / 100;
+        const form = this.closest('.trade-form');
+        const amountInput = form.querySelector('input[type="number"]:not([readonly])');
+        const totalInput = form.querySelector('input[readonly]');
+        
+        if (form.closest('.trade-card').querySelector('.card-title').textContent.includes('Buy')) {
+          // For buy form, calculate based on USDT balance
+          const maxAmount = (userBalances.USDT.value || 0) / currentPrice;
+          amountInput.value = (maxAmount * percent).toFixed(6);
+          totalInput.value = (maxAmount * percent * currentPrice).toFixed(2);
+        } else {
+          // For sell form, calculate based on current crypto balance
+          const [baseSymbol] = currentPair.split('/');
+          const maxAmount = userBalances[baseSymbol]?.amount || 0;
+          amountInput.value = (maxAmount * percent).toFixed(6);
+          totalInput.value = (maxAmount * percent * currentPrice).toFixed(2);
+        }
+      });
+    });
+
+    // Buy/Sell buttons
+    buyButton.addEventListener('click', () => {
+      const amount = parseFloat(buyAmountInput.value) || 0;
+      const total = parseFloat(buyTotalInput.value) || 0;
+      const [baseSymbol] = currentPair.split('/');
+      
+      if (amount <= 0) {
+        alert('Please enter a valid amount');
+        return;
+      }
+      
+      if (total > (userBalances.USDT.value || 0)) {
+        alert('Insufficient USDT balance');
+        return;
+      }
+      
+      alert(`Buy order placed for ${amount} ${baseSymbol} at $${currentPrice.toFixed(2)} each (Total: $${total.toFixed(2)})`);
+    });
+
+    sellButton.addEventListener('click', () => {
+      const amount = parseFloat(sellAmountInput.value) || 0;
+      const total = parseFloat(sellTotalInput.value) || 0;
+      const [baseSymbol] = currentPair.split('/');
+      
+      if (amount <= 0) {
+        alert('Please enter a valid amount');
+        return;
+      }
+      
+      if (amount > (userBalances[baseSymbol]?.amount || 0)) {
+        alert(`Insufficient ${baseSymbol} balance`);
+        return;
+      }
+      
+      alert(`Sell order placed for ${amount} ${baseSymbol} at $${currentPrice.toFixed(2)} each (Total: $${total.toFixed(2)})`);
+    });
+
+    // Swap direction arrow
+    swapDirectionArrow.addEventListener('click', () => {
+      // Swap the from/to tokens
+      const tempSymbol = fromTokenSymbol.textContent;
+      const tempIcon = fromTokenIcon.src;
+      
+      fromTokenSymbol.textContent = toTokenSymbol.textContent;
+      fromTokenIcon.src = toTokenIcon.src;
+      toTokenSymbol.textContent = tempSymbol;
+      toTokenIcon.src = tempIcon;
+      
+      // Also swap input values
+      const tempAmount = swapInputAmount.value;
+      swapInputAmount.value = swapOutputAmount.value;
+      swapOutputAmount.value = tempAmount;
+    });
+
+    // Swap button
+    swapButton.addEventListener('click', () => {
+      const fromSymbol = fromTokenSymbol.textContent;
+      const toSymbol = toTokenSymbol.textContent;
+      const amount = parseFloat(swapInputAmount.value) || 0;
+      
+      if (amount <= 0) {
+        alert('Please enter a valid amount');
+        return;
+      }
+      
+      if (amount > (userBalances[fromSymbol]?.amount || 0)) {
+        alert(`Insufficient ${fromSymbol} balance`);
+        return;
+      }
+      
+      alert(`Swap ${amount} ${fromSymbol} to ${toSymbol} would be executed`);
+    });
+
+    // Refresh market data button
+    refreshMarketDataBtn.addEventListener('click', () => {
+      marketDataElement.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+            Loading market data...
+          </td>
+        </tr>
+      `;
+      fetchCryptoPrices();
+    });
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is signed in:", user);
+        
+        // Get user data from Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          console.log("User data:", userData);
+          
+          // Update UI with user data
+          const displayName = userData.name || user.displayName || "User";
+          // Show only first name if available
+          const firstName = displayName.split(' ')[0];
+          userNameElement.textContent = firstName;
+          welcomeTitleElement.textContent = `Trade Crypto Assets, ${firstName}!`;
+          
+          // Update profile picture if available
+          if (user.photoURL) {
+            userProfilePicElement.src = user.photoURL;
+          }
+        } else {
+          console.log("No user data found in Firestore");
+        }
+        
+        // Initialize the page
+        initializeValues();
+        await fetchCryptoPrices();
+        updateBalances();
+        initializeTokenDropdowns();
+        selectTradingPair('BTC/USDT');
+        
+        // Refresh prices every minute
+        setInterval(fetchCryptoPrices, 60000);
+        
+      } else {
+        // User is signed out
+        console.log("User is signed out");
+        window.location.href = 'login.html';
+      }
+    });
+  </script>
+</body>
+</html>

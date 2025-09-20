@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verified | BitNest</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #121212;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .success-box {
+      background-color: #1e1e1e;
+      padding: 40px;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      animation: fadeInUp 0.5s ease-out;
+    }
+    .success-icon {
+      font-size: 3rem;
+      color: #1ed3c6;
+      margin-bottom: 20px;
+    }
+    .success-icon.verified {
+      animation: bounce 1s;
+    }
+    .success-icon.error {
+      color: #ff6b6b;
+    }
+    .countdown {
+      font-size: 1rem;
+      margin: 20px 0;
+      color: #aaa;
+    }
+    .primary-btn {
+      background-color: #1ed3c6;
+      color: black;
+      border: none;
+      padding: 14px 25px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1rem;
+      margin-top: 20px;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .primary-btn:hover {
+      background-color: #17b3a8;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(30, 211, 198, 0.4);
+    }
+    .primary-btn.error {
+      background-color: #ff6b6b;
+      color: white;
+    }
+    .primary-btn.error:hover {
+      background-color: #e05555;
+    }
+    .verified-email {
+      font-weight: bold;
+      color: #1ed3c6;
+      word-break: break-all;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-20px);}
+      60% {transform: translateY(-10px);}
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(30, 211, 198, 0.3);
+      border-radius: 50%;
+      border-top-color: #1ed3c6;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    .spinner.error {
+      border-top-color: #ff6b6b;
+    }
+    @keyframes spin {
+      100% {transform: rotate(360deg);}
+    }
+  </style>
+</head>
+<body>
+  <div class="success-box">
+    <i class="fas fa-check-circle success-icon" id="statusIcon"></i>
+    <h2 id="statusTitle">Email Verification</h2>
+    <p id="statusMessage">Processing your verification...</p>
+    <p>Your email: <span class="verified-email" id="verifiedEmail"></span></p>
+    <div class="countdown" id="countdown"></div>
+    <div class="spinner" id="spinner"></div>
+    <a href="dashboard.html" class="primary-btn" id="actionBtn" style="display: none;">
+      <i class="fas fa-arrow-right"></i> Continue
+    </a>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+      authDomain: "bitnest-c7452.firebaseapp.com",
+      projectId: "bitnest-c7452",
+      storageBucket: "bitnest-c7452.appspot.com",
+      messagingSenderId: "583165336540",
+      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const statusIcon = document.getElementById('statusIcon');
+    const statusTitle = document.getElementById('statusTitle');
+    const statusMessage = document.getElementById('statusMessage');
+    const verifiedEmailEl = document.getElementById('verifiedEmail');
+    const countdownEl = document.getElementById('countdown');
+    const actionBtn = document.getElementById('actionBtn');
+    const spinner = document.getElementById('spinner');
+
+    function setUIState(state, message) {
+      if (state === 'success') {
+        statusIcon.classList.add('verified');
+        statusIcon.classList.remove('error');
+        statusTitle.textContent = "Email Verified Successfully!";
+        statusMessage.textContent = message || "You can now access all BitNest features.";
+        actionBtn.className = "primary-btn";
+        actionBtn.innerHTML = '<i class="fas fa-arrow-right"></i> Go to Dashboard';
+        actionBtn.href = "dashboard.html";
+      } 
+      else if (state === 'error') {
+        statusIcon.classList.remove('verified');
+        statusIcon.classList.add('error');
+        statusTitle.textContent = "Verification Error";
+        statusMessage.textContent = message || "There was an error verifying your email.";
+        actionBtn.className = "primary-btn error";
+        actionBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Go to Login';
+        actionBtn.href = "login.html";
+      }
+      
+      spinner.style.display = 'none';
+      actionBtn.style.display = 'inline-block';
+    }
+
+    async function completeSignIn(email) {
+      try {
+        const result = await auth.signInWithEmailLink(email, window.location.href);
+        window.localStorage.removeItem('emailForVerification');
+        
+        await result.user.reload();
+        if (!result.user.emailVerified) {
+          throw new Error('Email not verified after sign-in');
+        }
+        
+        await db.collection("users").doc(result.user.uid).update({
+          emailVerified: true,
+          verified: true,
+          lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        return true;
+      } catch (error) {
+        console.error('Sign-in error:', error);
+        return false;
+      }
+    }
+
+    async function handleVerification() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const actionCode = urlParams.get('oobCode');
+      const emailParam = urlParams.get('email');
+      const email = emailParam || window.localStorage.getItem('emailForVerification');
+
+      if (email) {
+        verifiedEmailEl.textContent = email;
+      }
+
+      try {
+        if (auth.isSignInWithEmailLink(window.location.href)) {
+          if (await completeSignIn(email)) {
+            setUIState('success', "Your email has been successfully verified.");
+            startCountdown("dashboard.html", 3);
+            return;
+          }
+        }
+
+        if (actionCode) {
+          await auth.applyActionCode(actionCode);
+          
+          if (email) {
+            const methods = await auth.fetchSignInMethodsForEmail(email);
+            if (methods.includes('password')) {
+              setUIState('success', "Email verified! Please sign in with your password.");
+              startCountdown("login.html", 5);
+              return;
+            }
+            
+            if (await completeSignIn(email)) {
+              setUIState('success', "Your email has been successfully verified.");
+              startCountdown("dashboard.html", 3);
+              return;
+            }
+          }
+          
+          setUIState('success', "Email verified successfully!");
+          startCountdown("dashboard.html", 3);
+          return;
+        }
+
+        if (email) {
+          const user = auth.currentUser;
+          if (user && user.email === email && user.emailVerified) {
+            setUIState('success', "Your email is already verified.");
+            startCountdown("dashboard.html", 3);
+            return;
+          }
+        }
+
+        setUIState('error', "Invalid verification link or missing parameters.");
+        startCountdown("login.html", 5);
+      } catch (error) {
+        console.error('Verification error:', error);
+        
+        if (error.code === 'auth/invalid-action-code') {
+          if (email) {
+            const user = auth.currentUser;
+            if (user && user.email === email && user.emailVerified) {
+              setUIState('success', "Your email was already verified.");
+              startCountdown("dashboard.html", 3);
+              return;
+            }
+          }
+          setUIState('error', "This verification link has expired or is invalid.");
+        } else {
+          setUIState('error', error.message || "Error completing verification.");
+        }
+        startCountdown("login.html", 5);
+      }
+    }
+
+    function startCountdown(redirectUrl, seconds) {
+      countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
+      
+      const countdownInterval = setInterval(() => {
+        seconds--;
+        countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
+        
+        if (seconds <= 0) {
+          clearInterval(countdownInterval);
+          window.location.href = redirectUrl;
+        }
+      }, 1000);
+      
+      window.countdownInterval = countdownInterval;
+    }
+
+    actionBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (window.countdownInterval) {
+        clearInterval(window.countdownInterval);
+      }
+      window.location.href = actionBtn.href;
+    });
+
+    // Start verification process
+    handleVerification();
+  </script>
+</body>
+</html>
