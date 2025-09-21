@@ -285,6 +285,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 0.5rem;
       margin-bottom: 1rem;
+      margin-top: 1rem;
     }
 
     .welcome-stat {
@@ -533,6 +534,7 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 0.5rem;
       margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
     }
 
     .amount-btn {
@@ -602,6 +604,7 @@
       align-items: center;
       gap: 0.5rem;
       margin-bottom: 0.5rem;
+      font-size: 0.9rem;
     }
 
     .balance-header img {
@@ -1037,7 +1040,7 @@
         font-weight: 500;
         padding: 0.5rem 0;
         position: relative;
-        transition: all 0.3s ease;
+        transition: all 极速3 ease;
       }
 
       .navbar a::after {
@@ -1386,6 +1389,10 @@
       <i class="fas fa-exchange-alt nav-icon"></i>
       <span>Trade</span>
     </a>
+    <a href="P2P.html" class="nav-item">
+      <i class="fas fa-users nav-icon"></i>
+      <span>P2P</span>
+    </a>
     <a href="deposit.html" class="nav-item">
       <i class="fas fa-plus-circle nav-icon"></i>
       <span>Deposit</span>
@@ -1484,31 +1491,31 @@
     
     // Supported cryptocurrencies with their CoinGecko IDs
     const supportedCryptos = [
-      { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin' },
-      { id: 'ethereum', symbol: 'ETH', name: 'Ethereum' },
-      { id: 'tether', symbol: 'USDT', name: 'Tether' },
-      { id: 'binancecoin', symbol: 'BNB', name: 'Binance Coin' },
-      { id: 'solana', symbol: 'SOL', name: 'Solana' },
-      { id: 'ripple', symbol: 'XRP', name: 'XRP' },
-      { id: 'cardano', symbol: 'ADA', name: 'Cardano' },
-      { id: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin' },
-      { id: 'polkadot', symbol: 'DOT', name: 'Polkadot' },
-      { id: 'matic-network', symbol: 'MATIC', name: 'Polygon' },
-      { id: 'litecoin', symbol: 'LTC', name: 'Litecoin' },
-      { id: 'bitcoin-cash', symbol: 'BCH', name: 'Bitcoin Cash' },
-      { id: 'chainlink', symbol: 'LINK', name: 'Chainlink' },
-      { id: 'stellar', symbol: 'XLM', name: 'Stellar' },
-      { id: 'monero', symbol: 'XMR', name: 'Monero' },
-      { id: 'ethereum-classic', symbol: 'ETC', name: 'Ethereum Classic' },
-      { id: 'filecoin', symbol: 'FIL', name: 'Filecoin' },
-      { id: 'cosmos', symbol: 'ATOM', name: 'Cosmos' },
-      { id: 'uniswap', symbol: 'UNI', name: 'Uniswap' },
-      { id: 'vechain', symbol: 'VET', name: 'VeChain' },
-      { id: 'tron', symbol: 'TRX', name: 'TRON' },
-      { id: 'algorand', symbol: 'ALGO', name: 'Algorand' },
-      { id: 'avalanche-2', symbol: 'AVAX', name: 'Avalanche' },
-      { id: 'sui', symbol: 'SUI', name: 'Sui' },
-      { id: 'usd-coin', symbol: 'USDC', name: 'USD Coin' }
+      { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', logo: 'bitcoin.svg' },
+      { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', logo: 'ethereum-eth-logo.svg' },
+      { id: 'tether', symbol: 'USDT', name: 'Tether', logo: 'tether-usdt-logo.svg' },
+      { id: 'binancecoin', symbol: 'BNB', name: 'Binance Coin', logo: 'bnb-bnb-logo.svg' },
+      { id: 'solana', symbol: 'SOL', name: 'Solana', logo: 'solana-sol-logo.svg' },
+      { id: 'ripple', symbol: 'XRP', name: 'XRP', logo: 'xrp-xrp-logo.svg' },
+      { id: 'cardano', symbol: 'ADA', name: 'Cardano', logo: 'cardano-ada-logo.svg' },
+      { id: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin', logo: 'dogecoin-doge-logo.svg' },
+      { id: 'polkadot', symbol: 'DOT', name: 'Polkadot', logo: 'polkadot-new-dot-logo.svg' },
+      { id: 'matic-network', symbol: 'MATIC', name: 'Polygon', logo: 'polygon-matic-logo.svg' },
+      { id: 'litecoin', symbol: 'LTC', name: 'Litecoin', logo: 'litecoin-ltc-logo.svg' },
+      { id: 'bitcoin-cash', symbol: 'BCH', name: 'Bitcoin Cash', logo: 'bitcoin-cash-bch-logo.svg' },
+      { id: 'chainlink', symbol: 'LINK', name: 'Chainlink', logo: 'chainlink-link-logo.svg' },
+      { id: 'stellar', symbol: 'XLM', name: 'Stellar', logo: 'stellar-xlm-logo.svg' },
+      { id: 'monero', symbol: 'XMR', name: 'Monero', logo: 'monero-xmr-logo.svg' },
+      { id: 'ethereum-classic', symbol: 'ETC', name: 'Ethereum Classic', logo: 'ethereum-classic-etc-logo.svg' },
+      { id: 'filecoin', symbol: 'FIL', name: 'Filecoin', logo: 'filecoin-fil-logo.svg' },
+      { id: 'cosmos', symbol: 'ATOM', name: 'Cosmos', logo: 'cosmos-atom-logo.svg' },
+      { id: 'uniswap', symbol: 'UNI', name: 'Uniswap', logo: 'uniswap-uni-logo.svg' },
+      { id: 'vechain', symbol: 'VET', name: 'VeChain', logo: 'vechain-vet-logo.svg' },
+      { id: 'tron', symbol: 'TRX', name: 'TRON', logo: 'tron-trx-logo.svg' },
+      { id: 'algorand', symbol: 'ALGO', name: 'Algorand', logo: 'algorand-algo-logo.svg' },
+      { id: 'avalanche-2', symbol: 'AVAX', name: 'Avalanche', logo: 'avalanche-avax-logo.svg' },
+      { id: 'sui', symbol: 'SUI', name: 'Sui', logo: 'sui-sui-logo.svg' },
+      { id: 'usd-coin', symbol: 'USDC', name: 'USD Coin', logo: 'usd-coin-usdc-logo.svg' }
     ];
 
     // User balances (all set to 0 initially)
@@ -1534,6 +1541,28 @@
       tradingVolumeElement.textContent = '$0.00';
     };
 
+    // Initialize pair dropdown
+    const initializePairDropdown = () => {
+      pairDropdown.innerHTML = '';
+      
+      // Create USDT pairs for all cryptos except USDT itself
+      supportedCryptos
+        .filter(crypto => crypto.symbol !== 'USDT')
+        .forEach(crypto => {
+          const pairOption = document.createElement('div');
+          pairOption.className = 'pair-option';
+          pairOption.innerHTML = `
+            <img src="crypto-logos/${crypto.logo}" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+            <span>${crypto.symbol}/USDT</span>
+          `;
+          pairOption.addEventListener('click', () => {
+            selectTradingPair(`${crypto.symbol}/USDT`);
+            pairDropdown.classList.remove('active');
+          });
+          pairDropdown.appendChild(pairOption);
+        });
+    };
+
     // Fetch crypto prices from CoinGecko
     const fetchCryptoPrices = async () => {
       try {
@@ -1547,6 +1576,7 @@
           if (crypto) {
             crypto.current_price = coinData.current_price;
             crypto.price_change_percentage_24h = coinData.price_change_percentage_24h;
+            crypto.total_volume = coinData.total_volume;
           }
         });
         
@@ -1559,6 +1589,7 @@
         supportedCryptos.forEach(crypto => {
           crypto.current_price = crypto.current_price || 0;
           crypto.price_change_percentage_24h = crypto.price_change_percentage_24h || 0;
+          crypto.total_volume = crypto.total_volume || 0;
         });
         updateMarketData();
         updateCurrentPair();
@@ -1574,13 +1605,24 @@
         const isPositive = crypto.price_change_percentage_24h >= 0;
         const changeClass = isPositive ? 'price-up' : 'price-down';
         const changeSymbol = isPositive ? '+' : '';
-        const volume24h = (crypto.total_volume / 1000000000).toFixed(2) + 'B';
+        
+        // Format volume properly
+        let volume24h;
+        if (crypto.total_volume >= 1000000000) {
+          volume24h = '$' + (crypto.total_volume / 1000000000).toFixed(2) + 'B';
+        } else if (crypto.total_volume >= 1000000) {
+          volume24h = '$' + (crypto.total_volume / 1000000).toFixed(2) + 'M';
+        } else if (crypto.total_volume >= 1000) {
+          volume24h = '$' + (crypto.total_volume / 1000).toFixed(2) + 'K';
+        } else {
+          volume24h = '$' + crypto.total_volume.toFixed(2);
+        }
         
         marketHTML += `
           <tr>
             <td>
               <div class="crypto-info">
-                <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.name}" class="crypto-icon-small" onerror="this.src='crypto-logos/generic-coin.svg'">
+                <img src="crypto-logos/${crypto.logo}" alt="${crypto.name}" class="crypto-icon-small" onerror="this.src='crypto-logos/generic-coin.svg'">
                 <div>
                   <div>${crypto.name}</div>
                   <span class="crypto-symbol">${crypto.symbol}</span>
@@ -1611,7 +1653,7 @@
         balanceCard.className = 'balance-card';
         balanceCard.innerHTML = `
           <div class="balance-header">
-            <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+            <img src="crypto-logos/${crypto.logo}" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
             <span>${crypto.symbol}</span>
           </div>
           <div class="balance-amount">${balance.amount.toLocaleString('en-US', { maximumFractionDigits: 6 })}</div>
@@ -1631,11 +1673,11 @@
         const fromOption = document.createElement('div');
         fromOption.className = 'token-option';
         fromOption.innerHTML = `
-          <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+          <img src="crypto-logos/${crypto.logo}" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
           <span>${crypto.symbol}</span>
         `;
         fromOption.addEventListener('click', () => {
-          fromTokenIcon.src = `crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg`;
+          fromTokenIcon.src = `crypto-logos/${crypto.logo}`;
           fromTokenIcon.alt = crypto.symbol;
           fromTokenIcon.onerror = function() { this.src='crypto-logos/generic-coin.svg'; };
           fromTokenSymbol.textContent = crypto.symbol;
@@ -1649,11 +1691,11 @@
         const toOption = document.createElement('div');
         toOption.className = 'token-option';
         toOption.innerHTML = `
-          <img src="crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
+          <img src="crypto-logos/${crypto.logo}" alt="${crypto.symbol}" onerror="this.src='crypto-logos/generic-coin.svg'">
           <span>${crypto.symbol}</span>
         `;
         toOption.addEventListener('click', () => {
-          toTokenIcon.src = `crypto-logos/${crypto.id}-${crypto.symbol.toLowerCase()}-logo.svg`;
+          toTokenIcon.src = `crypto-logos/${crypto.logo}`;
           toTokenIcon.alt = crypto.symbol;
           toTokenIcon.onerror = function() { this.src='crypto-logos/generic-coin.svg'; };
           toTokenSymbol.textContent = crypto.symbol;
@@ -1672,8 +1714,8 @@
       const crypto = supportedCryptos.find(c => c.symbol === baseSymbol);
       
       if (crypto) {
-        currentPrice = crypto.current_price;
-        priceChange = crypto.price_change_percentage_24h;
+        currentPrice = crypto.current_price || 0;
+        priceChange = crypto.price_change_percentage_24h || 0;
         isPositiveChange = priceChange >= 0;
         updateCurrentPair();
       }
@@ -1687,7 +1729,7 @@
       if (!baseCrypto) return;
       
       pairNameElement.textContent = currentPair;
-      pairBaseIconElement.src = `crypto-logos/${baseCrypto.id}-${baseSymbol.toLowerCase()}-logo.svg`;
+      pairBaseIconElement.src = `crypto-logos/${baseCrypto.logo}`;
       pairBaseIconElement.alt = baseSymbol;
       pairBaseIconElement.onerror = function() { this.src='crypto-logos/generic-coin.svg'; };
       
@@ -1736,11 +1778,36 @@
       mobileNavMenu.classList.remove('active');
     });
 
+    // Toggle pair dropdown
+    currentPairElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      pairDropdown.classList.toggle('active');
+      userMenu.classList.remove('active');
+      mobileNavMenu.classList.remove('active');
+      notificationDropdown.classList.remove('active');
+    });
+
+    // Toggle token dropdowns
+    fromTokenSelector.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fromTokenDropdown.classList.toggle('active');
+      toTokenDropdown.classList.remove('active');
+    });
+
+    toTokenSelector.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toTokenDropdown.classList.toggle('active');
+      fromTokenDropdown.classList.remove('active');
+    });
+
     // Close menus when clicking outside
     document.addEventListener('click', () => {
       userMenu.classList.remove('active');
       mobileNavMenu.classList.remove('active');
       notificationDropdown.classList.remove('active');
+      pairDropdown.classList.remove('active');
+      fromTokenDropdown.classList.remove('active');
+      toTokenDropdown.classList.remove('active');
     });
 
     // Logout functionality
@@ -1942,6 +2009,7 @@
         
         // Initialize the page
         initializeValues();
+        initializePairDropdown();
         await fetchCryptoPrices();
         updateBalances();
         initializeTokenDropdowns();
