@@ -1203,56 +1203,279 @@
 
   <!-- Firebase and App Script -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-    import { 
-      getAuth, 
-      onAuthStateChanged,
-      signOut 
-    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
-    import { 
-      getFirestore, 
-      doc, 
-      getDoc 
-    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+  import { 
+    getAuth, 
+    onAuthStateChanged,
+    signOut 
+  } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
-      authDomain: "bitnest-c7452.firebaseapp.com",
-      projectId: "bitnest-c7452",
-      storageBucket: "bitnest-c7452.appspot.com",
-      messagingSenderId: "583165336540",
-      appId: "1:583165336540:web:25719de02e18bc60eb0d19"
-    };
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+    authDomain: "bitnest-c7452.firebaseapp.com",
+    projectId: "bitnest-c7452",
+    storageBucket: "bitnest-c7452.appspot.com",
+    messagingSenderId: "583165336540",
+    appId: "1:583165336540:web:25719de02e18bc60eb0d19"
+  };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-    // DOM Elements
-    const userNameElement = document.getElementById('userName');
-    const userProfilePicElement = document.getElementById('userProfilePic');
-    const welcomeTitleElement = document.getElementById('welcomeTitle');
-    const cardNamePreview = document.getElementById('cardNamePreview');
-    const userProfileElement = document.getElementById('userProfile');
-    const userMenu = document.getElementById('userMenu');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileNavMenu = document.getElementById('mobileNavMenu');
-    const orderCardBtn = document.getElementById('orderCardBtn');
-    const insufficientBalanceModal = document.getElementById('insufficientBalanceModal');
-    const closeInsufficientModal = document.getElementById('closeInsufficientModal');
-    const cancelOrderBtn = document.getElementById('cancelOrderBtn');
-    const proceedToDepositBtn = document.getElementById('proceedToDepositBtn');
-    const notificationBell = document.getElementById('notificationBell');
-    const notificationDropdown = document.getElementById('notificationDropdown');
-    const installBtn = document.getElementById('installBtn');
+  // Function to get auth token
+  const getAuthToken = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      return await user.getIdToken();
+    }
+    return null;
+  };
 
+  // DOM Elements
+  const userNameElement = document.getElementById('userName');
+  const userProfilePicElement = document.getElementById('userProfilePic');
+  const welcomeTitleElement = document.getElementById('welcomeTitle');
+  const cardNamePreview = document.getElementById('cardNamePreview');
+  const userProfileElement = document.getElementById('userProfile');
+  const userMenu = document.getElementById('userMenu');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileNavMenu = document.getElementById('mobileNavMenu');
+  const orderCardBtn = document.getElementById('orderCardBtn');
+  const insufficientBalanceModal = document.getElementById('insufficientBalanceModal');
+  const closeInsufficientModal = document.getElementById('closeInsufficientModal');
+  const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+  const proceedToDepositBtn = document.getElementById('proceedToDepositBtn');
+  const notificationBell = document.getElementById('notificationBell');
+  const notificationDropdown = document.getElementById('notificationDropdown');
+  const installBtn = document.getElementById('installBtn');
+
+  // Card customization elements
+  const colorOptions = document.querySelectorAll('.color-option');
+  const cardPreview = document.getElementById('cardPreview');
+  const cardTypeSelect = document.getElementById('cardType');
+  const baseCurrencySelect = document.getElementById('baseCurrency');
+  const cardDesignSelect = document.getElementById('cardDesign');
+
+  // Card data
+  let userBalance = 0;
+  let userCards = [];
+  const cardPrice = 5.00;
+
+  // Card color gradients
+  const cardGradients = {
+    blue: 'linear-gradient(135deg, #3a86ff, #8338ec)',
+    purple: 'linear-gradient(135deg, #8338ec, #3a0ca3)',
+    green: 'linear-gradient(135deg, #4cc9f0, #4895ef)',
+    orange: 'linear-gradient(135deg, #ff7b25, #ff9e00)',
+    black: 'linear-gradient(135deg, #212529, #343a40)'
+  };
+
+  // Fetch user data through your secure backend
+  async function fetchUserData() {
+    try {
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('No authentication token available');
+      }
+      
+      const response = await fetch('/api/user-data', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+      
+      const userData = await response.json();
+      
+      // Update UI with user data
+      const firstName = userData.name?.split(' ')[0] || 'User';
+      userNameElement.textContent = firstName;
+      welcomeTitleElement.textContent = `Your BitNest Card, ${firstName}!`;
+      cardNamePreview.textContent = (userData.name || 'JOHN DOE').toUpperCase();
+      
+      if (userData.photoURL) {
+        userProfilePicElement.src = userData.photoURL;
+      }
+      
+      // Store user balance if available
+      if (userData.balance) {
+        userBalance = userData.balance;
+      }
+      
+      return userData;
+      
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      // Fallback to Firebase auth user data
+      const user = auth.currentUser;
+      if (user) {
+        const displayName = user.displayName || "User";
+        const firstName = displayName.split(' ')[0];
+        userNameElement.textContent = firstName;
+        welcomeTitleElement.textContent = `Your BitNest Card, ${firstName}!`;
+        cardNamePreview.textContent = displayName.toUpperCase();
+        
+        if (user.photoURL) {
+          userProfilePicElement.src = user.photoURL;
+        }
+      }
+      return null;
+    }
+  }
+
+  // Fetch user cards from backend
+  async function fetchUserCards() {
+    try {
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('No authentication token available');
+      }
+      
+      const response = await fetch('/api/user-cards', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch user cards');
+      }
+      
+      const data = await response.json();
+      userCards = data.cards || [];
+      
+      // Update UI based on existing cards
+      updateUIForExistingCards();
+      
+      return data.cards;
+      
+    } catch (error) {
+      console.error('Error fetching user cards:', error);
+      userCards = [];
+      return [];
+    }
+  }
+
+  // Update UI if user already has cards
+  function updateUIForExistingCards() {
+    if (userCards.length > 0) {
+      // User has cards, update the UI accordingly
+      const activeCard = userCards.find(card => card.status === 'active');
+      
+      if (activeCard) {
+        // Update welcome message
+        welcomeTitleElement.textContent = `Your BitNest Card`;
+        
+        // Update order button text
+        orderCardBtn.innerHTML = '<i class="fas fa-eye"></i> View Your Card';
+        
+        // Update card preview with actual card data
+        updateCardPreviewWithRealData(activeCard);
+      }
+    }
+  }
+
+  // Update card preview with real card data
+  function updateCardPreviewWithRealData(card) {
+    // Update card number (show last 4 digits)
+    const cardNumberElement = cardPreview.querySelector('.card-number');
+    if (card.last4) {
+      cardNumberElement.textContent = `•••• •••• •••• ${card.last4}`;
+    }
+    
+    // Update card color
+    if (card.color && cardGradients[card.color]) {
+      cardPreview.style.background = cardGradients[card.color];
+      
+      // Update selected color option
+      colorOptions.forEach(option => {
+        option.classList.remove('selected');
+        if (option.getAttribute('data-color') === card.color) {
+          option.classList.add('selected');
+        }
+      });
+    }
+    
+    // Update card type selection if available
+    if (card.type) {
+      cardTypeSelect.value = card.type;
+    }
+    
+    // Update base currency if available
+    if (card.currency) {
+      baseCurrencySelect.value = card.currency;
+    }
+    
+    // Update card design if available
+    if (card.design) {
+      cardDesignSelect.value = card.design;
+    }
+  }
+
+  // Order a new card
+  async function orderNewCard(cardData) {
+    try {
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('No authentication token available');
+      }
+      
+      const response = await fetch('/api/order-card', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cardData)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to order card');
+      }
+      
+      const result = await response.json();
+      
+      // Show success message
+      showOrderSuccess(result.card);
+      
+      return result;
+      
+    } catch (error) {
+      console.error('Error ordering card:', error);
+      showOrderError(error.message);
+      return null;
+    }
+  }
+
+  // Show order success message
+  function showOrderSuccess(cardData) {
+    // Create success modal or update UI
+    alert(`Card ordered successfully! Your ${cardData.type} card will be ${cardData.type === 'virtual' ? 'available immediately' : 'shipped within 7-10 business days'}.`);
+    
+    // Refresh card data
+    fetchUserCards();
+  }
+
+  // Show order error message
+  function showOrderError(errorMessage) {
+    alert(`Error ordering card: ${errorMessage}`);
+  }
+
+  // Check if user has sufficient balance
+  function hasSufficientBalance() {
+    return userBalance >= cardPrice;
+  }
+
+  // Initialize card customization
+  function initializeCardCustomization() {
     // Card color selection
-    const colorOptions = document.querySelectorAll('.color-option');
-    const cardPreview = document.getElementById('cardPreview');
-
     colorOptions.forEach(option => {
       option.addEventListener('click', () => {
         // Remove selected class from all options
@@ -1263,86 +1486,130 @@
         
         // Update card preview color
         const color = option.getAttribute('data-color');
-        cardPreview.style.background = window.getComputedStyle(option).backgroundImage;
+        cardPreview.style.background = cardGradients[color];
       });
     });
 
-    // PWA Installation
-    let deferredPrompt;
+    // Card type change
+    cardTypeSelect.addEventListener('change', () => {
+      // Update UI based on card type
+      updateUIForCardType();
+    });
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = 'inline-flex';
+    // Base currency change
+    baseCurrencySelect.addEventListener('change', () => {
+      // Update UI based on currency
+      updateUIForCurrency();
+    });
+
+    // Card design change
+    cardDesignSelect.addEventListener('change', () => {
+      // Update UI based on design
+      updateUIForDesign();
+    });
+  }
+
+  // Update UI based on card type
+  function updateUIForCardType() {
+    const cardType = cardTypeSelect.value;
+    
+    // Update delivery time message if needed
+    if (cardType === 'physical') {
+      // You could update some UI element to show shipping time
+      console.log('Physical card selected - 7-10 business days delivery');
+    }
+  }
+
+  // Update UI based on currency
+  function updateUIForCurrency() {
+    const currency = baseCurrencySelect.value;
+    
+    // Update pricing or other UI elements if needed
+    console.log(`Base currency changed to: ${currency}`);
+  }
+
+  // Update UI based on design
+  function updateUIForDesign() {
+    const design = cardDesignSelect.value;
+    
+    // Update card preview if needed
+    console.log(`Card design changed to: ${design}`);
+  }
+
+  // Handle card order process
+  async function handleCardOrder() {
+    // Check if user already has cards
+    if (userCards.length > 0) {
+      // User has cards, redirect to card management
+      window.location.href = 'card-management.html'; // You might want to create this page
+      return;
+    }
+    
+    // Check balance
+    if (!hasSufficientBalance()) {
+      insufficientBalanceModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      return;
+    }
+    
+    // Proceed with card order
+    const cardData = {
+      type: cardTypeSelect.value,
+      color: document.querySelector('.color-option.selected').getAttribute('data-color'),
+      currency: baseCurrencySelect.value,
+      design: cardDesignSelect.value,
+      price: cardPrice
+    };
+    
+    const result = await orderNewCard(cardData);
+    
+    if (result) {
+      // Order successful
+      console.log('Card ordered successfully:', result);
+    }
+  }
+
+  // PWA Installation
+  let deferredPrompt;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'inline-flex';
+    
+    installBtn.addEventListener('click', () => {
+      installBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
+      installBtn.disabled = true;
+      deferredPrompt.prompt();
       
-      installBtn.addEventListener('click', () => {
-        installBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
-        installBtn.disabled = true;
-        deferredPrompt.prompt();
-        
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
-            console.log('User installed the PWA');
-            installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
-            setTimeout(() => {
-              installBtn.style.display = 'none';
-            }, 3000);
-          } else {
-            installBtn.innerHTML = '<i class="fas fa-download"></i> Get App + 500 SATS';
-            installBtn.disabled = false;
-          }
-          deferredPrompt = null;
-        });
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User installed the PWA');
+          installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
+          setTimeout(() => {
+            installBtn.style.display = 'none';
+          }, 3000);
+        } else {
+          installBtn.innerHTML = '<i class="fas fa-download"></i> Get App + 500 SATS';
+          installBtn.disabled = false;
+        }
+        deferredPrompt = null;
       });
     });
+  });
 
-    window.addEventListener('appinstalled', () => {
-      console.log('PWA was installed');
-      if (installBtn) {
-        installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
-        setTimeout(() => {
-          installBtn.style.display = 'none';
-        }, 2000);
-      }
-    });
+  window.addEventListener('appinstalled', () => {
+    console.log('PWA was installed');
+    if (installBtn) {
+      installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
+      setTimeout(() => {
+        installBtn.style.display = 'none';
+      }, 2000);
+    }
+  });
 
-    // Check auth state
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // User is signed in
-        console.log("User is signed in:", user);
-        
-        // Get user data from Firestore
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          console.log("User data:", userData);
-          
-          // Update UI with user data
-          const displayName = userData.name || user.displayName || "User";
-          // Show only first name if available
-          const firstName = displayName.split(' ')[0];
-          userNameElement.textContent = firstName;
-          welcomeTitleElement.textContent = `Your BitNest Card, ${firstName}!`;
-          cardNamePreview.textContent = displayName.toUpperCase();
-          
-          // Update profile picture if available
-          if (user.photoURL) {
-            userProfilePicElement.src = user.photoURL;
-          }
-        } else {
-          console.log("No user data found in Firestore");
-        }
-        
-      } else {
-        // User is signed out
-        console.log("User is signed out");
-        window.location.href = 'login.html';
-      }
-    });
-
+  // Event Listeners
+  function setupEventListeners() {
     // Toggle user menu
     userProfileElement.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1384,11 +1651,8 @@
       });
     });
 
-    // Order card button click - shows insufficient balance modal
-    orderCardBtn.addEventListener('click', () => {
-      insufficientBalanceModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    });
+    // Order card button click
+    orderCardBtn.addEventListener('click', handleCardOrder);
 
     // Close insufficient balance modal
     closeInsufficientModal.addEventListener('click', () => {
@@ -1414,6 +1678,38 @@
     proceedToDepositBtn.addEventListener('click', () => {
       window.location.href = 'deposit.html';
     });
-  </script>
+  }
+
+  // Initialize the application
+  async function initializeApp() {
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is signed in:", user);
+        
+        // Fetch user data
+        await fetchUserData();
+        
+        // Fetch user cards
+        await fetchUserCards();
+        
+        // Initialize card customization
+        initializeCardCustomization();
+        
+        // Set up event listeners
+        setupEventListeners();
+        
+      } else {
+        // User is signed out
+        console.log("User is signed out");
+        window.location.href = 'login.html';
+      }
+    });
+  }
+
+  // Start the application
+  initializeApp();
+</script>
 </body>
 </html>

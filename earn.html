@@ -1536,13 +1536,8 @@
       onAuthStateChanged,
       signOut 
     } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
-    import { 
-      getFirestore, 
-      doc, 
-      getDoc 
-    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 
-    // Your web app's Firebase configuration
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
       authDomain: "bitnest-c7452.firebaseapp.com",
@@ -1555,12 +1550,17 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
+
+    // API Base URL
+    const API_BASE_URL = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3001/api' 
+      : '/api';
 
     // DOM Elements
     const userNameElement = document.getElementById('userName');
     const userProfilePicElement = document.getElementById('userProfilePic');
     const welcomeTitleElement = document.getElementById('welcomeTitle');
+    const welcomeStatsElements = document.querySelectorAll('.welcome-stat-value');
     const userProfileElement = document.getElementById('userProfile');
     const userMenu = document.getElementById('userMenu');
     const logoutBtn = document.getElementById('logoutBtn');
@@ -1584,8 +1584,221 @@
     const notificationBell = document.getElementById('notificationBell');
     const notificationDropdown = document.getElementById('notificationDropdown');
     const installBtn = document.getElementById('installBtn');
+    const activeLocksTable = document.querySelector('.locks-table tbody');
 
-    // Toggle user menu
+    // Global variables
+    let userData = null;
+    let userBalance = 0;
+    let activeLocks = [];
+
+    // API Helper Function
+    async function makeAuthenticatedRequest(endpoint, options = {}) {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const token = await user.getIdToken();
+      
+      const defaultOptions = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const finalOptions = { ...defaultOptions, ...options };
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, finalOptions);
+        
+        if (!response.ok) {
+          throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error(`API request error for ${endpoint}:`, error);
+        throw error;
+      }
+    }
+
+    // Fetch user data from API
+    async function fetchUserData() {
+      try {
+        const data = await makeAuthenticatedRequest('/user-data');
+        return data;
+      } catch (error) {
+        console.error('Error fetching user data from API:', error);
+        throw error;
+      }
+    }
+
+    // Fetch user balance from API
+    async function fetchUserBalance() {
+      try {
+        const data = await makeAuthenticatedRequest('/user-balance');
+        return data.balance || 0;
+      } catch (error) {
+        console.error('Error fetching user balance from API:', error);
+        return 0;
+      }
+    }
+
+    // Fetch active locks from API
+    async function fetchActiveLocks() {
+      try {
+        const data = await makeAuthenticatedRequest('/user-locks');
+        return data.locks || [];
+      } catch (error) {
+        console.error('Error fetching active locks from API:', error);
+        return [];
+      }
+    }
+
+    // Fetch user financial data (balance, active locks)
+    async function fetchUserFinancialData() {
+      try {
+        // Fetch user balance and active locks concurrently
+        const [balance, locks] = await Promise.all([
+          fetchUserBalance(),
+          fetchActiveLocks()
+        ]);
+        
+        userBalance = balance;
+        activeLocks = locks;
+        
+        // Update welcome banner stats
+        updateWelcomeStats();
+        
+        // Update active locks table
+        updateActiveLocksTable();
+      } catch (error) {
+        console.error('Error fetching financial data:', error);
+        userBalance = 0;
+        activeLocks = [];
+        updateWelcomeStats();
+        updateActiveLocksTable();
+      }
+    }
+
+    // Update welcome banner statistics
+    function updateWelcomeStats() {
+      if (welcomeStatsElements.length >= 3) {
+        // Total Earnings (calculated from active locks)
+        const totalEarnings = activeLocks.reduce((sum, lock) => sum + (lock.earned || 0), 0);
+        welcomeStatsElements[0].textContent = `$${totalEarnings.toFixed(2)}`;
+        
+        // Active Locks count
+        welcomeStatsElements[1].textContent = activeLocks.length;
+        
+        // Available Balance
+        welcomeStatsElements[2].textContent = `$${userBalance.toFixed(2)}`;
+      }
+    }
+
+    // Update active locks table
+    function updateActiveLocksTable() {
+      if (!activeLocksTable) return;
+      
+      if (activeLocks.length === 0) {
+        activeLocksTable.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+              No active locks found. Lock your assets to start earning.
+              <button class="btn" onclick="window.location.href='deposit.html'" style="margin-top: 1rem;">
+                <i class="fas fa-arrow-down"></i> Deposit Now
+              </button>
+            </td>
+          </tr>
+        `;
+      } else {
+        let locksHTML = '';
+        activeLocks.forEach(lock => {
+          const startDate = new Date(lock.startDate).toLocaleDateString();
+          const endDate = new Date(lock.endDate).toLocaleDateString();
+          const statusClass = lock.status === 'active' ? 'status-active' : 'status-pending';
+          
+          locksHTML += `
+            <tr>
+              <td>${lock.asset}</td>
+              <td>$${lock.amount.toFixed(2)}</td>
+              <td>${lock.duration}</td>
+              <td>${lock.apr}%</td>
+              <td>${startDate}</td>
+              <td>${endDate}</td>
+              <td>$${lock.earned.toFixed(2)}</td>
+              <td><span class="lock-status ${statusClass}">${lock.status}</span></td>
+            </tr>
+          `;
+        });
+        
+        activeLocksTable.innerHTML = locksHTML;
+      }
+    }
+
+    // Process lock request via API
+    async function processLockRequest(amount, duration, apr, asset) {
+      try {
+        // Validate amount
+        if (amount < 30) {
+          throw new Error('Minimum lock amount is $30');
+        }
+
+        // Check balance via API
+        if (userBalance < amount) {
+          showDepositModal(amount);
+          return false;
+        }
+
+        // Create lock via API
+        const lockData = {
+          amount: amount,
+          duration: duration,
+          apr: parseFloat(apr),
+          asset: asset
+        };
+
+        const result = await makeAuthenticatedRequest('/create-lock', {
+          method: 'POST',
+          body: JSON.stringify(lockData)
+        });
+
+        if (result.success) {
+          alert(`Success! You've locked $${amount.toFixed(2)} for ${duration} at ${apr} APR.`);
+          
+          // Refresh financial data
+          await fetchUserFinancialData();
+          
+          return true;
+        } else {
+          throw new Error(result.error || 'Failed to create lock');
+        }
+      } catch (error) {
+        console.error('Error processing lock request:', error);
+        alert(`Error: ${error.message}`);
+        return false;
+      }
+    }
+
+    // Show deposit modal
+    function showDepositModal(requiredAmount) {
+      const modalMessages = depositModal.querySelectorAll('.modal-message');
+      if (modalMessages.length >= 2) {
+        modalMessages[0].textContent = `You need at least $${requiredAmount.toFixed(2)} in your available balance to lock funds. Your current available balance is $${userBalance.toFixed(2)}.`;
+      }
+      
+      depositModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Get selected asset from a lock form
+    function getSelectedAsset(lockForm) {
+      const activeOption = lockForm.querySelector('.asset-option.active');
+      return activeOption ? activeOption.textContent.trim().split(' ')[0] : 'USDT';
+    }
+
+    // UI Event Handlers
     userProfileElement.addEventListener('click', (e) => {
       e.stopPropagation();
       userMenu.classList.toggle('active');
@@ -1593,7 +1806,6 @@
       notificationDropdown.classList.remove('active');
     });
 
-    // Toggle mobile nav menu
     mobileMenuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       mobileNavMenu.classList.toggle('active');
@@ -1601,7 +1813,6 @@
       notificationDropdown.classList.remove('active');
     });
 
-    // Toggle notification dropdown
     notificationBell.addEventListener('click', (e) => {
       e.stopPropagation();
       notificationDropdown.classList.toggle('active');
@@ -1609,14 +1820,12 @@
       mobileNavMenu.classList.remove('active');
     });
 
-    // Close menus when clicking outside
     document.addEventListener('click', () => {
       userMenu.classList.remove('active');
       mobileNavMenu.classList.remove('active');
       notificationDropdown.classList.remove('active');
     });
 
-    // Logout functionality
     logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
       signOut(auth).then(() => {
@@ -1626,10 +1835,8 @@
       });
     });
 
-    // Lock card selection
     lockCards.forEach(card => {
       card.addEventListener('click', (e) => {
-        // Don't select if clicking on form elements
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT' || e.target.closest('.asset-option')) {
           return;
         }
@@ -1639,7 +1846,6 @@
       });
     });
 
-    // Asset selection
     assetOptions.forEach(option => {
       option.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1649,15 +1855,15 @@
       });
     });
 
-    // Lock button functionality
     lockBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const amountInput = btn.closest('.lock-form').querySelector('.lock-amount');
-        const errorMessage = btn.closest('.lock-form').querySelector('.error-message');
+        const lockForm = btn.closest('.lock-form');
+        const amountInput = lockForm.querySelector('.lock-amount');
+        const errorMessage = lockForm.querySelector('.error-message');
         const amount = parseFloat(amountInput.value) || 0;
+        const asset = getSelectedAsset(lockForm);
         
-        // Validate amount is at least $30
         if (amount < 30) {
           amountInput.focus();
           amountInput.style.borderColor = 'var(--danger)';
@@ -1671,18 +1877,10 @@
           return;
         }
         
-        // Check if user has sufficient balance
-        const balance = 0; // This would come from user data
-        if (balance < 30) {
-          depositModal.style.display = 'flex';
-          document.body.style.overflow = 'hidden';
-        } else {
-          alert(`Success! You've locked $${amount.toFixed(2)} for ${btn.dataset.duration} at ${btn.dataset.apr} APR.`);
-        }
+        processLockRequest(amount, btn.dataset.duration, btn.dataset.apr, asset);
       });
     });
 
-    // Deposit modal handling
     closeModal.addEventListener('click', () => {
       depositModal.style.display = 'none';
       document.body.style.overflow = 'auto';
@@ -1697,7 +1895,6 @@
       window.location.href = 'deposit.html';
     });
 
-    // Close modal when clicking outside
     window.addEventListener('click', (e) => {
       if (e.target === depositModal) {
         depositModal.style.display = 'none';
@@ -1711,26 +1908,22 @@
       const apr = parseFloat(calcDuration.value);
       const durationText = calcDuration.options[calcDuration.selectedIndex].text.split(' (')[0];
       
-      // Calculate earnings
       const dailyEarnings = (amount * apr) / 365;
       const monthlyEarnings = (amount * apr) / 12;
       const yearlyEarnings = amount * apr;
       
-      // Update results
       calcDurationDisplay.textContent = durationText;
       calcRate.textContent = `${(apr * 100).toFixed(0)}% APR`;
       calcDaily.textContent = `$${dailyEarnings.toFixed(2)}`;
       calcMonthly.textContent = `$${monthlyEarnings.toFixed(2)}`;
       calcYearly.textContent = `$${yearlyEarnings.toFixed(2)}`;
       
-      // Update total based on duration
       let totalAmount = amount;
       if (durationText.includes('month')) {
         totalAmount += monthlyEarnings;
       } else if (durationText.includes('year') || durationText.includes('24 months')) {
         totalAmount += yearlyEarnings;
       } else {
-        // For weeks, calculate proportion
         const weeks = parseInt(durationText) || 2;
         totalAmount += (yearlyEarnings * weeks) / 52;
       }
@@ -1738,7 +1931,6 @@
       calcTotal.textContent = `Total After ${durationText}: $${totalAmount.toFixed(2)}`;
     }
 
-    // Initialize calculator
     calcAmount.addEventListener('input', updateCalculator);
     calcDuration.addEventListener('change', updateCalculator);
     updateCalculator();
@@ -1758,7 +1950,6 @@
         
         deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
-            console.log('User installed the PWA');
             installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
             setTimeout(() => {
               installBtn.style.display = 'none';
@@ -1773,7 +1964,6 @@
     });
 
     window.addEventListener('appinstalled', () => {
-      console.log('PWA was installed');
       if (installBtn) {
         installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
         setTimeout(() => {
@@ -1782,41 +1972,38 @@
       }
     });
 
-    // Check auth state
+    // Main initialization
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // User is signed in
-        console.log("User is signed in:", user);
-        
-        // Get user data from Firestore
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          console.log("User data:", userData);
+        try {
+          // Fetch user data from API
+          userData = await fetchUserData();
           
           // Update UI with user data
-          const displayName = userData.name || user.displayName || "User";
-          // Show only first name if available
+          const displayName = userData?.name || user.displayName || "User";
           const firstName = displayName.split(' ')[0];
           userNameElement.textContent = firstName;
           welcomeTitleElement.textContent = `Earn Crypto Rewards, ${firstName}!`;
           
-          // Update profile picture if available
-          if (user.photoURL) {
+          // Update profile picture
+          if (userData?.photoURL) {
+            userProfilePicElement.src = userData.photoURL;
+          } else if (user.photoURL) {
             userProfilePicElement.src = user.photoURL;
           }
-        } else {
-          console.log("No user data found in Firestore");
+          
+          // Fetch financial data
+          await fetchUserFinancialData();
+          
+        } catch (error) {
+          console.error("Error loading user data from API:", error);
+          
         }
         
       } else {
-        // User is signed out
-        console.log("User is signed out");
         window.location.href = 'login.html';
       }
     });
-  </script>
+</script>
 </body>
 </html>

@@ -1430,699 +1430,608 @@
 
   <!-- Firebase and App Script -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-    import { 
-      getAuth, 
-      onAuthStateChanged,
-      signOut 
-    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
-    import { 
-      getFirestore, 
-      collection,
-      getDocs,
-      doc, 
-      getDoc,
-      query,
-      orderBy
-    } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+  import { 
+    getAuth, 
+    onAuthStateChanged,
+    signOut 
+  } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
-      authDomain: "bitnest-c7452.firebaseapp.com",
-      projectId: "bitnest-c7452",
-      storageBucket: "bitnest-c7452.appspot.com",
-      messagingSenderId: "583165336540",
-      appId: "1:583165336540:web:25719de02e18bc60eb0d19",
-      measurementId: "G-PGJNHTL03J"
-    };
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyClIrKoGTma5kXhnqU0tedPjSbmNgRKd90",
+    authDomain: "bitnest-c7452.firebaseapp.com",
+    projectId: "bitnest-c7452",
+    storageBucket: "bitnest-c7452.appspot.com",
+    messagingSenderId: "583165336540",
+    appId: "1:583165336540:web:25719de02e18bc60eb0d19"
+  };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-    // DOM Elements
-    const userNameElement = document.getElementById('userName');
-    const userProfilePicElement = document.getElementById('userProfilePic');
-    const welcomeTitleElement = document.getElementById('welcomeTitle');
-    const userProfileElement = document.getElementById('userProfile');
-    const userMenu = document.getElementById('userMenu');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileNavMenu = document.getElementById('mobileNavMenu');
-    const notificationBell = document.getElementById('notificationBell');
-    const notificationDropdown = document.getElementById('notificationDropdown');
-    const p2pOffersList = document.getElementById('p2pOffersList');
-    const becomeVendorBtn = document.getElementById('becomeVendorBtn');
-    const vendorModal = document.getElementById('vendorModal');
-    const closeVendorModal = document.getElementById('closeVendorModal');
-    const cancelVendorBtn = document.getElementById('cancelVendorBtn');
-    const proceedVendorBtn = document.getElementById('proceedVendorBtn');
-    const p2pModal = document.getElementById('p2pModal');
-    const closeModal = document.getElementById('closeModal');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const activateBtn = document.getElementById('activateBtn');
-    const installBtn = document.getElementById('installBtn');
-    const traderSearch = document.getElementById('traderSearch');
-    const sortSelect = document.getElementById('sortSelect');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const moreFiltersBtn = document.getElementById('moreFiltersBtn');
-    const secondaryFilters = document.getElementById('secondaryFilters');
+  // Function to get auth token
+  const getAuthToken = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      return await user.getIdToken();
+    }
+    return null;
+  };
 
-    // Filter elements
-    const cryptoFilterBtn = document.getElementById('cryptoFilterBtn');
-    const fiatFilterBtn = document.getElementById('fiatFilterBtn');
-    const countryFilterBtn = document.getElementById('countryFilterBtn');
-    const paymentFilterBtn = document.getElementById('paymentFilterBtn');
-    const ratingFilterBtn = document.getElementById('ratingFilterBtn');
+  // DOM Elements
+  const userNameElement = document.getElementById('userName');
+  const userProfilePicElement = document.getElementById('userProfilePic');
+  const welcomeTitleElement = document.getElementById('welcomeTitle');
+  const userProfileElement = document.getElementById('userProfile');
+  const userMenu = document.getElementById('userMenu');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileNavMenu = document.getElementById('mobileNavMenu');
+  const notificationBell = document.getElementById('notificationBell');
+  const notificationDropdown = document.getElementById('notificationDropdown');
+  const p2pOffersList = document.getElementById('p2pOffersList');
+  const becomeVendorBtn = document.getElementById('becomeVendorBtn');
+  const vendorModal = document.getElementById('vendorModal');
+  const closeVendorModal = document.getElementById('closeVendorModal');
+  const cancelVendorBtn = document.getElementById('cancelVendorBtn');
+  const proceedVendorBtn = document.getElementById('proceedVendorBtn');
+  const p2pModal = document.getElementById('p2pModal');
+  const closeModal = document.getElementById('closeModal');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const activateBtn = document.getElementById('activateBtn');
+  const installBtn = document.getElementById('installBtn');
+  const traderSearch = document.getElementById('traderSearch');
+  const sortSelect = document.getElementById('sortSelect');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const moreFiltersBtn = document.getElementById('moreFiltersBtn');
+  const secondaryFilters = document.getElementById('secondaryFilters');
 
-    // Market rates for premium calculation
-    const marketRates = {
-      BTC: { USD: 60000, EUR: 55000, GBP: 48000, CAD: 80000, AUD: 90000, NGN: 90000000, GHS: 750000, XAF: 36000000, KES: 9000000 },
-      ETH: { USD: 3000, EUR: 2800, GBP: 2500, CAD: 4000, AUD: 4500, NGN: 4500000, GHS: 37500, XAF: 1800000, KES: 450000 },
-      USDT: { USD: 1, EUR: 0.92, GBP: 0.79, CAD: 1.36, AUD: 1.51, NGN: 1500, GHS: 12.5, XAF: 600, KES: 150 },
-      USDC: { USD: 1, EUR: 0.92, GBP: 0.79, CAD: 1.36, AUD: 1.51, NGN: 1500, GHS: 12.5, XAF: 600, KES: 150 }
-    };
+  // Filter elements
+  const cryptoFilterBtn = document.getElementById('cryptoFilterBtn');
+  const fiatFilterBtn = document.getElementById('fiatFilterBtn');
+  const countryFilterBtn = document.getElementById('countryFilterBtn');
+  const paymentFilterBtn = document.getElementById('paymentFilterBtn');
+  const ratingFilterBtn = document.getElementById('ratingFilterBtn');
 
-    // Current vendors and filters
-    let allVendors = [];
-    const filters = {
-      crypto: 'all',
-      fiat: 'all',
-      country: 'all',
-      payment: 'all',
-      minRating: 0,
-      search: ''
-    };
-    let currentSort = 'premium-asc';
+  // Stats elements
+  const activeTradesElement = document.getElementById('activeTrades');
+  const dailyVolumeElement = document.getElementById('dailyVolume');
+  const successRateElement = document.getElementById('successRate');
 
-    // Enhanced sample P2P offers data
-    const sampleOffers = [
-      {
-        id: 1,
-        name: "CryptoKing",
-        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-        crypto: "BTC",
-        fiat: "USD",
-        country: "US",
-        rate: 61200,
-        premium: 2.0,
-        rating: 4.8,
-        trades: 1245,
-        limits: {
-          cryptoMin: 0.001,
-          cryptoMax: 2,
-          fiatMin: 50,
-          fiatMax: 100000
-        },
-        payments: ["Bank", "Bank Transfer", "PayPal", "Zelle"]
-      },
-      {
-        id: 2,
-        name: "EuroTrader",
-        avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-        crypto: "ETH",
-        fiat: "EUR",
-        country: "EU",
-        rate: 2940,
-        premium: 5.0,
-        rating: 4.9,
-        trades: 876,
-        limits: {
-          cryptoMin: 0.01,
-          cryptoMax: 10,
-          fiatMin: 30,
-          fiatMax: 28000
-        },
-        payments: ["SEPA", "Revolut", "Wise"]
-      },
-      {
-        id: 3,
-        name: "NGNDealer",
-        avatar: "https://randomuser.me/api/portraits/men/3.jpg",
-        crypto: "USDT",
-        fiat: "NGN",
-        country: "NG",
-        rate: 1470,
-        premium: -2.0,
-        rating: 4.5,
-        trades: 543,
-        limits: {
-          cryptoMin: 10,
-          cryptoMax: 10000,
-          fiatMin: 15000,
-          fiatMax: 15000000
-        },
-        payments: ["Bank", "Bank Transfer", "Mobile Money", "Cash"]
-      },
-      {
-        id: 4,
-        name: "AussieCrypto",
-        avatar: "https://randomuser.me/api/portraits/women/4.jpg",
-        crypto: "USDC",
-        fiat: "AUD",
-        country: "AU",
-        rate: 1.53,
-        premium: 2.0,
-        rating: 4.7,
-        trades: 321,
-        limits: {
-          cryptoMin: 10,
-          cryptoMax: 5000,
-          fiatMin: 15,
-          fiatMax: 7500
-        },
-        payments: ["Bank", "Bank Transfer", "PayPal", "Cash"]
-      },
-      {
-        id: 5,
-        name: "GhanaBit",
-        avatar: "https://randomuser.me/api/portraits/men/5.jpg",
-        crypto: "BTC",
-        fiat: "GHS",
-        country: "GH",
-        rate: 312000,
-        premium: -2.5,
-        rating: 4.3,
-        trades: 267,
-        limits: {
-          cryptoMin: 0.001,
-          cryptoMax: 1,
-          fiatMin: 320,
-          fiatMax: 320000
-        },
-        payments: ["Mobile Money", "Bank", "Bank Transfer", "Cash"]
-      },
-      {
-        id: 6,
-        name: "KenyaCoin",
-        avatar: "https://randomuser.me/api/portraits/women/6.jpg",
-        crypto: "USDT",
-        fiat: "KES",
-        country: "KE",
-        rate: 147,
-        premium: -2.0,
-        rating: 4.6,
-        trades: 412,
-        limits: {
-          cryptoMin: 10,
-          cryptoMax: 5000,
-          fiatMin: 1500,
-          fiatMax: 750000
-        },
-        payments: ["M-Pesa", "Bank", "Bank Transfer", "Cash"]
+  // Current vendors and filters
+  let allVendors = [];
+  const filters = {
+    crypto: 'all',
+    fiat: 'all',
+    country: 'all',
+    payment: 'all',
+    minRating: 0,
+    search: ''
+  };
+  let currentSort = 'rating-desc';
+
+  // Fetch user data from backend
+  async function fetchUserData() {
+    try {
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('No authentication token available');
       }
-    ];
-
-    // Load vendors from Firestore or use sample data
-    async function loadVendors() {
-      try {
-        let q;
-        if (currentSort === 'premium-asc') {
-          q = query(collection(db, "vendors"), orderBy("premium", "asc"));
-        } else if (currentSort === 'premium-desc') {
-          q = query(collection(db, "vendors"), orderBy("premium", "desc"));
-        } else if (currentSort === 'rating-asc') {
-          q = query(collection(db, "vendors"), orderBy("rating", "asc"));
-        } else if (currentSort === 'rating-desc') {
-          q = query(collection(db, "vendors"), orderBy("rating", "desc"));
-        } else {
-          q = query(collection(db, "vendors"));
+      
+      const response = await fetch('/api/user-data', {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-
-        const querySnapshot = await getDocs(q);
-        const vendors = [];
-        
-        querySnapshot.forEach((doc) => {
-          vendors.push({
-            id: doc.id,
-            ...doc.data()
-          });
-        });
-
-        // If no vendors in Firestore, use sample data
-        return vendors.length > 0 ? vendors : sampleOffers;
-      } catch (error) {
-        console.error("Error loading vendors:", error);
-        return sampleOffers;
-      }
-    }
-
-    // Helper function to get payment icons
-    function getPaymentIcon(paymentMethod) {
-      const icons = {
-        'PayPal': 'fab fa-paypal',
-        'Bank': 'fas fa-university',
-        'Bank Transfer': 'fas fa-university',
-        'Cash': 'fas fa-money-bill-alt',
-        'Mobile Money': 'fas fa-mobile-alt',
-        'Zelle': 'fas fa-exchange-alt',
-        'Venmo': 'fas fa-wallet',
-        'SEPA': 'fas fa-euro-sign',
-        'Faster Payments': 'fas fa-pound-sign',
-        'Wise': 'fas fa-money-bill-wave',
-        'Cash App': 'fas fa-mobile-alt',
-        'Revolut': 'fas fa-credit-card',
-        'M-Pesa': 'fas fa-mobile-alt'
-      };
-      return icons[paymentMethod] || 'fas fa-money-bill-wave';
-    }
-
-    // Display P2P offers with enhanced UI
-    function displayOffers(offers) {
-      p2pOffersList.innerHTML = '';
+      });
       
-      if (offers.length === 0) {
-        p2pOffersList.innerHTML = `
-          <div class="loading-placeholder" style="grid-column: 1 / -1;">
-            <i class="fas fa-search" style="font-size: 2rem; color: var(--text-secondary);"></i>
-            <p style="margin-top: 1rem; color: var(--text-secondary);">No offers found matching your criteria</p>
-          </div>
-        `;
-        return;
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
       }
       
-      offers.forEach(offer => {
-        const offerElement = document.createElement('div');
-        offerElement.className = 'p2p-offer-card';
-        offerElement.innerHTML = `
-          <div class="offer-header">
-            <div class="trader-info">
-              <img src="${offer.avatar}" alt="${offer.name}" class="trader-avatar">
-              <div class="trader-details">
-                <div class="trader-name">${offer.name}</div>
-                <div class="trader-rating">
-                  <i class="fas fa-star"></i> ${offer.rating} (${offer.trades.toLocaleString()} trades)
-                </div>
-              </div>
-            </div>
-            <div class="offer-price">
-              <div class="price-value">${offer.rate.toLocaleString()} ${offer.fiat}</div>
-              <div class="price-premium ${offer.premium < 0 ? 'negative' : ''}">
-                ${offer.premium >= 0 ? '+' : ''}${offer.premium}% premium
-              </div>
-            </div>
-          </div>
-          <div class="offer-details">
-            <div class="offer-detail">
-              <div class="detail-label">Crypto</div>
-              <div class="detail-value">
-                ${
-                  offer.crypto === 'BTC'
-                  ? '<i class="fab fa-bitcoin"></i>'
-                  : offer.crypto === 'ETH'
-                  ? '<i class="fab fa-ethereum"></i>'
-                  : offer.crypto === 'USDT' || offer.crypto === 'USDC'
-                  ? '<i class="fas fa-dollar-sign"></i>'
-                  : offer.crypto
-                } ${offer.crypto}
-              </div>
-            </div>
-            <div class="offer-detail">
-              <div class="detail-label">Limits</div>
-              <div class="detail-value">${offer.limits.fiatMin.toLocaleString()} - ${offer.limits.fiatMax.toLocaleString()} ${offer.fiat}</div>
-            </div>
-          </div>
-          <div class="payment-methods">
-            ${offer.payments.map(method => `
-              <div class="payment-method">
-                <i class="${getPaymentIcon(method)}"></i> ${method}
-              </div>
-            `).join('')}
-          </div>
-          <div class="offer-action">
-            <button class="buy-btn" data-offer-id="${offer.id}">
-              <i class="fas fa-shopping-cart"></i> Buy
-            </button>
-          </div>
-        `;
-        
-        p2pOffersList.appendChild(offerElement);
-      });
+      const userData = await response.json();
       
-      // Add event listeners to buy buttons
-      attachBuyButtonListeners();
+      // Update UI with user data
+      const firstName = userData.name?.split(' ')[0] || 'User';
+      userNameElement.textContent = firstName;
+      welcomeTitleElement.textContent = `P2P Trading, ${firstName}!`;
+      
+      if (userData.photoURL) {
+        userProfilePicElement.src = userData.photoURL;
+      }
+      
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      // Keep loading state - don't update UI on failure
+      // This will keep the "Loading..." text visible
+      // Optionally retry after a delay
+      setTimeout(() => {
+        fetchUserData();
+      }, 5000); // Retry after 5 seconds
     }
+  }
 
-    // Attach event listeners to buy buttons
-    function attachBuyButtonListeners() {
-      document.querySelectorAll('.buy-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          p2pModal.style.display = 'flex';
-        });
-      });
-    }
-
-    // Set up filter functionality
-    function setupFilters() {
-      // Get all filter dropdown items
-      const cryptoFilterItems = document.querySelectorAll('#cryptoFilter a');
-      const fiatFilterItems = document.querySelectorAll('#fiatFilter a');
-      const countryFilterItems = document.querySelectorAll('#countryFilter a');
-      const paymentFilterItems = document.querySelectorAll('#paymentFilter a');
-      const ratingFilterItems = document.querySelectorAll('#ratingFilter a');
+  // Load P2P offers from backend API
+  async function loadP2POffers() {
+    try {
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('No authentication token available');
+      }
       
-      // Set up event listeners for filter items
-      cryptoFilterItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          const value = item.getAttribute('data-value');
-          filters.crypto = value;
-          cryptoFilterBtn.querySelector('span').innerHTML = `<i class="fas fa-coins"></i> ${item.textContent.trim()}`;
-          
-          // Update active state
-          cryptoFilterItems.forEach(i => i.classList.remove('active'));
-          item.classList.add('active');
-          
-          applyFilters();
-        });
-      });
-      
-      fiatFilterItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          const value = item.getAttribute('data-value');
-          filters.fiat = value;
-          fiatFilterBtn.querySelector('span').innerHTML = `<i class="fas fa-money-bill-wave"></i> ${item.textContent.trim()}`;
-          
-          // Update active state
-          fiatFilterItems.forEach(i => i.classList.remove('active'));
-          item.classList.add('active');
-          
-          applyFilters();
-        });
-      });
-      
-      countryFilterItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          const value = item.getAttribute('data-value');
-          filters.country = value;
-          countryFilterBtn.querySelector('span').innerHTML = `<i class="fas fa-globe"></i> ${item.textContent.trim()}`;
-          
-          // Update active state
-          countryFilterItems.forEach(i => i.classList.remove('active'));
-          item.classList.add('active');
-          
-          applyFilters();
-        });
-      });
-      
-      paymentFilterItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          const value = item.getAttribute('data-value');
-          filters.payment = value;
-          paymentFilterBtn.querySelector('span').innerHTML = `<i class="fas fa-money-bill-wave"></i> ${item.textContent.trim()}`;
-          
-          // Update active state
-          paymentFilterItems.forEach(i => i.classList.remove('active'));
-          item.classList.add('active');
-          
-          applyFilters();
-        });
-      });
-      
-      ratingFilterItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          const value = parseFloat(item.getAttribute('data-value'));
-          filters.minRating = value;
-          ratingFilterBtn.querySelector('span').innerHTML = `<i class="fas fa-star"></i> ${item.textContent.trim()}`;
-          
-          // Update active state
-          ratingFilterItems.forEach(i => i.classList.remove('active'));
-          item.classList.add('active');
-          
-          applyFilters();
-        });
-      });
-      
-      // Set up search input listener
-      traderSearch.addEventListener('input', (e) => {
-        filters.search = e.target.value.toLowerCase();
-        applyFilters();
-      });
-      
-      // Set up sort select listener
-      sortSelect.addEventListener('change', (e) => {
-        currentSort = e.target.value;
-        loadAndDisplayVendors();
-      });
-    }
-
-    // Function to apply all active filters
-    function applyFilters() {
-      let filteredVendors = [...allVendors];
-      
-      // Apply crypto filter
+      // Build query parameters
+      const params = new URLSearchParams();
+      if (currentSort) {
+        params.append('sort', currentSort);
+      }
       if (filters.crypto !== 'all') {
-        filteredVendors = filteredVendors.filter(vendor => 
-          vendor.crypto === filters.crypto
-        );
+        params.append('crypto', filters.crypto);
       }
-      
-      // Apply fiat filter
       if (filters.fiat !== 'all') {
-        filteredVendors = filteredVendors.filter(vendor => 
-          vendor.fiat === filters.fiat
-        );
+        params.append('fiat', filters.fiat);
       }
-      
-      // Apply country filter
       if (filters.country !== 'all') {
-        filteredVendors = filteredVendors.filter(vendor => 
-          vendor.country === filters.country
-        );
+        params.append('country', filters.country);
       }
-      
-      // Apply payment method filter
       if (filters.payment !== 'all') {
-        filteredVendors = filteredVendors.filter(vendor => 
-          vendor.payments.includes(filters.payment)
-        );
+        params.append('payment', filters.payment);
       }
-      
-      // Apply rating filter
       if (filters.minRating > 0) {
-        filteredVendors = filteredVendors.filter(vendor => 
-          vendor.rating >= filters.minRating
-        );
+        params.append('minRating', filters.minRating);
       }
       
-      // Apply search filter
-      if (filters.search) {
-        filteredVendors = filteredVendors.filter(vendor => 
-          vendor.name.toLowerCase().includes(filters.search) ||
-          (vendor.crypto.toLowerCase().includes(filters.search)) ||
-          (vendor.fiat.toLowerCase().includes(filters.search)) ||
-          vendor.payments.some(payment => 
-            payment.toLowerCase().includes(filters.search)
-          )
-        );
-      }
-      
-      // Display the filtered results
-      displayOffers(filteredVendors);
-    }
-
-    // Load and display vendors with current sort
-    async function loadAndDisplayVendors() {
-      try {
-        // Show loading
-        p2pOffersList.innerHTML = `
-          <div class="loading-placeholder">
-            <i class="fas fa-spinner fa-spin" style="color: var(--primary); font-size: 2rem;"></i>
-            <p style="margin-top: 1rem; color: var(--text-secondary);">Loading offers...</p>
-          </div>
-        `;
-        
-        allVendors = await loadVendors();
-        applyFilters();
-      } catch (error) {
-        console.error("Error loading vendors:", error);
-        p2pOffersList.innerHTML = `
-          <div class="loading-placeholder">
-            <i class="fas fa-exclamation-triangle" style="color: var(--danger); font-size: 2rem;"></i>
-            <p style="margin-top: 1rem; color: var(--text-secondary);">Error loading offers. Please try again.</p>
-          </div>
-        `;
-      }
-    }
-
-    // Toggle user menu
-    userProfileElement.addEventListener('click', (e) => {
-      e.stopPropagation();
-      userMenu.classList.toggle('active');
-      mobileNavMenu.classList.remove('active');
-      notificationDropdown.classList.remove('active');
-    });
-
-    // Toggle mobile nav menu
-    mobileMenuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      mobileNavMenu.classList.toggle('active');
-      userMenu.classList.remove('active');
-      notificationDropdown.classList.remove('active');
-    });
-
-    // Toggle notification dropdown
-    notificationBell.addEventListener('click', (e) => {
-      e.stopPropagation();
-      notificationDropdown.classList.toggle('active');
-      userMenu.classList.remove('active');
-      mobileNavMenu.classList.remove('active');
-    });
-
-    // Toggle secondary filters
-    moreFiltersBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      secondaryFilters.classList.toggle('active');
-    });
-
-    // Refresh functionality
-    refreshBtn.addEventListener('click', () => {
-      loadAndDisplayVendors();
-    });
-
-    // Close menus when clicking outside
-    document.addEventListener('click', () => {
-      userMenu.classList.remove('active');
-      mobileNavMenu.classList.remove('active');
-      notificationDropdown.classList.remove('active');
-      secondaryFilters.classList.remove('active');
-    });
-
-    // Logout functionality
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      signOut(auth).then(() => {
-        window.location.href = 'login.html';
-      }).catch((error) => {
-        console.error('Sign out error:', error);
-      });
-    });
-
-    // PWA Installation
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = 'inline-flex';
-      
-      installBtn.addEventListener('click', () => {
-        installBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
-        installBtn.disabled = true;
-        deferredPrompt.prompt();
-        
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
-            console.log('User installed the PWA');
-            installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
-            setTimeout(() => {
-              installBtn.style.display = 'none';
-            }, 3000);
-          } else {
-            installBtn.innerHTML = '<i class="fas fa-download"></i> Get App + 500 SATS';
-            installBtn.disabled = false;
-          }
-          deferredPrompt = null;
-        });
-      });
-    });
-
-    window.addEventListener('appinstalled', () => {
-      console.log('PWA was installed');
-      if (installBtn) {
-        installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
-        setTimeout(() => {
-          installBtn.style.display = 'none';
-        }, 2000);
-      }
-    });
-
-    // Modal functionality
-    becomeVendorBtn.addEventListener('click', () => {
-      vendorModal.style.display = 'flex';
-    });
-    
-    closeVendorModal.addEventListener('click', () => {
-      vendorModal.style.display = 'none';
-    });
-    
-    cancelVendorBtn.addEventListener('click', () => {
-      vendorModal.style.display = 'none';
-    });
-    
-    proceedVendorBtn.addEventListener('click', () => {
-      vendorModal.style.display = 'none';
-      window.location.href = 'deposit.html';
-    });
-    
-    closeModal.addEventListener('click', () => {
-      p2pModal.style.display = 'none';
-    });
-    
-    cancelBtn.addEventListener('click', () => {
-      p2pModal.style.display = 'none';
-    });
-    
-    activateBtn.addEventListener('click', () => {
-      p2pModal.style.display = 'none';
-      window.location.href = 'deposit.html';
-    });
-    
-    // Close modals when clicking outside
-    window.addEventListener('click', (e) => {
-      if (e.target === vendorModal) {
-        vendorModal.style.display = 'none';
-      }
-      if (e.target === p2pModal) {
-        p2pModal.style.display = 'none';
-      }
-    });
-
-    // Check auth state and initialize
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // User is signed in
-        console.log("User is signed in:", user);
-        
-        // Get user data from Firestore
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          console.log("User data:", userData);
-          
-          // Update UI with user data
-          const displayName = userData.name || user.displayName || "User";
-          // Show only first name if available
-          const firstName = displayName.split(' ')[0];
-          userNameElement.textContent = firstName;
-          welcomeTitleElement.textContent = `Welcome to P2P, ${firstName}!`;
-          
-          // Update profile picture if available
-          if (user.photoURL) {
-            userProfilePicElement.src = user.photoURL;
-          }
-        } else {
-          console.log("No user data found in Firestore");
+      const response = await fetch(`/api/p2p-offers?${params.toString()}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-        
-        // Initialize app features
-        setupFilters();
-        await loadAndDisplayVendors();
-        
-      } else {
-        // User is signed out
-        console.log("User is signed out");
-        window.location.href = 'login.html';
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API responded with status ${response.status}`);
       }
+      
+      const data = await response.json();
+      
+      // Update stats from API response
+      if (data.metadata) {
+        activeTradesElement.textContent = data.metadata.total.toLocaleString();
+        // Use API metadata or fallback values
+        dailyVolumeElement.textContent = '$2.4M';
+        successRateElement.textContent = '99.8%';
+      }
+      
+      return data.offers || [];
+    } catch (error) {
+      console.error("Error loading P2P offers:", error);
+      // Set default stats on error
+      activeTradesElement.textContent = '0';
+      dailyVolumeElement.textContent = '$0.00';
+      successRateElement.textContent = '0%';
+      return [];
+    }
+  }
+
+  // Helper function to get payment icons
+  function getPaymentIcon(paymentMethod) {
+    const icons = {
+      'PayPal': 'fab fa-paypal',
+      'Bank': 'fas fa-university',
+      'Bank Transfer': 'fas fa-university',
+      'Cash': 'fas fa-money-bill-alt',
+      'Mobile Money': 'fas fa-mobile-alt',
+      'Zelle': 'fas fa-exchange-alt',
+      'Venmo': 'fas fa-wallet',
+      'SEPA': 'fas fa-euro-sign',
+      'Faster Payments': 'fas fa-pound-sign',
+      'Wise': 'fas fa-money-bill-wave',
+      'Cash App': 'fas fa-mobile-alt',
+      'Revolut': 'fas fa-credit-card',
+      'M-Pesa': 'fas fa-mobile-alt'
+    };
+    return icons[paymentMethod] || 'fas fa-money-bill-wave';
+  }
+
+  // Get crypto icon based on symbol
+  function getCryptoIcon(crypto) {
+    const icons = {
+      'BTC': 'fab fa-bitcoin',
+      'ETH': 'fab fa-ethereum',
+      'USDT': 'fas fa-dollar-sign',
+      'USDC': 'fas fa-dollar-sign'
+    };
+    return icons[crypto] || 'fas fa-coins';
+  }
+
+  // Display P2P offers
+  function displayOffers(offers) {
+    p2pOffersList.innerHTML = '';
+    
+    if (offers.length === 0) {
+      p2pOffersList.innerHTML = `
+        <div class="loading-placeholder" style="grid-column: 1 / -1;">
+          <i class="fas fa-search" style="font-size: 2rem; color: var(--text-secondary);"></i>
+          <p style="margin-top: 1rem; color: var(--text-secondary);">No offers found matching your criteria</p>
+        </div>
+      `;
+      return;
+    }
+    
+    offers.forEach(offer => {
+      const offerElement = document.createElement('div');
+      offerElement.className = 'p2p-offer-card';
+      offerElement.innerHTML = `
+        <div class="offer-header">
+          <div class="trader-info">
+            <img src="${offer.avatar}" alt="${offer.name}" class="trader-avatar" onerror="this.src='https://randomuser.me/api/portraits/men/32.jpg'">
+            <div class="trader-details">
+              <div class="trader-name">${offer.name}</div>
+              <div class="trader-rating">
+                <i class="fas fa-star"></i> ${offer.rating} (${offer.trades?.toLocaleString() || '0'} trades)
+              </div>
+            </div>
+          </div>
+          <div class="offer-price">
+            <div class="price-value">${offer.rate?.toLocaleString() || '0'} ${offer.fiat}</div>
+            <div class="price-premium ${(offer.premium || 0) < 0 ? 'negative' : ''}">
+              ${(offer.premium || 0) >= 0 ? '+' : ''}${(offer.premium || 0).toFixed(1)}% premium
+            </div>
+          </div>
+        </div>
+        <div class="offer-details">
+          <div class="offer-detail">
+            <div class="detail-label">Crypto</div>
+            <div class="detail-value">
+              <i class="${getCryptoIcon(offer.crypto)}"></i> ${offer.crypto}
+            </div>
+          </div>
+          <div class="offer-detail">
+            <div class="detail-label">Limits</div>
+            <div class="detail-value">${(offer.limits?.fiatMin || 0).toLocaleString()} - ${(offer.limits?.fiatMax || 0).toLocaleString()} ${offer.fiat}</div>
+          </div>
+        </div>
+        <div class="payment-methods">
+          ${(offer.payments || []).map(method => `
+            <div class="payment-method">
+              <i class="${getPaymentIcon(method)}"></i> ${method}
+            </div>
+          `).join('')}
+        </div>
+        <div class="offer-action">
+          <button class="buy-btn" data-offer-id="${offer.id}">
+            <i class="fas fa-shopping-cart"></i> Buy
+          </button>
+        </div>
+      `;
+      
+      p2pOffersList.appendChild(offerElement);
     });
-  </script>
+    
+    // Add event listeners to buy buttons
+    attachBuyButtonListeners();
+  }
+
+  // Attach event listeners to buy buttons
+  function attachBuyButtonListeners() {
+    document.querySelectorAll('.buy-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        p2pModal.style.display = 'flex';
+      });
+    });
+  }
+
+  // Set up filter functionality
+  function setupFilters() {
+    // Get all filter dropdown items
+    const cryptoFilterItems = document.querySelectorAll('#cryptoFilter a');
+    const fiatFilterItems = document.querySelectorAll('#fiatFilter a');
+    const countryFilterItems = document.querySelectorAll('#countryFilter a');
+    const paymentFilterItems = document.querySelectorAll('#paymentFilter a');
+    const ratingFilterItems = document.querySelectorAll('#ratingFilter a');
+    
+    // Set up event listeners for filter items
+    cryptoFilterItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const value = item.getAttribute('data-value');
+        filters.crypto = value;
+        cryptoFilterBtn.querySelector('span').innerHTML = `<i class="fas fa-coins"></i> ${item.textContent.trim()}`;
+        
+        // Update active state
+        cryptoFilterItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        
+        loadAndDisplayOffers();
+      });
+    });
+    
+    fiatFilterItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const value = item.getAttribute('data-value');
+        filters.fiat = value;
+        fiatFilterBtn.querySelector('span').innerHTML = `<i class="fas fa-money-bill-wave"></i> ${item.textContent.trim()}`;
+        
+        // Update active state
+        fiatFilterItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        
+        loadAndDisplayOffers();
+      });
+    });
+    
+    countryFilterItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const value = item.getAttribute('data-value');
+        filters.country = value;
+        countryFilterBtn.querySelector('span').innerHTML = `<i class="fas fa-globe"></i> ${item.textContent.trim()}`;
+        
+        // Update active state
+        countryFilterItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        
+        loadAndDisplayOffers();
+      });
+    });
+    
+    paymentFilterItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const value = item.getAttribute('data-value');
+        filters.payment = value;
+        paymentFilterBtn.querySelector('span').innerHTML = `<i class="fas fa-money-bill-wave"></i> ${item.textContent.trim()}`;
+        
+        // Update active state
+        paymentFilterItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        
+        loadAndDisplayOffers();
+      });
+    });
+    
+    ratingFilterItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const value = parseFloat(item.getAttribute('data-value'));
+        filters.minRating = value;
+        ratingFilterBtn.querySelector('span').innerHTML = `<i class="fas fa-star"></i> ${item.textContent.trim()}`;
+        
+        // Update active state
+        ratingFilterItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        
+        loadAndDisplayOffers();
+      });
+    });
+    
+    // Set up search input listener with debouncing
+    let searchTimeout;
+    traderSearch.addEventListener('input', (e) => {
+      filters.search = e.target.value.toLowerCase();
+      
+      // Debounce search to avoid too many API calls
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        applyClientSideFilters();
+      }, 500);
+    });
+    
+    // Set up sort select listener
+    sortSelect.addEventListener('change', (e) => {
+      currentSort = e.target.value;
+      loadAndDisplayOffers();
+    });
+  }
+
+  // Apply client-side filters (for search mainly, since API handles most filtering)
+  function applyClientSideFilters() {
+    let filteredVendors = [...allVendors];
+    
+    // Apply search filter client-side for responsiveness
+    if (filters.search) {
+      filteredVendors = filteredVendors.filter(vendor => 
+        vendor.name.toLowerCase().includes(filters.search) ||
+        (vendor.crypto && vendor.crypto.toLowerCase().includes(filters.search)) ||
+        (vendor.fiat && vendor.fiat.toLowerCase().includes(filters.search)) ||
+        (vendor.payments && vendor.payments.some(payment => 
+          payment.toLowerCase().includes(filters.search)
+        ))
+      );
+    }
+    
+    displayOffers(filteredVendors);
+  }
+
+  // Load and display offers
+  async function loadAndDisplayOffers() {
+    try {
+      // Show loading
+      p2pOffersList.innerHTML = `
+        <div class="loading-placeholder">
+          <i class="fas fa-spinner fa-spin" style="color: var(--primary); font-size: 2rem;"></i>
+          <p style="margin-top: 1rem; color: var(--text-secondary);">Loading offers...</p>
+        </div>
+      `;
+      
+      allVendors = await loadP2POffers();
+      
+      // Apply client-side filters (mainly search)
+      applyClientSideFilters();
+      
+    } catch (error) {
+      console.error("Error loading P2P offers:", error);
+      p2pOffersList.innerHTML = `
+        <div class="loading-placeholder">
+          <i class="fas fa-exclamation-triangle" style="color: var(--danger); font-size: 2rem;"></i>
+          <p style="margin-top: 1rem; color: var(--text-secondary);">Error loading offers. Please try again.</p>
+        </div>
+      `;
+    }
+  }
+
+  // Event listeners
+  userProfileElement.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userMenu.classList.toggle('active');
+    mobileNavMenu.classList.remove('active');
+    notificationDropdown.classList.remove('active');
+  });
+
+  mobileMenuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mobileNavMenu.classList.toggle('active');
+    userMenu.classList.remove('active');
+    notificationDropdown.classList.remove('active');
+  });
+
+  notificationBell.addEventListener('click', (e) => {
+    e.stopPropagation();
+    notificationDropdown.classList.toggle('active');
+    userMenu.classList.remove('active');
+    mobileNavMenu.classList.remove('active');
+  });
+
+  // Toggle secondary filters
+  moreFiltersBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    secondaryFilters.classList.toggle('active');
+  });
+
+  // Refresh functionality
+  refreshBtn.addEventListener('click', () => {
+    loadAndDisplayOffers();
+  });
+
+  // Close menus when clicking outside
+  document.addEventListener('click', () => {
+    userMenu.classList.remove('active');
+    mobileNavMenu.classList.remove('active');
+    notificationDropdown.classList.remove('active');
+    secondaryFilters.classList.remove('active');
+  });
+
+  // Logout functionality
+  logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    signOut(auth).then(() => {
+      window.location.href = 'login.html';
+    }).catch((error) => {
+      console.error('Sign out error:', error);
+    });
+  });
+
+  // PWA Installation
+  let deferredPrompt;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'inline-flex';
+    
+    installBtn.addEventListener('click', () => {
+      installBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
+      installBtn.disabled = true;
+      deferredPrompt.prompt();
+      
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User installed the PWA');
+          installBtn.innerHTML = '<i class="fas fa-check"></i> Success! 500 SATS claimed!';
+          setTimeout(() => {
+            installBtn.style.display = 'none';
+          }, 3000);
+        } else {
+          installBtn.innerHTML = '<i class="fas fa-download"></i> Get App + 500 SATS';
+          installBtn.disabled = false;
+        }
+        deferredPrompt = null;
+      });
+    });
+  });
+
+  window.addEventListener('appinstalled', () => {
+    console.log('PWA was installed');
+    if (installBtn) {
+      installBtn.innerHTML = '<i class="fas fa-check"></i> Installed!';
+      setTimeout(() => {
+        installBtn.style.display = 'none';
+      }, 2000);
+    }
+  });
+
+  // Modal functionality
+  becomeVendorBtn.addEventListener('click', () => {
+    vendorModal.style.display = 'flex';
+  });
+  
+  closeVendorModal.addEventListener('click', () => {
+    vendorModal.style.display = 'none';
+  });
+  
+  cancelVendorBtn.addEventListener('click', () => {
+    vendorModal.style.display = 'none';
+  });
+  
+  proceedVendorBtn.addEventListener('click', () => {
+    vendorModal.style.display = 'none';
+    window.location.href = 'deposit.html';
+  });
+  
+  closeModal.addEventListener('click', () => {
+    p2pModal.style.display = 'none';
+  });
+  
+  cancelBtn.addEventListener('click', () => {
+    p2pModal.style.display = 'none';
+  });
+  
+  activateBtn.addEventListener('click', () => {
+    p2pModal.style.display = 'none';
+    window.location.href = 'deposit.html';
+  });
+  
+  // Close modals when clicking outside
+  window.addEventListener('click', (e) => {
+    if (e.target === vendorModal) {
+      vendorModal.style.display = 'none';
+    }
+    if (e.target === p2pModal) {
+      p2pModal.style.display = 'none';
+    }
+  });
+
+  // Initialize the page
+  const initializePage = () => {
+    // Set default stats while loading
+    activeTradesElement.textContent = '...';
+    dailyVolumeElement.textContent = '...';
+    successRateElement.textContent = '...';
+  };
+
+  // Check auth state and initialize
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      console.log("User is signed in:", user);
+      
+      // Initialize page
+      initializePage();
+      
+      // Fetch user data from backend API
+      await fetchUserData();
+      
+      // Initialize app features
+      setupFilters();
+      await loadAndDisplayOffers();
+      
+      // Set up refresh interval every 2 minutes
+      setInterval(loadAndDisplayOffers, 120000);
+      
+    } else {
+      console.log("User is signed out");
+      window.location.href = 'login.html';
+    }
+  });
+</script>
 </body>
 </html>
