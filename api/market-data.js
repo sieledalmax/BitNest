@@ -1,11 +1,37 @@
-const express = require('express');
 const fetch = require('node-fetch');
 const admin = require('firebase-admin');
 
-const router = express.Router();
+if (!admin.apps.length) {
+  try {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
+    
+    if (!serviceAccount.project_id || !serviceAccount.client_email || !serviceAccount.private_key) {
+      throw new Error('Missing required Firebase service account fields');
+    }
+    
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    
+    console.log('Firebase Admin initialized successfully for project:', serviceAccount.project_id);
+  } catch (error) {
+    console.error('Firebase initialization failed:', error.message);
+    throw error;
+  }
+}
 
-// GET /api/market-data - Fetch cryptocurrency market data
-router.get('/', async (req, res) => {
+module.exports = async (req, res) => {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   try {
     // Verify authentication
     const authHeader = req.headers['authorization'];
@@ -15,7 +41,6 @@ router.get('/', async (req, res) => {
 
     const token = authHeader.split(' ')[1];
     
-    // Verify the Firebase ID token
     try {
       await admin.auth().verifyIdToken(token);
     } catch (error) {
@@ -32,13 +57,9 @@ router.get('/', async (req, res) => {
     }
     
     const data = await response.json();
-    
-    // Return the market data
     res.json(data);
   } catch (error) {
     console.error('Error fetching market data:', error);
     res.status(500).json({ error: 'Failed to fetch market data' });
   }
-});
-
-module.exports = router;
+};

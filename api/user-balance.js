@@ -1,14 +1,33 @@
+// Updated Firebase initialization pattern for all your API files
 const admin = require('firebase-admin');
 
 if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-    })
-  });
+  try {
+    // Parse the service account JSON from environment variable
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
+    
+    // Validate that we have the required fields
+    if (!serviceAccount.project_id || !serviceAccount.client_email || !serviceAccount.private_key) {
+      throw new Error('Missing required Firebase service account fields');
+    }
+    
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    
+    console.log('Firebase Admin initialized successfully for project:', serviceAccount.project_id);
+  } catch (error) {
+    console.error('Firebase initialization failed:', error.message);
+    // Log more details for debugging
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+      console.log('FIREBASE_SERVICE_ACCOUNT length:', process.env.FIREBASE_SERVICE_ACCOUNT.length);
+    } else {
+      console.log('FIREBASE_SERVICE_ACCOUNT is not set');
+    }
+    throw error;
+  }
 }
+
 
 const db = admin.firestore();
 
